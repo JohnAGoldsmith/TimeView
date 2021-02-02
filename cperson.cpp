@@ -2,6 +2,7 @@
 #include <QGraphicsTextItem>
 #include <QGraphicsScene>
 #include <QStylePainter>
+#include <QGradient>
 #include "cperson.h"
 #include "cscene.h"
 
@@ -16,7 +17,12 @@ cPerson::cPerson(cScene * thisScene, QString FirstName, QString LastName, int x,
    lastName = LastName;
    QString name = firstName + " "  + lastName;
 
+
+
+
+
    box = new QGraphicsRectItem(QRect(xpos, ypos, width, height));
+   box->setBrush(QColor(00,190,200,255));
    thisScene->addItem(box);
    nameItem = thisScene->addSimpleText(name);
    nameItem->setPos(xpos,ypos);
