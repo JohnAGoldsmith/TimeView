@@ -7,13 +7,13 @@ struct Path{
 
 
 
-cdataPerson::cdataPerson()
+dPerson::dPerson()
 {
 
 }
 
 
-cdataPerson::cdataPerson(QStringList data){
+dPerson::dPerson(QStringList data){
     if (data.size() >= 8 && data[7].length() > 0){
         key = data[7];
     } else {
@@ -29,6 +29,8 @@ cdataPerson::cdataPerson(QStringList data){
     }
     xpos = data[5].toInt();
     profession1 = data[6];
+    graphicPerson = NULL;
+    qDebug() << "constructor of dataperson" << key;
 
 }
 

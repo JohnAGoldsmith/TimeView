@@ -8,7 +8,7 @@
 #include "ui_mainwindow.h"
 #include "cscene.h"
 #include "dataperson.h"
-#include "cperson.h"
+#include "gperson.h"
 #include "clink.h"
 #include "data.h"
 
@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    scene = new cScene( );
+
 
     QHBoxLayout *layout = new QHBoxLayout;
 

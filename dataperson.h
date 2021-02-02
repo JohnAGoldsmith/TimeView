@@ -2,15 +2,25 @@
 #define DATAPERSON_H
 #include <QStringList>
 
-class cdataPerson;
+class gPerson;
+//class cPerson;
 class Path;
 
-class cdataPerson
+class dPerson
 {
-    friend class cData;
+
+    friend class gData;
+    friend class gPerson;
 public:
-  cdataPerson(QStringList) ;
-  cdataPerson();
+  dPerson(QStringList) ;
+  dPerson();
+  gPerson* GraphicPerson() {return graphicPerson;}
+  QString Key() {return key;}
+  QString LastName() {return lastName;}
+  int Xpos() {return xpos;}
+  int BirthYear() {return birthYear;}
+  gPerson* get_gPerson() {return graphicPerson;}
+  void set_gPerson(gPerson* gp){graphicPerson = gp;}
 
 private:
   QString firstName;
@@ -22,6 +32,7 @@ private:
   int ypos;
   QString profession1;
   QString profession2;
+  gPerson* graphicPerson;
 };
 
 

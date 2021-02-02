@@ -3,22 +3,22 @@
 #include <QDebug>
 #include <QDir>
 #include "data.h"
-
+#include "clink.h"
+#include "cscene.h"
 cData::cData()
 {
-   timeScale = 5;
+   //timeScale = 5;
    topPosition = 1950;
 }
 
 void cData::ReadCSV()
 {
-    // Open csv-file
+
     QFile file("./test.csv");
     qDebug() << QDir::currentPath();
     if (! file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
 
-    // Read data from file
     QTextStream stream(&file);
     QStringList data;
     QString separator(",");    int topPosition = 1950;
@@ -32,9 +32,7 @@ void cData::ReadCSV()
     return;
 }
 void cData::analyzeData(){
-    //QList<cdataPerson*> Persons;
-    //QList<cLink*> Links;
-    cdataPerson* p;
+    dPerson* dPerson1;
     cLink * l;
     QString outfileName;
     foreach (QString line1 , tempLines){
@@ -46,12 +44,16 @@ void cData::analyzeData(){
                continue;
            } else {
                if (line[0] == "P"){
-                   p = new cdataPerson(line);
-                   Persons.append(p);
+                   dPerson1 = new dPerson(line);
+                   dataPersons.append(dPerson1);
+                   Key2dataPerson[dPerson1->Key()] = dPerson1;
+                   qDebug() << "analyzing Data line 50 linking data person to hash." << dPerson1->Key() ;
+                   qDebug() << "analyzing Data line 51"<< getPersonFromKey(dPerson1->Key()) ->LastName();
                } else {
                    if (line[0] == "L"){
                        l = new cLink(line);
                        Links.append(l);
+                       qDebug() << "analyzing Data New link";
                    }
                }
            }
@@ -60,10 +62,35 @@ void cData::analyzeData(){
 }
 void cData::sendPersonsToScene(cScene* scene){
     QGraphicsRectItem* rItem;
-    cPerson * graphicPerson;
+    QGraphicsLineItem * line;
+    gPerson * gPerson1, * gPerson2;
+    QString sPerson1, sPerson2;
+    dPerson* dPerson1, * dPerson2;
+    cLink * link;
+    foreach (dPerson * dperson, dataPersons){
+         gPerson1 = new gPerson(scene, dperson);
+         dperson->set_gPerson(gPerson1);
+    }
+    foreach (cLink * link, Links){
+        if ( Key2dataPersonHashContains(link->getFromKey())) {
+                    dPerson1 =  getPersonFromKey(link->getFromKey());
+        }else{
+            qDebug() << "missing someone" ;
+            continue;
+        }
+        if ( Key2dataPersonHashContains(link->getToKey())) {
+               dPerson2 =  getPersonFromKey(link->getToKey());
+        }else{
+            qDebug() << "missing" ;
+            continue;
+        }
+        qDebug() << dPerson1->LastName();
+        gPerson1 = dPerson1->get_gPerson();
+        qDebug() << dPerson2->LastName();
+        gPerson2 = dPerson2->get_gPerson();
 
-    foreach (cdataPerson * person, Persons){
-         graphicPerson = new cPerson(scene, person->firstName, person->lastName, person->xpos * 50, (topPosition - person->birthYear) * timeScale);
-         qDebug() << 71 << person->birthYear;
+        qDebug() << "a" << gPerson1;
+        qDebug() << "b" << gPerson1->LastName() << gPerson2->LastName();
+        line = new QGraphicsLineItem(gPerson1->x(),gPerson1->y(),gPerson2->x(),gPerson2->y());
     }
 }

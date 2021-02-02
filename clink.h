@@ -10,6 +10,8 @@ class cLink
     public:
         cLink();
         cLink(QStringList);
+        QString getFromKey(){return fromPersonKey;}
+        QString getToKey(){return toPersonKey;}
     private:
         QString fromPersonKey;
         QString toPersonKey;

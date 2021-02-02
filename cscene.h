@@ -26,12 +26,17 @@ public:
     void setTextColor(const QColor &color);
     void setItemColor(const QColor &color);
     void setFont(const QFont &font);
-    
+    int TimeScale() {return timeScale;}
+    int ScaleFactor() {return scaleFactor;}
+    int TopPosition() {return topPosition;}
 private:
     QFont myFont;
     QColor myTextColor;
     QColor myItemColor;
     QColor myLineColor;
+    int   timeScale;
+    int scaleFactor; // x-axis
+    int topPosition;
 
     
     
