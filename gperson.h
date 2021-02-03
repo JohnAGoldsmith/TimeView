@@ -14,9 +14,11 @@ public:
     gPerson(cScene *,  dPerson * dPerson);
     void SetY(int y) {ypos = y;}
     void Move(int x, int  y);
-    float X(){return xpos;}
-    float Y(){return ypos;}
+    float Xpos(){return xpos;}
+    float Ypos(){return ypos;}
     QString LastName() {return lastName;}
+    QPointF BottomHook();
+    QPointF TopHook();
 
 
 private:

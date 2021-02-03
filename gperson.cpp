@@ -26,9 +26,20 @@ gPerson::gPerson(cScene * thisScene, dPerson * dp )
    nameItem = thisScene->addSimpleText(name);
    nameItem->setPos(xpos,ypos);
 
+   qDebug() << "gPerson" << name << "x" << xpos <<"y" << ypos << "scale"<<thisScene->TimeScale() << "dataperson x" << dp->Xpos() << "Top position"<<thisScene->TopPosition();
 }
 
 void gPerson::Move(int x, int y){
    box->moveBy(x,y);
    nameItem->moveBy(x,y);
+}
+QPointF gPerson::TopHook(){
+   float x1 = xpos + 0.5 * width;
+   float y1 = ypos;
+   return QPointF(x1,y1);
+}
+QPointF gPerson::BottomHook(){
+   float x1 = xpos + 0.5 * width;
+   float y1 = ypos + height;
+   return QPointF(x1,y1);
 }

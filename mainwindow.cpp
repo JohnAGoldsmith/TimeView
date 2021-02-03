@@ -33,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     getData()->ReadCSV();
     getData()->analyzeData();
-    getData()->sendPersonsToScene(localScene);
+    getData()->sendPersonsAndLinksToScene(localScene);
 
     setCentralWidget(widget);
     setWindowTitle(tr("Genealogy"));

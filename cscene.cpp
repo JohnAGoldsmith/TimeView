@@ -8,6 +8,7 @@ cScene::cScene(QObject* parent): QGraphicsScene(parent)
     setBackgroundBrush(QColor (255,0,0,127 ));
     timeScale = 20;
     scaleFactor = 20;
+    topPosition = 2000;
 
 }
 cScene::~cScene(){

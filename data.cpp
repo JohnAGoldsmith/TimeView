@@ -47,20 +47,20 @@ void cData::analyzeData(){
                    dPerson1 = new dPerson(line);
                    dataPersons.append(dPerson1);
                    Key2dataPerson[dPerson1->Key()] = dPerson1;
-                   qDebug() << "analyzing Data line 50 linking data person to hash." << dPerson1->Key() ;
-                   qDebug() << "analyzing Data line 51"<< getPersonFromKey(dPerson1->Key()) ->LastName();
+                   //qDebug() << "analyzing Data line 50 linking data person to hash." << dPerson1->Key() ;
+                   //qDebug() << "analyzing Data line 51"<< getPersonFromKey(dPerson1->Key()) ->LastName();
                } else {
                    if (line[0] == "L"){
                        l = new cLink(line);
                        Links.append(l);
-                       qDebug() << "analyzing Data New link";
+                       //qDebug() << "analyzing Data New link";
                    }
                }
            }
        }
     }
 }
-void cData::sendPersonsToScene(cScene* scene){
+void cData::sendPersonsAndLinksToScene(cScene* scene){
     QGraphicsRectItem* rItem;
     QGraphicsLineItem * line;
     gPerson * gPerson1, * gPerson2;
@@ -84,13 +84,11 @@ void cData::sendPersonsToScene(cScene* scene){
             qDebug() << "missing" ;
             continue;
         }
-        qDebug() << dPerson1->LastName();
-        gPerson1 = dPerson1->get_gPerson();
-        qDebug() << dPerson2->LastName();
-        gPerson2 = dPerson2->get_gPerson();
 
-        qDebug() << "a" << gPerson1;
-        qDebug() << "b" << gPerson1->LastName() << gPerson2->LastName();
-        line = new QGraphicsLineItem(gPerson1->x(),gPerson1->y(),gPerson2->x(),gPerson2->y());
+        gPerson1 = dPerson1->get_gPerson();
+        gPerson2 = dPerson2->get_gPerson();
+        link->attachPersons(gPerson1, gPerson2);
+        link->attachScene(scene);
+
     }
 }

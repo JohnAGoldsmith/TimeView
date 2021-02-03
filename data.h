@@ -14,7 +14,7 @@ public:
 
     void ReadCSV();
     void analyzeData();
-    void sendPersonsToScene(cScene *);
+    void sendPersonsAndLinksToScene(cScene *);
     dPerson* getPersonFromKey(QString key){return Key2dataPerson[key];}
     bool  Key2dataPersonHashContains (QString key ) {return  Key2dataPerson.contains(key);}
 private:
