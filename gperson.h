@@ -19,6 +19,7 @@ public:
     QString LastName() {return lastName;}
     QPointF BottomHook();
     QPointF TopHook();
+    dPerson* getDPerson(){return dataPerson;}
 
 
 private:

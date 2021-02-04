@@ -47,8 +47,6 @@ void cData::analyzeData(){
                    dPerson1 = new dPerson(line);
                    dataPersons.append(dPerson1);
                    Key2dataPerson[dPerson1->Key()] = dPerson1;
-                   //qDebug() << "analyzing Data line 50 linking data person to hash." << dPerson1->Key() ;
-                   //qDebug() << "analyzing Data line 51"<< getPersonFromKey(dPerson1->Key()) ->LastName();
                } else {
                    if (line[0] == "L"){
                        l = new cLink(line);

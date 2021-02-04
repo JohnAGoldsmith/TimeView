@@ -4,27 +4,39 @@
 #include <QStylePainter>
 #include <QGradient>
 #include <QDebug>
+#include <QColor>
 #include "gperson.h"
 #include "cscene.h"
 
 
 gPerson::gPerson(cScene * thisScene, dPerson * dp )
 {
-   // qDebug() << "gPerson constructor"<<  dp-> lastName;
+
    xpos = dp->Xpos() * thisScene->ScaleFactor();
    ypos = (thisScene->TopPosition() - dp->BirthYear()) * thisScene->TimeScale();
-   //qDebug() << dp->Xpos() << thisScene->TimeScale();
-   //qDebug() << topPosition << dp->BirthYear() << thisScene->TimeScale() << xpos << ypos;
-   width = 100;
+
    height = 40;
+
+   float fmargin = 5;
+
    firstName = dp->firstName;
    lastName = dp->lastName;
    QString name = firstName + " "  + lastName;
-   box = new QGraphicsRectItem(QRect(xpos, ypos, width, height));
-   box->setBrush(QColor(00,190,200,255));
-   thisScene->addItem(box);
+
    nameItem = thisScene->addSimpleText(name);
-   nameItem->setPos(xpos,ypos);
+   float nameWidth = nameItem->boundingRect().right();
+   nameItem->setPos(xpos - nameWidth/2,ypos);
+
+
+
+   box = new QGraphicsRectItem(QRect(xpos - nameWidth/2 - fmargin , ypos, nameWidth + 2*fmargin, height));
+
+
+   box->setBrush(QColor(00,19,20,25));
+   box->setPen(QPen(QColor(Qt::black)));
+   thisScene->addItem(box);
+
+
 
    qDebug() << "gPerson" << name << "x" << xpos <<"y" << ypos << "scale"<<thisScene->TimeScale() << "dataperson x" << dp->Xpos() << "Top position"<<thisScene->TopPosition();
 }
