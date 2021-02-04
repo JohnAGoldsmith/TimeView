@@ -87,7 +87,7 @@ void cData::sendPersonsAndLinksToScene(cScene* scene){
 
         gPerson1 = dPerson1->get_gPerson();
         gPerson2 = dPerson2->get_gPerson();
-        link->attachPersons(gPerson1, gPerson2);
+        link->attachGraphicalPersons(gPerson1, gPerson2);
         link->attachScene(scene);
 
     }
