@@ -14,31 +14,23 @@ gPerson::gPerson(cScene * thisScene, dPerson * dp )
 
    xpos = dp->Xpos() * thisScene->ScaleFactor();
    ypos = (thisScene->TopPosition() - dp->BirthYear()) * thisScene->TimeScale();
-
    height = 40;
-
    float fmargin = 5;
-
-   firstName = dp->firstName;
-   lastName = dp->lastName;
-   QString name = firstName + " "  + lastName;
-
+   QString name = dp->firstName + " "  + dp->lastName;
    nameItem = thisScene->addSimpleText(name);
    float nameWidth = nameItem->boundingRect().right();
    nameItem->setPos(xpos - nameWidth/2,ypos);
 
-
-
    box = new QGraphicsRectItem(QRect(xpos - nameWidth/2 - fmargin , ypos, nameWidth + 2*fmargin, height));
-
-
    box->setBrush(QColor(00,19,20,25));
    box->setPen(QPen(QColor(Qt::black)));
    thisScene->addItem(box);
 
+   QString years = QString::number(dp->BirthYear()) + "--" + QString::number(dp->DeathYear());
+   yearsItem = thisScene->addSimpleText(years);
+   float yearsWidth = yearsItem->boundingRect().right();
+   yearsItem->setPos(xpos-yearsWidth/2, ypos+15);
 
-
-   qDebug() << "gPerson" << name << "x" << xpos <<"y" << ypos << "scale"<<thisScene->TimeScale() << "dataperson x" << dp->Xpos() << "Top position"<<thisScene->TopPosition();
 }
 
 void gPerson::Move(int x, int y){

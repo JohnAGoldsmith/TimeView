@@ -47,6 +47,7 @@ void cData::analyzeData(){
                    dPerson1 = new dPerson(line);
                    dataPersons.append(dPerson1);
                    Key2dataPerson[dPerson1->Key()] = dPerson1;
+
                } else {
                    if (line[0] == "L"){
                        l = new cLink(line);

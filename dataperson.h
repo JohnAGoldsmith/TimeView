@@ -19,6 +19,7 @@ public:
   QString LastName() {return lastName;}
   int Xpos() {return xpos;}
   int BirthYear() {return birthYear;}
+  int DeathYear() {return deathYear;}
   gPerson* get_gPerson() {return graphicPerson;}
   void set_gPerson(gPerson* gp){graphicPerson = gp;}
 

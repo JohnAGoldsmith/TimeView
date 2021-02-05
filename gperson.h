@@ -27,6 +27,7 @@ private:
     dPerson * dataPerson;
     QGraphicsRectItem * box;
     QGraphicsSimpleTextItem * nameItem;
+    QGraphicsSimpleTextItem * yearsItem;
     float xpos;
     float ypos;
     float height;
