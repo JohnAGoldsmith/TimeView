@@ -24,7 +24,6 @@ void cLink::attachScene(cScene* scene){
  line1 = new QGraphicsLineItem(QLineF(gPersonFrom->TopHook(),gPersonTo->BottomHook()));
  qDebug() << 22 <<  gPersonFrom->LastName() << gPersonFrom->TopHook().y() << gPersonTo->LastName() << gPersonTo->BottomHook().y();
  if (gPersonTo->BottomHook().y() < gPersonFrom->TopHook().y()){
-     qDebug() << "new link" << gPersonFrom->LastName() << gPersonTo->LastName();
      double yDiff = -1.0 * (gPersonFrom->TopHook().y() - gPersonTo->BottomHook().y());
      QPointF point2(gPersonFrom->TopHook().rx(),gPersonTo->TopHook().ry() - yDiff * fraction1);
      QPointF point3(gPersonTo->TopHook().rx(),gPersonTo->TopHook().ry() - yDiff * fraction1);
@@ -37,9 +36,6 @@ void cLink::attachScene(cScene* scene){
      scene->addItem(line4);
  }
 
-
- //scene->addItem(line1);
- //qDebug() << "simple line";
 }
 
 void cLink::attachGraphicalPersons(gPerson * person1, gPerson * person2){

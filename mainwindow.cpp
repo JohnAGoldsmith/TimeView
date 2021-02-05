@@ -11,6 +11,7 @@
 #include "gperson.h"
 #include "clink.h"
 #include "data.h"
+#include "cview.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -23,7 +24,8 @@ MainWindow::MainWindow(QWidget *parent)
     QHBoxLayout *layout = new QHBoxLayout;
 
     cScene *  localScene = new cScene();
-    QGraphicsView * view = new QGraphicsView(localScene);
+    //QGraphicsView * view = new QGraphicsView(localScene);
+    cView * view = new cView(localScene);
     view->scale(2,2);
     view->centerOn(0,1900);
     layout->addWidget(view);

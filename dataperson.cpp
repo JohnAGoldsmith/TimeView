@@ -30,7 +30,6 @@ dPerson::dPerson(QStringList data){
     xpos = data[5].toInt();
     profession1 = data[6];
     graphicPerson = NULL;
-    //qDebug() << "constructor of dataperson" << key;
 
 }
 

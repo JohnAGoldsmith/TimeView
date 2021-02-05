@@ -52,7 +52,6 @@ void cData::analyzeData(){
                    if (line[0] == "L"){
                        l = new cLink(line);
                        Links.append(l);
-                       //qDebug() << "analyzing Data New link";
                    }
                }
            }
