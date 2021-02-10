@@ -7,11 +7,21 @@
 
 class cScene;
 
-class gPerson : public QGraphicsRectItem
+class gPerson : public QGraphicsItem
 {
+
     friend class dPerson;
 public:
-    gPerson(cScene *,  dPerson * dPerson);
+    gPerson();
+    gPerson(dPerson * dPerson);
+    ~gPerson();
+    QRectF boundingRect() const override;
+
+    void paint( QPainter * painter, const QStyleOptionGraphicsItem * option,
+                QWidget * widget);
+    bool Pressed;
+
+    double Width() {return width;}
     void SetY(int y) {ypos = y;}
     void Move(int x, int  y);
     float Xpos(){return xpos;}
@@ -20,7 +30,11 @@ public:
     QPointF BottomHook();
     QPointF TopHook();
     dPerson* getDPerson(){return dataPerson;}
-
+    double ScaleFactor(){return scaleFactor;}
+    double TimeScale() {return timeScale;}
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent * event) override;
 
 private:
     cScene * scene;
@@ -32,8 +46,11 @@ private:
     float ypos;
     float height;
     float width;
+    double margin;
     QString firstName;
     QString lastName;
+    double scaleFactor; // this should be in cScene, but I need it in paint for this class.
+    double timeScale; //ditto.
 };
 
 

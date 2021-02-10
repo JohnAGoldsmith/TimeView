@@ -16,12 +16,14 @@ public:
   dPerson();
   gPerson* GraphicPerson() {return graphicPerson;}
   QString Key() {return key;}
+  QString FirstName() {return firstName;}
   QString LastName() {return lastName;}
   int Xpos() {return xpos;}
   int BirthYear() {return birthYear;}
   int DeathYear() {return deathYear;}
   gPerson* get_gPerson() {return graphicPerson;}
   void set_gPerson(gPerson* gp){graphicPerson = gp;}
+
 
 private:
   QString firstName;
@@ -34,6 +36,7 @@ private:
   QString profession1;
   QString profession2;
   gPerson* graphicPerson;
+
 };
 
 

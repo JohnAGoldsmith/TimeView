@@ -12,6 +12,6 @@ cView::cView(cScene* scene):QGraphicsView(scene){
 
 }
 void cView::cView::mousePressEvent(QMouseEvent *event){
-    qDebug() << "mouse pressed";
+    qDebug() << "mouse pressed for view" << items(event->pos()).size() ;
     QGraphicsView::mousePressEvent(event);
 }

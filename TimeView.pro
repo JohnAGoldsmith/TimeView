@@ -11,6 +11,7 @@ CONFIG += c++11
 SOURCES += \
     clink.cpp \
     cscene.cpp \
+    cview.cpp \
     data.cpp \
     dataperson.cpp \
     gperson.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
 HEADERS += \
     clink.h \
     cscene.h \
+    cview.h \
     data.h \
     dataperson.h \
     gperson.h \

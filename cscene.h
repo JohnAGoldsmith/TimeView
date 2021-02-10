@@ -29,6 +29,10 @@ public:
     int TimeScale() {return timeScale;}
     int ScaleFactor() {return scaleFactor;}
     int TopPosition() {return topPosition;}
+    QGraphicsItem *  itemAt(const QPointF, const QTransform &);
+
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
 private:
     QFont myFont;
     QColor myTextColor;

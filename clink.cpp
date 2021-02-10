@@ -22,7 +22,7 @@ void cLink::attachScene(cScene* scene){
  double fraction3(0.4);
  QGraphicsLineItem * line1, *line2, *line3, *line4;
  line1 = new QGraphicsLineItem(QLineF(gPersonFrom->TopHook(),gPersonTo->BottomHook()));
- qDebug() << 22 <<  gPersonFrom->LastName() << gPersonFrom->TopHook().y() << gPersonTo->LastName() << gPersonTo->BottomHook().y();
+ //qDebug() << 22 <<  gPersonFrom->LastName() << gPersonFrom->TopHook().y() << gPersonTo->LastName() << gPersonTo->BottomHook().y();
  if (gPersonTo->BottomHook().y() < gPersonFrom->TopHook().y()){
      double yDiff = -1.0 * (gPersonFrom->TopHook().y() - gPersonTo->BottomHook().y());
      QPointF point2(gPersonFrom->TopHook().rx(),gPersonTo->TopHook().ry() - yDiff * fraction1);

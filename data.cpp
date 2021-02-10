@@ -65,9 +65,18 @@ void cData::sendPersonsAndLinksToScene(cScene* scene){
     QString sPerson1, sPerson2;
     dPerson* dPerson1, * dPerson2;
     cLink * link;
+    double scaleFactor = 10.0;
+    double topPosition = 2000.0;
+    double timeScale = 10;
     foreach (dPerson * dperson, dataPersons){
-         gPerson1 = new gPerson(scene, dperson);
-         dperson->set_gPerson(gPerson1);
+        double xpos = dperson->Xpos() * scaleFactor;
+        double ypos = (topPosition - dperson->BirthYear()) * timeScale;
+        gPerson1 = new gPerson(dperson);
+
+        qDebug() << "In Data, drawing at "<<xpos<<ypos;
+        scene->addItem(gPerson1);
+        gPerson1->setPos(QPointF(xpos, ypos));
+        dperson->set_gPerson(gPerson1);
     }
     foreach (cLink * link, Links){
         if ( Key2dataPersonHashContains(link->getFromKey())) {
