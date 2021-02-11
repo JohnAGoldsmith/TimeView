@@ -17,7 +17,7 @@ gPerson::gPerson( dPerson * dp )
 {
    dataPerson = dp;
   setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
-  //scaleFactor = thisScene->ScaleFactor();
+
   height = 40;
   margin = 5;
   firstName = dp->FirstName();
@@ -27,20 +27,12 @@ gPerson::~gPerson(){
 
 }
 QRectF gPerson::boundingRect() const{
-    //qDebug() << "bounding rect" << xpos <<ypos <<width << height;
-    //return QRectF(xpos,ypos,width,height);
     QPainter painter;
-    //painter.setBrush(Qt::black);
-    //painter.drawRect(QRectF(0,0,100,100));
     return QRectF(0,0, width, 40);
 }
 void gPerson::mousePressEvent(QGraphicsSceneMouseEvent * event){
-    //Pressed = true;
-    //setFocus();
     qDebug() << "gPerson clicked" << "x" << event->scenePos().x() << "y" << event->scenePos().y();
     QGraphicsItem::mousePressEvent(event);
-
-
     update();
 }
 void gPerson::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){

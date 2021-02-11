@@ -68,13 +68,12 @@ void cData::sendPersonsAndLinksToScene(cScene* scene){
     cLink * link;
     double topPosition = 2000.0;
     foreach (dPerson * dperson, dataPersons){
-        double xpos = dperson->Xpos() * scene->ScaleFactor();
-        double ypos = (topPosition - dperson->BirthYear()) * scene->ScaleFactor();
+        double xpos = dperson->Xpos();
+        double ypos = (topPosition - dperson->BirthYear()) ;
         gPerson1 = new gPerson(dperson);
 
-        //qDebug() << "In Data, drawing at "<<xpos<<ypos;
         scene->addItem(gPerson1);
-        QPointF transformedCoordinates (xpos * scene->ScaleFactor(), ypos);
+        QPointF transformedCoordinates (xpos * scene->ScaleFactor(), ypos * scene->TimeScale());
         gPerson1->setPos(transformedCoordinates);
         dperson->set_gPerson(gPerson1);
     }

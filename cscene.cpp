@@ -13,8 +13,8 @@ cScene::cScene(QObject* parent): QGraphicsScene(parent)
 
   // cPerson * person1 = new cPerson(this);
     setBackgroundBrush(QColor (255,0,0,127 ));
-    timeScale = 1.0;
-    scaleFactor = 5.0;
+    timeScale = 20.0;
+    scaleFactor = 25.0;
     topPosition = 2000;
 
 }
@@ -45,8 +45,8 @@ void cScene::AddLink(cLink * link){
 
     gPerson * gp1 = link->GPersonFrom();
     gPerson * gp2 = link->GPersonTo();
-    QPointF point_start  (gp1->pos().x(), gp1->pos().y()* timeScale);
-    QPointF point_end  (gp2->pos().x(), gp2->pos().y() * timeScale);
+    QPointF point_start  (gp1->pos().x(), gp1->pos().y());
+    QPointF point_end  (gp2->pos().x(), gp2->pos().y());
     qDebug() << "\n" << gp1->LastName() << point_start.x() << point_start.y();
     qDebug() << gp2->LastName() << point_end.x() << point_end.y();
 
