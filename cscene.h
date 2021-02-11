@@ -11,6 +11,8 @@ class QGraphicsTextItem;
 class QColor;
 
 class cLink;
+class gPerson;
+class dPerson;
 
 class cScene: public QGraphicsScene
 {
@@ -32,6 +34,7 @@ public:
     int TopPosition() {return topPosition;}
     QGraphicsItem *  itemAt(const QPointF, const QTransform &);
     void AddLink(cLink * );
+    void AddPerson (dPerson *);
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
 private:

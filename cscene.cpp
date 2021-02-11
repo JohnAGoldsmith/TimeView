@@ -34,9 +34,24 @@ void cScene::mousePressEvent(QGraphicsSceneMouseEvent * event){
    QPointF pos = event->scenePos();
    if (itemAt(event->scenePos(),QTransform())){
        gPerson* gp =  dynamic_cast<gPerson*>( itemAt(event->scenePos(),QTransform() )) ;
-       qDebug() << gp->LastName();
+       qDebug() << "clicked on: " <<  gp->LastName();
    } else { qDebug() << "clicked on space";}
    QGraphicsScene::mousePressEvent(event);
+}
+
+void cScene::AddPerson(dPerson * dperson){
+
+    dperson->Ypos ( TopPosition() - dperson->BirthYear() ) ;
+    gPerson* gPerson1 = new gPerson(dperson);
+    addItem(gPerson1);
+
+    QPointF transformedCoordinates (dperson->Xpos() * ScaleFactor(), dperson->Ypos() * TimeScale());
+    gPerson1->setPos(transformedCoordinates);
+    dperson->set_gPerson(gPerson1);
+
+    QGraphicsSimpleTextItem * text1 = addSimpleText("x");
+    text1->setPos(transformedCoordinates);
+
 }
 
 void cScene::AddLink(cLink * link){
@@ -47,17 +62,14 @@ void cScene::AddLink(cLink * link){
     gPerson * gp2 = link->GPersonTo();
     QPointF point_start  (gp1->pos().x(), gp1->pos().y());
     QPointF point_end  (gp2->pos().x(), gp2->pos().y());
-    qDebug() << "\n" << gp1->LastName() << point_start.x() << point_start.y();
-    qDebug() << gp2->LastName() << point_end.x() << point_end.y();
-
+    //QPointF correction (gp1->CenterX(),0);
     QPointF correction (50,0);
-    point_start += correction;
-    point_end += correction;
+    //point_start += correction;
+    //point_end += correction;
 
-    QGraphicsLineItem * line1 = new QGraphicsLineItem(QLineF(point_start,point_end));
-    addItem(line1);
+    //QGraphicsLineItem * line1 = new QGraphicsLineItem(QLineF(point_start,point_end));
+    //addItem(line1);
 \
-
     double verticalDistance = point_end.y() - point_start.y();
     QPointF delta1 (0,fraction1 * verticalDistance);
     QPointF point1 = point_start + delta1;
@@ -71,9 +83,9 @@ void cScene::AddLink(cLink * link){
         line3 = new QGraphicsLineItem(QLineF(point1, point2));
         line4 = new QGraphicsLineItem(QLineF(point2, point_end));
 
-        //addItem(line2);
-        //addItem(line3);
-        //addItem(line4);
+        addItem(line2);
+        addItem(line3);
+        addItem(line4);
     } else{
         qDebug() << "did not show line"<< gp1->LastName() << gp2->LastName();
     }

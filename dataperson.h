@@ -18,7 +18,9 @@ public:
   QString Key() {return key;}
   QString FirstName() {return firstName;}
   QString LastName() {return lastName;}
-  int Xpos() {return xpos;}
+  float Xpos() {return xpos;}
+  void Ypos(float yvalue) {ypos = yvalue;}
+  float Ypos() {return ypos;}
   int BirthYear() {return birthYear;}
   int DeathYear() {return deathYear;}
   gPerson* get_gPerson() {return graphicPerson;}
@@ -31,8 +33,8 @@ private:
   QString key;
   int birthYear;
   int deathYear;
-  int xpos;
-  int ypos;
+  float xpos;
+  float ypos;
   QString profession1;
   QString profession2;
   gPerson* graphicPerson;

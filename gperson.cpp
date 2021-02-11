@@ -27,8 +27,7 @@ gPerson::~gPerson(){
 
 }
 QRectF gPerson::boundingRect() const{
-    QPainter painter;
-    return QRectF(0,0, width, 40);
+    return boundingBox;
 }
 void gPerson::mousePressEvent(QGraphicsSceneMouseEvent * event){
     qDebug() << "gPerson clicked" << "x" << event->scenePos().x() << "y" << event->scenePos().y();
@@ -52,18 +51,23 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
         painter->setPen(Qt::blue);
     }
 
-    QRect rect(0,0,width,50);
-    QRect boundingRect;
-    painter->drawText(rect ,Qt::AlignHCenter,  name ,  & boundingRect);
-    painter->drawRect( boundingRect);
+    QRectF rect(0,0,width,50);
+    QRectF boundingRect1;
+    painter->drawText(rect ,Qt::AlignHCenter,  name ,  & boundingRect1);
+    painter->drawRect( boundingRect1);
+    boundingBox = boundingRect1;
+    centerX = boundingRect1.width() * 0.5;
+    //qDebug() << "paint g person midpoint" << centerX;
 
 
+    QRectF boundingRect2 (boundingRect1);
     QString years = QString::number(dp->BirthYear()) + "--" + QString::number(dp->DeathYear());
     rect.setTop(lineHeight);
-    painter->drawText(rect, Qt::AlignHCenter,years, &boundingRect);
-    painter->drawRect(boundingRect);
+    painter->drawText(rect, Qt::AlignHCenter,years, &boundingRect2);
+    painter->drawRect(boundingRect2);
 
-
+    boundingBox = boundingBox.united(boundingRect2);
+    painter->drawRect(boundingBox);
 
 
 }

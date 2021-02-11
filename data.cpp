@@ -48,7 +48,6 @@ void cData::analyzeData(){
                    dPerson1 = new dPerson(line);
                    dataPersons.append(dPerson1);
                    Key2dataPerson[dPerson1->Key()] = dPerson1;
-
                } else {
                    if (line[0] == "L"){
                        l = new cLink(line);
@@ -66,16 +65,8 @@ void cData::sendPersonsAndLinksToScene(cScene* scene){
     QString sPerson1, sPerson2;
     dPerson* dPerson1, * dPerson2;
     cLink * link;
-    double topPosition = 2000.0;
     foreach (dPerson * dperson, dataPersons){
-        double xpos = dperson->Xpos();
-        double ypos = (topPosition - dperson->BirthYear()) ;
-        gPerson1 = new gPerson(dperson);
-
-        scene->addItem(gPerson1);
-        QPointF transformedCoordinates (xpos * scene->ScaleFactor(), ypos * scene->TimeScale());
-        gPerson1->setPos(transformedCoordinates);
-        dperson->set_gPerson(gPerson1);
+        scene->AddPerson(dperson);
     }
     foreach (cLink * link, Links){
         if ( Key2dataPersonHashContains(link->getFromKey())) {
@@ -94,7 +85,6 @@ void cData::sendPersonsAndLinksToScene(cScene* scene){
         gPerson1 = dPerson1->get_gPerson();
         gPerson2 = dPerson2->get_gPerson();
         link->attachGraphicalPersons(gPerson1, gPerson2);
-        //link->attachScene(scene);
         scene->AddLink(link);
 
     }

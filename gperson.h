@@ -30,8 +30,9 @@ public:
     QPointF BottomHook();
     QPointF TopHook();
     dPerson* getDPerson(){return dataPerson;}
-    double ScaleFactor(){return scaleFactor;}
-    double TimeScale() {return timeScale;}
+    float CenterX() {return centerX;}
+    void CenterX(float x){centerX = x;}
+
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent * event) override;
@@ -49,8 +50,10 @@ private:
     double margin;
     QString firstName;
     QString lastName;
-    double scaleFactor; // this should be in cScene, but I need it in paint for this class.
-    double timeScale; //ditto.
+    QRectF boundingBox;
+    float centerX;
+    //double scaleFactor; // this should be in cScene, but I need it in paint for this class.
+    //double timeScale; //ditto.
 };
 
 
