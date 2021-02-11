@@ -26,8 +26,8 @@ MainWindow::MainWindow(QWidget *parent)
     cScene *  localScene = new cScene();
     //QGraphicsView * view = new QGraphicsView(localScene);
     cView * view = new cView(localScene);
-    view->scale(2,2);
-    view->centerOn(0,1900);
+    view->scale(1,1);
+    view->centerOn(-100,1900);
     layout->addWidget(view);
 
     QWidget *widget = new QWidget;

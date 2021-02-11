@@ -21,7 +21,8 @@ void cData::ReadCSV()
 
     QTextStream stream(&file);
     QStringList data;
-    QString separator(",");    int topPosition = 1950;
+    QString separator(",");
+    int topPosition = 1950;
     while (stream.atEnd() == false)
     {
         QString line = stream.readLine();
@@ -65,24 +66,23 @@ void cData::sendPersonsAndLinksToScene(cScene* scene){
     QString sPerson1, sPerson2;
     dPerson* dPerson1, * dPerson2;
     cLink * link;
-    double scaleFactor = 10.0;
     double topPosition = 2000.0;
-    double timeScale = 10;
     foreach (dPerson * dperson, dataPersons){
-        double xpos = dperson->Xpos() * scaleFactor;
-        double ypos = (topPosition - dperson->BirthYear()) * timeScale;
+        double xpos = dperson->Xpos() * scene->ScaleFactor();
+        double ypos = (topPosition - dperson->BirthYear()) * scene->ScaleFactor();
         gPerson1 = new gPerson(dperson);
 
-        qDebug() << "In Data, drawing at "<<xpos<<ypos;
+        //qDebug() << "In Data, drawing at "<<xpos<<ypos;
         scene->addItem(gPerson1);
-        gPerson1->setPos(QPointF(xpos, ypos));
+        QPointF transformedCoordinates (xpos * scene->ScaleFactor(), ypos);
+        gPerson1->setPos(transformedCoordinates);
         dperson->set_gPerson(gPerson1);
     }
     foreach (cLink * link, Links){
         if ( Key2dataPersonHashContains(link->getFromKey())) {
                     dPerson1 =  getPersonFromKey(link->getFromKey());
         }else{
-            qDebug() << "missing someone" ;
+            qDebug() << "missing someone" << link->getFromKey() ;
             continue;
         }
         if ( Key2dataPersonHashContains(link->getToKey())) {
@@ -95,7 +95,8 @@ void cData::sendPersonsAndLinksToScene(cScene* scene){
         gPerson1 = dPerson1->get_gPerson();
         gPerson2 = dPerson2->get_gPerson();
         link->attachGraphicalPersons(gPerson1, gPerson2);
-        link->attachScene(scene);
+        //link->attachScene(scene);
+        scene->AddLink(link);
 
     }
 }

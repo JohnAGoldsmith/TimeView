@@ -10,6 +10,7 @@ class QFont;
 class QGraphicsTextItem;
 class QColor;
 
+class cLink;
 
 class cScene: public QGraphicsScene
 {
@@ -30,7 +31,7 @@ public:
     int ScaleFactor() {return scaleFactor;}
     int TopPosition() {return topPosition;}
     QGraphicsItem *  itemAt(const QPointF, const QTransform &);
-
+    void AddLink(cLink * );
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
 private:

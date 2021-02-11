@@ -29,14 +29,19 @@ gPerson::~gPerson(){
 QRectF gPerson::boundingRect() const{
     //qDebug() << "bounding rect" << xpos <<ypos <<width << height;
     //return QRectF(xpos,ypos,width,height);
-    return QRectF(0,0,width,100);
+    QPainter painter;
+    //painter.setBrush(Qt::black);
+    //painter.drawRect(QRectF(0,0,100,100));
+    return QRectF(0,0, width, 40);
 }
 void gPerson::mousePressEvent(QGraphicsSceneMouseEvent * event){
-    Pressed = true;
+    //Pressed = true;
+    //setFocus();
+    qDebug() << "gPerson clicked" << "x" << event->scenePos().x() << "y" << event->scenePos().y();
     QGraphicsItem::mousePressEvent(event);
 
-    qDebug() << "gPerson clicked";
-    // update();
+
+    update();
 }
 void gPerson::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
     Pressed = false;
@@ -51,22 +56,20 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     width = 140.0;
     QString name = firstName + " "  + lastName;
     painter->setFont(QFont("Times", 10));
+    if (hasFocus()){
+        painter->setPen(Qt::blue);
+    }
+
     QRect rect(0,0,width,50);
     QRect boundingRect;
     painter->drawText(rect ,Qt::AlignHCenter,  name ,  & boundingRect);
+    painter->drawRect( boundingRect);
+
 
     QString years = QString::number(dp->BirthYear()) + "--" + QString::number(dp->DeathYear());
     rect.setTop(lineHeight);
     painter->drawText(rect, Qt::AlignHCenter,years, &boundingRect);
-    //qDebug() << "bounding rect" << boundingRect.top() << boundingRect.left() << boundingRect.bottom() << boundingRect.right() << "margin" << margin;
-    //painter->drawRect(0,0,boundingRect.width() , 40);
-
-
-    //QRectF boundingRectF = painter->boundingRect(rect,years);
-    //float yearsWidth = yearsItem->boundingRect().right();
-    //yearsItem->setPos(xpos-yearsWidth/2, ypos+15);
-    //yearsItem->setAcceptedMouseButtons(0);
-
+    painter->drawRect(boundingRect);
 
 
 
@@ -79,12 +82,12 @@ void gPerson::Move(int x, int y){
    nameItem->moveBy(x,y);
 }
 QPointF gPerson::TopHook(){
-   float x1 = xpos + 0.5 * width;
+   float x1 = xpos;
    float y1 = ypos;
    return QPointF(x1,y1);
 }
 QPointF gPerson::BottomHook(){
-   float x1 = xpos + 0.5 * width;
+   float x1 = xpos ;
    float y1 = ypos + height;
    return QPointF(x1,y1);
 }

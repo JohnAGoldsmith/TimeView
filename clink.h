@@ -16,6 +16,8 @@ class cLink
         QString getToKey(){return toPersonKey;}
         void attachScene(cScene*);
         void attachGraphicalPersons(gPerson *, gPerson *);
+        gPerson* GPersonFrom(){return gPersonFrom;}
+        gPerson* GPersonTo() {return gPersonTo;}
     private:
         QString fromPersonKey;
         QString toPersonKey;
