@@ -21,8 +21,8 @@ public:
   float Xpos() {return xpos;}
   void Ypos(float yvalue) {ypos = yvalue;}
   float Ypos() {return ypos;}
-  int BirthYear() {return birthYear;}
-  int DeathYear() {return deathYear;}
+  int BirthYear() const {return birthYear;}
+  int DeathYear() const {return deathYear;}
   gPerson* get_gPerson() {return graphicPerson;}
   void set_gPerson(gPerson* gp){graphicPerson = gp;}
 

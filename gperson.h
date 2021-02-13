@@ -6,6 +6,7 @@
 #include "dataperson.h"
 
 class cScene;
+class cLink;
 
 class gPerson : public QGraphicsItem
 {
@@ -27,11 +28,15 @@ public:
     float Xpos(){return xpos;}
     float Ypos(){return ypos;}
     QString LastName() {return lastName;}
-    QPointF BottomHook();
-    QPointF TopHook();
-    dPerson* getDPerson(){return dataPerson;}
-    float CenterX() {return centerX;}
-    void CenterX(float x){centerX = x;}
+    //QPointF BottomHook();
+    //QPointF TopHook();
+    dPerson* getDPerson() const {return dataPerson;}
+    float CenterX();
+    float Height() {return height;}
+    float GetNameWidth()const;
+    float GetDatesWidth() const ;
+    void AppendLink (cLink * link);
+
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
@@ -50,8 +55,9 @@ private:
     double margin;
     QString firstName;
     QString lastName;
-    QRectF boundingBox;
+    QRectF personBoundingRect;
     float centerX;
+    QList<cLink*> myLinks;
     //double scaleFactor; // this should be in cScene, but I need it in paint for this class.
     //double timeScale; //ditto.
 };

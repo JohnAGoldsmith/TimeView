@@ -1,4 +1,4 @@
-#include <QGraphicsRectItem>
+#include <QGraphicsItem>
 #include <QGraphicsTextItem>
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
@@ -7,8 +7,11 @@
 #include <QGradient>
 #include <QDebug>
 #include <QColor>
+#include <QFontMetrics>
 #include "gperson.h"
 #include "cscene.h"
+
+class cLink;
 
 gPerson::gPerson(){
 
@@ -22,12 +25,25 @@ gPerson::gPerson( dPerson * dp )
   margin = 5;
   firstName = dp->FirstName();
   lastName = dp->LastName();
+
+  float totalwidth(0.0);
+  float namewidth = GetNameWidth();
+  float datewidth = GetDatesWidth();
+  if (datewidth > namewidth)
+      totalwidth = datewidth;
+  else
+      totalwidth = namewidth;
+  personBoundingRect.setCoords(-1.0 * margin, 0, totalwidth, height);
+
 }
 gPerson::~gPerson(){
 
 }
-QRectF gPerson::boundingRect() const{
-    return boundingBox;
+
+void gPerson::AppendLink(cLink *link) {myLinks.append(link);}
+
+QRectF gPerson::boundingRect() const  {
+    return personBoundingRect;
 }
 void gPerson::mousePressEvent(QGraphicsSceneMouseEvent * event){
     qDebug() << "gPerson clicked" << "x" << event->scenePos().x() << "y" << event->scenePos().y();
@@ -39,36 +55,70 @@ void gPerson::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
     update();
     QGraphicsItem::mouseReleaseEvent(event);
 }
+float gPerson::CenterX(){
+   return GetNameWidth() * 0.5;
+}
+float gPerson::GetNameWidth() const {
+    QString name = firstName + " "  + lastName;
+    QPainter painter;
+    painter.setFont(QFont("Times", 10));
+    QFontMetrics fm=painter.fontMetrics();
+    return fm.horizontalAdvance(name);
+}
+float gPerson::GetDatesWidth() const {
+    QString years = QString::number(getDPerson()->BirthYear()) + "--" + QString::number(getDPerson()->DeathYear());
+    QPainter painter;
+    painter.setFont(QFont("Times", 10));
+    QFontMetrics fm=painter.fontMetrics();
+    return fm.horizontalAdvance(years);
+}
 void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
+
     dPerson * dp = getDPerson();
     double topMargin = 10.0;
-    //double sideMargin = 10.0;
+
     double lineHeight = 15.0;
-    width = 140.0;
-    QString name = firstName + " "  + lastName;
-    painter->setFont(QFont("Times", 10));
+    double totalWidth = 0;
+    QBrush brush (Qt::Dense6Pattern);
     if (hasFocus()){
         painter->setPen(Qt::blue);
+        brush.setColor(Qt::blue);
+    }else{
+          brush.setColor(Qt::red);
     }
 
-    QRectF rect(0,0,width,50);
+
+    QString name = firstName + " "  + lastName;
+    painter->setFont(QFont("Times", 10));
+
+    float namewidth = GetNameWidth();
+
+    QRectF rect(0,0,namewidth,20);
     QRectF boundingRect1;
     painter->drawText(rect ,Qt::AlignHCenter,  name ,  & boundingRect1);
-    painter->drawRect( boundingRect1);
-    boundingBox = boundingRect1;
-    centerX = boundingRect1.width() * 0.5;
-    //qDebug() << "paint g person midpoint" << centerX;
-
 
     QRectF boundingRect2 (boundingRect1);
     QString years = QString::number(dp->BirthYear()) + "--" + QString::number(dp->DeathYear());
-    rect.setTop(lineHeight);
+    rect.moveTo(0,lineHeight);
     painter->drawText(rect, Qt::AlignHCenter,years, &boundingRect2);
-    painter->drawRect(boundingRect2);
 
-    boundingBox = boundingBox.united(boundingRect2);
-    painter->drawRect(boundingBox);
 
+    float totalwidth(0.0);
+    float datewidth = GetDatesWidth();
+
+    if (datewidth > namewidth){
+        totalwidth = datewidth;
+    }else{
+        totalwidth = namewidth;
+    }
+
+    QRectF completeRect;
+    completeRect.setCoords(-1 * margin, 0,  totalwidth, height);
+    painter->drawRect(completeRect);
+    painter->fillRect(completeRect,brush);
+
+
+    //QGraphicsItem::paint(painter, option, widget);
 
 }
 
@@ -76,14 +126,4 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 void gPerson::Move(int x, int y){
    box->moveBy(x,y);
    nameItem->moveBy(x,y);
-}
-QPointF gPerson::TopHook(){
-   float x1 = xpos;
-   float y1 = ypos;
-   return QPointF(x1,y1);
-}
-QPointF gPerson::BottomHook(){
-   float x1 = xpos ;
-   float y1 = ypos + height;
-   return QPointF(x1,y1);
 }

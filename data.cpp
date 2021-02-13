@@ -5,6 +5,7 @@
 #include "data.h"
 #include "clink.h"
 #include "cscene.h"
+
 cData::cData()
 {
    //timeScale = 5;
@@ -50,8 +51,8 @@ void cData::analyzeData(){
                    Key2dataPerson[dPerson1->Key()] = dPerson1;
                } else {
                    if (line[0] == "L"){
-                       l = new cLink(line);
-                       Links.append(l);
+                        l = new cLink(line);
+                        Links.append(l);
                    }
                }
            }
