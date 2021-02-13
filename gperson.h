@@ -28,13 +28,13 @@ public:
     float Xpos(){return xpos;}
     float Ypos(){return ypos;}
     QString LastName() {return lastName;}
-    //QPointF BottomHook();
-    //QPointF TopHook();
+    QPointF BottomHook() {return bottomHook;}
+    QPointF TopHook(){return topHook;}
     dPerson* getDPerson() const {return dataPerson;}
-    float CenterX();
+    float CenterX( QPainter * painter );
     float Height() {return height;}
-    float GetNameWidth()const;
-    float GetDatesWidth() const ;
+    float GetNameWidth(QPainter * )const;
+    float GetDatesWidth(QPainter * ) const ;
     void AppendLink (cLink * link);
 
 
@@ -55,8 +55,11 @@ private:
     double margin;
     QString firstName;
     QString lastName;
+    QFont * myfont;
     QRectF personBoundingRect;
     float centerX;
+    QPoint bottomHook;
+    QPoint topHook;
     QList<cLink*> myLinks;
     //double scaleFactor; // this should be in cScene, but I need it in paint for this class.
     //double timeScale; //ditto.

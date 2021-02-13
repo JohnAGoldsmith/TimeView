@@ -45,7 +45,8 @@ void cScene::AddPerson(dPerson * dperson){
     gPerson* gPerson1 = new gPerson(dperson);
     addItem(gPerson1);
 
-    QPointF transformedCoordinates (dperson->Xpos() * ScaleFactor() + gPerson1->CenterX(), dperson->Ypos() * TimeScale());
+    //QPointF transformedCoordinates (dperson->Xpos() * ScaleFactor() + gPerson1->CenterX(), dperson->Ypos() * TimeScale());
+    QPointF transformedCoordinates (dperson->Xpos() * ScaleFactor()                      , dperson->Ypos() * TimeScale());
     gPerson1->setPos(transformedCoordinates);
     dperson->set_gPerson(gPerson1);
 }
@@ -53,7 +54,9 @@ void cScene::AddLink(cLink * link){
 
     addItem(link);
     link->setPos(link->GPersonFrom()->scenePos());
-
+    qDebug() << "cScene 56 scene coordinates adding Link" << link->GPersonFrom()->LastName() << link->GPersonTo()->LastName() <<  link->GPersonFrom()->scenePos().x() << link->GPersonFrom()->scenePos().y();
+    QPainter painter;
+     //painter.drawLine(0,0,0,100);
 }
 /*
 void cScene::AddLink(cLink * link){

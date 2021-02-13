@@ -29,7 +29,7 @@ dPerson::dPerson(QStringList data){
         deathYear = data[4].toInt();
     } else {
         deathYear = 0;
-        qDebug() << lastName << "Zero birth year";
+        qDebug() << lastName << "Zero death year" ;
     }
     xpos = data[5].toFloat();
     profession1 = data[6];

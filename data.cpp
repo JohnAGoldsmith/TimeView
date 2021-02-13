@@ -39,6 +39,8 @@ void cData::analyzeData(){
     QString outfileName;
     foreach (QString line1 , tempLines){
        QStringList line = line1.split(",");
+       if (line.size() < 1)
+           continue;
        if (line[0][0]== "!") {
               outfileName = line[1];
        } else {
