@@ -3,6 +3,7 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
+#include <QList>
 #include "dataperson.h"
 
 class cScene;
@@ -36,6 +37,7 @@ public:
     float GetNameWidth(QPainter * )const;
     float GetDatesWidth(QPainter * ) const ;
     void AppendLink (cLink * link);
+    QList<cLink*> * GetLinks() {return & myLinks;}
 
 
 protected:

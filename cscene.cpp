@@ -31,22 +31,35 @@ QGraphicsItem * cScene::itemAt(const QPointF   pos, const QTransform & transform
 
 void cScene::mousePressEvent(QGraphicsSceneMouseEvent * event){
    qDebug() << "mouse click in scene";
+   gPerson* gp;
    QPointF pos = event->scenePos();
    if (itemAt(event->scenePos(),QTransform())){
-       gPerson* gp =  dynamic_cast<gPerson*>( itemAt(event->scenePos(),QTransform() )) ;
-       qDebug() << "clicked on: " <<  gp->LastName();
+       gp =  dynamic_cast<gPerson*>( itemAt(event->scenePos(),QTransform() )) ;
+       if (gp) {
+           qDebug() << "clicked on: " <<  gp->LastName();
+       }
    } else { qDebug() << "clicked on space";}
    QGraphicsScene::mousePressEvent(event);
+   if (itemAt(event->scenePos(),QTransform())){
+       gp =  dynamic_cast<gPerson*>( itemAt(event->scenePos(),QTransform() )) ;
+       if (gp) {
+           qDebug() << "clicked on: " <<  gp->LastName();
+           foreach (cLink* link, * gp->GetLinks()){
+               link->update();
+               update();
+               qDebug() << 41 << link->GPersonFrom()->LastName();
+           }
+       }
+   } else { qDebug() << "clicked on space";}
+
+
 }
 
 void cScene::AddPerson(dPerson * dperson){
-
     dperson->Ypos ( TopPosition() - dperson->BirthYear() ) ;
     gPerson* gPerson1 = new gPerson(dperson);
     addItem(gPerson1);
-
-    //QPointF transformedCoordinates (dperson->Xpos() * ScaleFactor() + gPerson1->CenterX(), dperson->Ypos() * TimeScale());
-    QPointF transformedCoordinates (dperson->Xpos() * ScaleFactor()                      , dperson->Ypos() * TimeScale());
+    QPointF transformedCoordinates (dperson->Xpos() * ScaleFactor(), dperson->Ypos() * TimeScale());
     gPerson1->setPos(transformedCoordinates);
     dperson->set_gPerson(gPerson1);
 }
@@ -56,7 +69,6 @@ void cScene::AddLink(cLink * link){
     link->setPos(link->GPersonFrom()->scenePos());
     qDebug() << "cScene 56 scene coordinates adding Link" << link->GPersonFrom()->LastName() << link->GPersonTo()->LastName() <<  link->GPersonFrom()->scenePos().x() << link->GPersonFrom()->scenePos().y();
     QPainter painter;
-     //painter.drawLine(0,0,0,100);
 }
 /*
 void cScene::AddLink(cLink * link){

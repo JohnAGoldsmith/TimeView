@@ -51,7 +51,7 @@ QRectF cLink::boundingRect() const {
 void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     double fraction1(0.9);
 
-
+    qDebug() << "Inside paint function of the Link" ;
 
     float  willbe_tophook = 50.0;
     float willbe_bottomhook = 50.0;

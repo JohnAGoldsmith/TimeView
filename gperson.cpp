@@ -10,8 +10,9 @@
 #include <QFontMetrics>
 #include "gperson.h"
 #include "cscene.h"
+#include "clink.h"
 
-class cLink;
+
 
 gPerson::gPerson(){
 
@@ -87,43 +88,47 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
     double lineHeight = 15.0;
     double totalWidth = 0;
-    QBrush brush (Qt::Dense6Pattern);
+    QColor Orange;
+    Orange.setRgb(255,153,51);
+    QBrush brush (Qt::SolidPattern);
+    QPen pen(Qt::black,10);
+    painter->setPen(pen);
     if (hasFocus()){
         painter->setPen(Qt::blue);
         brush.setColor(Qt::blue);
     }else{
-          brush.setColor(Qt::red);
+          brush.setColor(Orange );
+          //painter->setPen(Qt::black);
     }
 
 
     QString name = firstName + " "  + lastName;
+    QString years = QString::number(dp->BirthYear()) + "--" + QString::number(dp->DeathYear());
     painter->setFont(QFont("Times", 10));
-
+    painter->setPen(QPen(Qt::black,2));
     float namewidth = GetNameWidth(painter);
+    float datewidth = GetDatesWidth(painter);
+    float totalwidth(0.0);
+    if (datewidth > namewidth){
+        totalwidth = datewidth;
+    }else{
+        totalwidth = namewidth;
+    }
+    QRectF completeRect;
+    completeRect.setCoords(-1 * margin, 0,  totalwidth, height);
+    //painter->drawRect(completeRect);
+    painter->fillRect(completeRect,brush);
 
     QRectF rect(0,0,namewidth,20);
     QRectF boundingRect1;
     painter->drawText(rect ,Qt::AlignHCenter,  name ,  & boundingRect1);
 
     QRectF boundingRect2 (boundingRect1);
-    QString years = QString::number(dp->BirthYear()) + "--" + QString::number(dp->DeathYear());
     rect.moveTo(0,lineHeight);
     painter->drawText(rect, Qt::AlignHCenter,years, &boundingRect2);
 
 
-    float totalwidth(0.0);
-    float datewidth = GetDatesWidth(painter);
 
-    if (datewidth > namewidth){
-        totalwidth = datewidth;
-    }else{
-        totalwidth = namewidth;
-    }
-
-    QRectF completeRect;
-    completeRect.setCoords(-1 * margin, 0,  totalwidth, height);
-    painter->drawRect(completeRect);
-    painter->fillRect(completeRect,brush);
 
 
     //QGraphicsItem::paint(painter, option, widget);
