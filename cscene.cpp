@@ -40,19 +40,26 @@ void cScene::mousePressEvent(QGraphicsSceneMouseEvent * event){
        }
    } else { qDebug() << "clicked on space";}
    QGraphicsScene::mousePressEvent(event);
-   if (itemAt(event->scenePos(),QTransform())){
-       gp =  dynamic_cast<gPerson*>( itemAt(event->scenePos(),QTransform() )) ;
-       if (gp) {
-           qDebug() << "clicked on: " <<  gp->LastName();
-           foreach (cLink* link, * gp->GetLinks()){
-               link->update();
-               update();
-               qDebug() << 41 << link->GPersonFrom()->LastName();
-           }
-       }
-   } else { qDebug() << "clicked on space";}
 
 
+}
+
+void cScene::mouseReleaseEvent(QGraphicsSceneMouseEvent * event){
+    gPerson* gp;
+    if (itemAt(event->scenePos(),QTransform())){
+        gp =  dynamic_cast<gPerson*>( itemAt(event->scenePos(),QTransform() )) ;
+        if (gp) {
+            qDebug() << "*** Released: " <<  gp->LastName();
+            foreach (cLink* link, * gp->GetLinks()){
+                if (link->GPersonFrom() == gp){
+                 link->setPos(gp->pos());
+                }
+                update();
+                qDebug() << "***" << link->GPersonFrom()->LastName() << link->GPersonTo()->LastName();
+            }
+        }
+    } else { qDebug() << "clicked on space";}
+    QGraphicsScene::mouseReleaseEvent(event);
 }
 
 void cScene::AddPerson(dPerson * dperson){

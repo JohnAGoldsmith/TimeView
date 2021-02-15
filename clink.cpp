@@ -51,7 +51,7 @@ QRectF cLink::boundingRect() const {
 void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     double fraction1(0.9);
 
-    qDebug() << "Inside paint function of the Link" ;
+
 
     float  willbe_tophook = 50.0;
     float willbe_bottomhook = 50.0;
@@ -62,9 +62,9 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     QPointF point_end   (x_distance + willbe_bottomhook ,y_distance);
     //painter->drawLine(point_start,point_end);
 
-    qDebug() << 54 <<GPersonFrom()->LastName() << GPersonFrom()->scenePos().x() << GPersonFrom()->scenePos().y();
-    qDebug() << 54 <<GPersonTo()->LastName() << GPersonTo()->scenePos().x() << GPersonTo()->scenePos().y();
-    qDebug() << 55 << GPersonFrom()->LastName() << GPersonTo()->LastName() <<  x_distance << y_distance ;
+    //qDebug() << 50 <<GPersonFrom()->LastName() << GPersonFrom()->scenePos().x() << GPersonFrom()->scenePos().y();
+    //qDebug() << 51 <<GPersonTo()->LastName() << GPersonTo()->scenePos().x() << GPersonTo()->scenePos().y();
+    qDebug() << 52 << GPersonFrom()->LastName() << GPersonTo()->LastName() <<  x_distance << y_distance ;
 
     float verticalDistance = y_distance;
     //qDebug() << 59 << gp1->LastName() << gp2->LastName();

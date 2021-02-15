@@ -37,6 +37,7 @@ public:
     void AddPerson (dPerson *);
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent * event) override;
 private:
     QFont myFont;
     QColor myTextColor;

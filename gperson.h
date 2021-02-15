@@ -25,7 +25,6 @@ public:
 
     double Width() {return width;}
     void SetY(int y) {ypos = y;}
-    void Move(int x, int  y);
     float Xpos(){return xpos;}
     float Ypos(){return ypos;}
     QString LastName() {return lastName;}
@@ -47,6 +46,8 @@ protected:
 private:
     cScene * scene;
     dPerson * dataPerson;
+    QFont *  myFont;
+
     QGraphicsRectItem * box;
     QGraphicsSimpleTextItem * nameItem;
     QGraphicsSimpleTextItem * yearsItem;
@@ -57,7 +58,7 @@ private:
     double margin;
     QString firstName;
     QString lastName;
-    QFont * myfont;
+
     QRectF personBoundingRect;
     float centerX;
     QPoint bottomHook;

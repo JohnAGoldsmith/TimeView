@@ -26,9 +26,9 @@ gPerson::gPerson( dPerson * dp )
   margin = 5;
   firstName = dp->FirstName();
   lastName = dp->LastName();
-  QFont  gfont ( QFont("Times", 10) );
+  myFont = new  QFont("Times", 12);
   QPainter painter;
-  painter.setFont(gfont);
+  painter.setFont(* myFont);
 
   float totalwidth(0.0);
   float namewidth = GetNameWidth(& painter);
@@ -88,24 +88,25 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
     double lineHeight = 15.0;
     double totalWidth = 0;
+    painter->setFont(*myFont);
     QColor Orange;
     Orange.setRgb(255,153,51);
     QBrush brush (Qt::SolidPattern);
     QPen pen(Qt::black,10);
     painter->setPen(pen);
     if (hasFocus()){
-        painter->setPen(Qt::blue);
+        painter->setPen(Qt::white);
         brush.setColor(Qt::blue);
     }else{
           brush.setColor(Orange );
-          //painter->setPen(Qt::black);
+          painter->setPen(Qt::black);
     }
 
 
     QString name = firstName + " "  + lastName;
     QString years = QString::number(dp->BirthYear()) + "--" + QString::number(dp->DeathYear());
-    painter->setFont(QFont("Times", 10));
-    painter->setPen(QPen(Qt::black,2));
+    //
+    //painter->setPen(QPen(Qt::black,2));
     float namewidth = GetNameWidth(painter);
     float datewidth = GetDatesWidth(painter);
     float totalwidth(0.0);
@@ -136,7 +137,3 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 }
 
 
-void gPerson::Move(int x, int y){
-   box->moveBy(x,y);
-   nameItem->moveBy(x,y);
-}
