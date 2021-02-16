@@ -37,6 +37,8 @@ public:
     float GetDatesWidth(QPainter * ) const ;
     void AppendLink (cLink * link);
     QList<cLink*> * GetLinks() {return & myLinks;}
+    QList<cLink*> * GetTopLinks() {return & topLinks;}
+    void SortLinks();
 
 
 protected:
@@ -64,8 +66,9 @@ private:
     QPoint bottomHook;
     QPoint topHook;
     QList<cLink*> myLinks;
-    //double scaleFactor; // this should be in cScene, but I need it in paint for this class.
-    //double timeScale; //ditto.
+
+    QList<cLink*> topLinks;
+
 };
 
 

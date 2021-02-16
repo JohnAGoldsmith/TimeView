@@ -49,7 +49,14 @@ gPerson::~gPerson(){
 
 }
 
-void gPerson::AppendLink(cLink *link) {myLinks.append(link);}
+
+void gPerson::AppendLink(cLink *link) {
+    myLinks.append(link);
+    if (link->GPersonFrom() == this){
+        topLinks.append(link);
+    }
+    SortLinks();
+}
 
 QRectF gPerson::boundingRect() const  {
     return personBoundingRect;
@@ -135,5 +142,26 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     //QGraphicsItem::paint(painter, option, widget);
 
 }
+void gPerson::SortLinks(){
 
+
+    float boxwidth = 100.0; // should be GetNameWidth();
+    float delta = (boxwidth * 0.5) / GetTopLinks()->size();
+
+
+    QList<cLink*> * thisList = GetTopLinks();
+    int LS = thisList->size();
+    if (LS > 1){
+        int i = 0;
+        float startingPoint;
+        startingPoint =  -1.0 * ( (LS/2.0  ) * delta ) ;
+        foreach (cLink* thislink, * thisList){
+            thislink->Offset(startingPoint + i * delta);
+            i++;
+        }
+    }
+
+
+
+}
 

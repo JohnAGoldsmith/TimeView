@@ -26,6 +26,7 @@ class cLink: public QGraphicsItem
         void attachGraphicalPersons(gPerson *, gPerson *);
         gPerson* GPersonFrom()const {return gPersonFrom;}
         gPerson* GPersonTo() const {return gPersonTo;}
+        void Offset(float f) {offset = f;}
     private:
         QString fromPersonKey;
         QString toPersonKey;
@@ -33,6 +34,7 @@ class cLink: public QGraphicsItem
         QString natureOfLink;
         gPerson* gPersonFrom;
         gPerson* gPersonTo;
+        float offset;
 
 };
 
