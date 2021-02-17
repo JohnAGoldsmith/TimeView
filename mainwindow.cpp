@@ -1,7 +1,7 @@
 #include <QBoxLayout>
 #include <QGraphicsView>
 #include <QRect>
-
+#include <QJsonObject>
 #include <QGraphicsRectItem>
 #include <QGraphicsScale>
 #include "mainwindow.h"
@@ -40,6 +40,10 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(widget);
     setWindowTitle(tr("Genealogy"));
     setUnifiedTitleAndToolBarOnMac(true);
+
+    QJsonObject dataObject;
+    getData()->save( );
+
 }
 
 MainWindow::~MainWindow()

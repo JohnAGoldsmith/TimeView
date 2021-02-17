@@ -37,5 +37,14 @@ dPerson::dPerson(QStringList data){
 
 }
 
+void dPerson::write(QJsonObject & json) const {
+    json["type"] = "person";
+    json["firstName"] = firstName;
+    json["lastName"] = lastName;
+    json["birthYear"] = birthYear;
+    json["deathYear"] = deathYear;
+    json["xpos"] = xpos;
+    json["profession"] = profession1;
 
+}
 

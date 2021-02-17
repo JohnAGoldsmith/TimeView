@@ -6,12 +6,13 @@
 #include <QStyleOptionGraphicsItem>
 #include <QWidget>
 #include <QGraphicsItem>
+//#include "mainwindow.h"
 
 class cPath;
 class gPerson;
 class cScene;
 
-enum LinkPosition {Top, Left, Right, Bottom};
+// There should be an ENUM for LinkPosition, but enum in Qt is complicated.
 
 class cLink: public QGraphicsItem
 {
@@ -22,6 +23,9 @@ class cLink: public QGraphicsItem
         ~cLink();
         QRectF boundingRect() const;
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
+        void write(QJsonObject & json) const;
+
         QString getFromKey(){return fromPersonKey;}
         QString getToKey(){return toPersonKey;}
         //void attachScene(cScene*);
@@ -29,7 +33,7 @@ class cLink: public QGraphicsItem
         gPerson* GPersonFrom()const {return gPersonFrom;}
         gPerson* GPersonTo() const {return gPersonTo;}
         void Offset(float f) {offset = f;}
-        LinkPosition GetPositionOnFromPerson(){return PositionOnFromPerson;}
+        QString GetPositionOnFromPerson(){return PositionOnFromPerson;}
     private:
         QString fromPersonKey;
         QString toPersonKey;
@@ -37,8 +41,8 @@ class cLink: public QGraphicsItem
         QString natureOfLink;
         gPerson* gPersonFrom;
         gPerson* gPersonTo;
-        LinkPosition PositionOnFromPerson;
-        LinkPosition PositionOnToPerson;
+        QString PositionOnFromPerson;
+        QString PositionOnToPerson;
         float offset;
 
 };

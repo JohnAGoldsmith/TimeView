@@ -53,7 +53,7 @@ gPerson::~gPerson(){
 void gPerson::AppendLink(cLink *link) {
     myLinks.append(link);
     if (link->GPersonFrom() == this){
-        if (link->GetPositionOnFromPerson() == Top){
+        if (link->GetPositionOnFromPerson() == "Top"){
             topLinks.append(link);
         } else{
             qDebug() << 59 << "We have a From person not on Top";

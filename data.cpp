@@ -2,6 +2,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QDir>
+#include <QFile>
 #include "data.h"
 #include "clink.h"
 #include "cscene.h"
@@ -91,4 +92,29 @@ void cData::sendPersonsAndLinksToScene(cScene* scene){
         scene->AddLink(link);
 
     }
+}
+
+void cData::write(QJsonObject &json) const{
+    QJsonArray personArray;
+    foreach (const  dPerson *  dperson, dataPersons){
+      QJsonObject personObject;
+      dperson->write(personObject);
+      personArray.append(personObject);
+    }
+
+    json["Persons"] = personArray;
+    return ;
+}
+void cData::save() const{
+    QFile saveFile("save.json");
+    if (!saveFile.open(QIODevice::WriteOnly)) {
+           qWarning("Couldn't open save file.");
+           return;
+       }
+
+    QJsonObject graphObject;
+    write(graphObject);
+    QJsonDocument saveDoc(graphObject);
+    saveFile.write(saveDoc.toJson());
+
 }

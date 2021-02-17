@@ -1,6 +1,7 @@
 #ifndef DATAPERSON_H
 #define DATAPERSON_H
 #include <QStringList>
+#include <QJsonObject>
 
 class gPerson;
 //class cPerson;
@@ -15,6 +16,9 @@ public:
   dPerson(QStringList) ;
   dPerson();
   gPerson* GraphicPerson() {return graphicPerson;}
+
+  void write(QJsonObject & json) const;
+
   QString Key() {return key;}
   QString FirstName() {return firstName;}
   QString LastName() {return lastName;}

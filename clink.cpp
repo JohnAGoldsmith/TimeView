@@ -24,20 +24,21 @@ cLink::cLink(QStringList & data){
     if (data.size() >= 11 && data[10].length() > 0){
         natureOfLink = data[10];
     }
-    int data3 = data[3].toInt();
-    int data6 = data[6].toInt();
-    if (data[3] == 0){ PositionOnFromPerson == Right;}
-    else if (data3 == 90){ PositionOnFromPerson=Top;}
-    else if (data3 == 180){PositionOnFromPerson = Left;}
-    else if (data3 == -180){PositionOnFromPerson = Left;}
-    else if (data3 == 270) {PositionOnFromPerson = Bottom;}
-    else if (data3 == -90) {PositionOnFromPerson = Bottom;}
-    if (data6 == 0){ PositionOnToPerson == Right;}
-    else if (data6 == 90){ PositionOnToPerson=Top;}
-    else if (data6 == 180){PositionOnToPerson = Left;}
-    else if (data6 == -180){PositionOnToPerson = Left;}
-    else if (data6 == 270) {PositionOnToPerson = Bottom;}
-    else if (data6 == -90) {PositionOnToPerson = Bottom;}
+
+    if (data[3] == "0"){ PositionOnFromPerson == "Right";}
+    else if (data[3] == "90"){ PositionOnFromPerson="Top";}
+    else if (data[3] == "180"){PositionOnFromPerson = "Left";}
+    else if (data[3] == "-180"){PositionOnFromPerson = "Left";}
+    else if (data[3] == "270") {PositionOnFromPerson = "Bottom";}
+    else if (data[3] == "-90") {PositionOnFromPerson = "Bottom";}
+    else {PositionOnFromPerson == "Not defined";}
+    if (data[6] == 0){ PositionOnToPerson ==  "Right";}
+    else if (data[6] == "90"){ PositionOnToPerson="Top";}
+    else if (data[6] == "180"){PositionOnToPerson = "Left";}
+    else if (data[6] == "-180"){PositionOnToPerson = "Left";}
+    else if (data[6] == "270") {PositionOnToPerson = "Bottom";}
+    else if (data[6] == "-90") {PositionOnToPerson = "Bottom";}
+    else {PositionOnToPerson = "Not defined";}
     //offset = 0.0;
     update();
 
