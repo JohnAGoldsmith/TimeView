@@ -11,6 +11,8 @@ class cPath;
 class gPerson;
 class cScene;
 
+enum LinkPosition {Top, Left, Right, Bottom};
+
 class cLink: public QGraphicsItem
 {
 
@@ -27,6 +29,7 @@ class cLink: public QGraphicsItem
         gPerson* GPersonFrom()const {return gPersonFrom;}
         gPerson* GPersonTo() const {return gPersonTo;}
         void Offset(float f) {offset = f;}
+        LinkPosition GetPositionOnFromPerson(){return PositionOnFromPerson;}
     private:
         QString fromPersonKey;
         QString toPersonKey;
@@ -34,6 +37,8 @@ class cLink: public QGraphicsItem
         QString natureOfLink;
         gPerson* gPersonFrom;
         gPerson* gPersonTo;
+        LinkPosition PositionOnFromPerson;
+        LinkPosition PositionOnToPerson;
         float offset;
 
 };

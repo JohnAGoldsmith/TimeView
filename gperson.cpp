@@ -53,7 +53,12 @@ gPerson::~gPerson(){
 void gPerson::AppendLink(cLink *link) {
     myLinks.append(link);
     if (link->GPersonFrom() == this){
-        topLinks.append(link);
+        if (link->GetPositionOnFromPerson() == Top){
+            topLinks.append(link);
+        } else{
+            qDebug() << 59 << "We have a From person not on Top";
+        }
+
     }
     SortLinks();
 }
@@ -112,8 +117,6 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
     QString name = firstName + " "  + lastName;
     QString years = QString::number(dp->BirthYear()) + "--" + QString::number(dp->DeathYear());
-    //
-    //painter->setPen(QPen(Qt::black,2));
     float namewidth = GetNameWidth(painter);
     float datewidth = GetDatesWidth(painter);
     float totalwidth(0.0);
@@ -124,7 +127,6 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     }
     QRectF completeRect;
     completeRect.setCoords(-1 * margin, 0,  totalwidth, height);
-    //painter->drawRect(completeRect);
     painter->fillRect(completeRect,brush);
 
     QRectF rect(0,0,namewidth,20);
@@ -134,20 +136,12 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     QRectF boundingRect2 (boundingRect1);
     rect.moveTo(0,lineHeight);
     painter->drawText(rect, Qt::AlignHCenter,years, &boundingRect2);
-
-
-
-
-
     //QGraphicsItem::paint(painter, option, widget);
 
 }
 void gPerson::SortLinks(){
-
-
     float boxwidth = 100.0; // should be GetNameWidth();
     float delta = (boxwidth * 0.5) / GetTopLinks()->size();
-
 
     QList<cLink*> * thisList = GetTopLinks();
     int LS = thisList->size();
@@ -160,8 +154,5 @@ void gPerson::SortLinks(){
             i++;
         }
     }
-
-
-
 }
 
