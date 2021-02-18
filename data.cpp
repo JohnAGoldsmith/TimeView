@@ -9,7 +9,6 @@
 
 cData::cData()
 {
-   //timeScale = 5;
    topPosition = 1950;
 }
 
@@ -50,8 +49,12 @@ void cData::analyzeData(){
            } else {
                if (line[0] == "P"){
                    dPerson1 = new dPerson(line);
-                   dataPersons.append(dPerson1);
-                   Key2dataPerson[dPerson1->Key()] = dPerson1;
+                   if (Key2dataPerson.contains(dPerson1->Key())){
+                     qWarning ("Collision of Keys for persons");
+                   }else{
+                           dataPersons.append(dPerson1);
+                           Key2dataPerson[dPerson1->Key()] = dPerson1;
+                   }
                } else {
                    if (line[0] == "L"){
                         l = new cLink(line);
@@ -62,6 +65,7 @@ void cData::analyzeData(){
        }
     }
 }
+
 void cData::sendPersonsAndLinksToScene(cScene* scene){
     QGraphicsRectItem* rItem;
     QGraphicsLineItem * line;
@@ -76,13 +80,13 @@ void cData::sendPersonsAndLinksToScene(cScene* scene){
         if ( Key2dataPersonHashContains(link->getFromKey())) {
                     dPerson1 =  getPersonFromKey(link->getFromKey());
         }else{
-            qDebug() << "missing someone" << link->getFromKey() ;
+            qDebug() << "cData: missing someone" << link->getFromKey() ;
             continue;
         }
         if ( Key2dataPersonHashContains(link->getToKey())) {
                dPerson2 =  getPersonFromKey(link->getToKey());
         }else{
-            qDebug() << "missing" ;
+            qDebug() << "cData: missing person for link;" << link->getToKey(); ;
             continue;
         }
 
@@ -101,8 +105,17 @@ void cData::write(QJsonObject &json) const{
       dperson->write(personObject);
       personArray.append(personObject);
     }
-
     json["Persons"] = personArray;
+
+    QJsonArray linkArray;
+    foreach (const cLink * link, Links){
+       if (link->GPersonTo()){
+         QJsonObject linkObject;
+         link->write(linkObject);
+         linkArray.append(linkObject);
+       }
+    }
+    json["Links" ]=linkArray;
     return ;
 }
 void cData::save() const{

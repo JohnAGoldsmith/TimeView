@@ -14,6 +14,8 @@ dPerson::dPerson()
 
 
 dPerson::dPerson(QStringList data){
+    key = "no_key";
+
     if (data.size() >= 8 && data[7].length() > 0){
         key = data[7];
     } else {
@@ -38,13 +40,14 @@ dPerson::dPerson(QStringList data){
 }
 
 void dPerson::write(QJsonObject & json) const {
+    json["key"] = key;
     json["type"] = "person";
     json["firstName"] = firstName;
     json["lastName"] = lastName;
     json["birthYear"] = birthYear;
     json["deathYear"] = deathYear;
     json["xpos"] = xpos;
-    json["profession"] = profession1;
+    json["profession1"] = profession1;
 
 }
 

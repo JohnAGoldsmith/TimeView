@@ -9,8 +9,8 @@
 
 cLink::cLink()
 {
-    QString fromPersonKey;
-    QString toPersonKey;
+    QString fromPersonKey ("");
+    QString toPersonKey("");
 
     QString natureOfLink;
     gPerson* gPersonFrom;
@@ -18,13 +18,15 @@ cLink::cLink()
     offset = 0.0;
 }
 cLink::cLink(QStringList & data){
+    gPersonFrom = NULL;
+    gPersonTo = NULL;
     setAcceptedMouseButtons(0);
     fromPersonKey = data[1];
     toPersonKey = data[2];
+
     if (data.size() >= 11 && data[10].length() > 0){
         natureOfLink = data[10];
     }
-
     if (data[3] == "0"){ PositionOnFromPerson == "Right";}
     else if (data[3] == "90"){ PositionOnFromPerson="Top";}
     else if (data[3] == "180"){PositionOnFromPerson = "Left";}
@@ -39,15 +41,25 @@ cLink::cLink(QStringList & data){
     else if (data[6] == "270") {PositionOnToPerson = "Bottom";}
     else if (data[6] == "-90") {PositionOnToPerson = "Bottom";}
     else {PositionOnToPerson = "Not defined";}
-    //offset = 0.0;
+
     update();
-
-
 }
 cLink::~cLink(){
 
 }
-
+QString cLink::display()const {
+  QString out;
+  out += " fromPersonKey";
+  out += fromPersonKey;
+  out += " toPersonKey ";
+  out += toPersonKey;
+  out += " thru gPerson links";
+  if (gPersonFrom){
+      out += gPersonFrom->LastName();
+    } else{
+      out += "No From link";
+  }
+}
 void cLink::attachGraphicalPersons(gPerson * person1, gPerson * person2){
  gPersonFrom = person1;
  gPersonTo = person2;
@@ -76,34 +88,32 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     float x_distance = GPersonTo()->scenePos().x() - GPersonFrom()->scenePos().x();
     QPointF point_end;
     QPointF point_start;
-
+    QPen pen;
     if (natureOfLink == "teacher"){
-        QPen pen;
         pen.setColor(Qt::blue);
         pen.setWidth(3);
         painter->setPen(pen);
-    }
-    if (natureOfLink == "postDoc"){
-        QPen pen;
+    } else {
+        if (natureOfLink == "postDoc"){
         pen.setColor(Qt::blue);
         pen.setWidth(3);
         pen.setStyle(Qt::DashLine);
         painter->setPen(pen);
+        } else {if (natureOfLink == "colleagues") {
+               pen.setColor(Qt::green);
+               pen.setWidth(3);
+               painter->setPen(pen);
+                }
+            }
     }
-
 
     point_start  = QPointF(willbe_tophook + offset,0 );
     qDebug() << 61 << "offset:"<< offset;
     point_end = QPoint(x_distance + willbe_bottomhook ,y_distance);
-
-    qDebug() << 52 << GPersonFrom()->LastName() << GPersonTo()->LastName() <<  x_distance << y_distance ;
-
     float verticalDistance = y_distance;
-
 
     QPointF point1 (point_start.x(),  fraction1 * verticalDistance  );
     QPointF point2 (point_end.x(), point1.y());
-
 
     if ( verticalDistance < 0.0){
 
@@ -114,3 +124,8 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     }
 }
 
+void cLink::write(QJsonObject & json) const{
+ json["FromPersonKey"] = fromPersonKey;
+ json["ToPersonKey"] = toPersonKey;
+ json["NatureOfLink"] = natureOfLink;
+}

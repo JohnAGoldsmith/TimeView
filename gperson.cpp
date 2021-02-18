@@ -37,7 +37,7 @@ gPerson::gPerson( dPerson * dp )
       totalwidth = datewidth;
   else
       totalwidth = namewidth;
-  qDebug()<< "39 constructor"<<totalwidth;
+  //qDebug()<< "39 constructor"<<totalwidth;
   topHook.setX(totalwidth * 0.5);
   topHook.setY(0);
   bottomHook.setX(totalwidth * 0.5);

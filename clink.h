@@ -23,7 +23,7 @@ class cLink: public QGraphicsItem
         ~cLink();
         QRectF boundingRect() const;
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-
+        QString display() const;
         void write(QJsonObject & json) const;
 
         QString getFromKey(){return fromPersonKey;}

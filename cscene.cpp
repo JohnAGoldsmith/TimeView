@@ -35,10 +35,10 @@ void cScene::mousePressEvent(QGraphicsSceneMouseEvent * event){
    QPointF pos = event->scenePos();
    if (itemAt(event->scenePos(),QTransform())){
        gp =  dynamic_cast<gPerson*>( itemAt(event->scenePos(),QTransform() )) ;
-       if (gp) {
-           qDebug() << "clicked on: " <<  gp->LastName();
-       }
-   } else { qDebug() << "clicked on space";}
+       //if (gp) {
+       //    qDebug() << "clicked on: " <<  gp->LastName();
+       //}
+   } //else { qDebug() << "clicked on space";}
    QGraphicsScene::mousePressEvent(event);
 
 
@@ -72,11 +72,8 @@ void cScene::AddPerson(dPerson * dperson){
     dperson->set_gPerson(gPerson1);
 }
 void cScene::AddLink(cLink * link){
-
     addItem(link);
     link->setPos(link->GPersonFrom()->scenePos());
-    qDebug() << "cScene 56 scene coordinates adding Link" << link->GPersonFrom()->LastName() << link->GPersonTo()->LastName() <<  link->GPersonFrom()->scenePos().x() << link->GPersonFrom()->scenePos().y();
-    QPainter painter;
 }
 
 
