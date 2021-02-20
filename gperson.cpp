@@ -56,10 +56,17 @@ void gPerson::AppendLink(cLink *link) {
         if (link->GetPositionOnFromPerson() == "Top"){
             topLinks.append(link);
         } else{
-            qDebug() << 59 << "We have a From person not on Top";
+            //qDebug() << "gperson"<< 59 << "We have a From person not on Top" << link->GPersonFrom()->LastName();
         }
-
     }
+    if (link->GPersonTo() == this){
+        if (link->GetPositionOnToPerson() == "Bottom"){
+            bottomLinks.append(link);
+        } else{
+            //qDebug() << "gperson"<< 59 << "We have a To person not on Bottom" << link->GPersonTo()->LastName();
+        }
+    }
+
     SortLinks();
 }
 
@@ -73,7 +80,16 @@ void gPerson::mousePressEvent(QGraphicsSceneMouseEvent * event){
 }
 void gPerson::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
     Pressed = false;
-    update();
+
+
+    qDebug() << "*** Released: gperson " <<  LastName();
+    foreach (cLink* link, * GetLinks()){
+        if (link->GPersonFrom() == this){
+           link->setPos(pos());
+           link->update();
+            qDebug() << "***" << link->GPersonFrom()->LastName() << link->GPersonTo()->LastName();
+        }
+    }
     QGraphicsItem::mouseReleaseEvent(event);
 }
 
@@ -104,14 +120,27 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     QColor Orange;
     Orange.setRgb(255,153,51);
     QBrush brush (Qt::SolidPattern);
+    brush.setColor(Qt::gray);
     QPen pen(Qt::black,10);
     painter->setPen(pen);
+    pen.setColor(Qt::black);
+    QString Profession = getDPerson()->profession1;
+    if (Profession ==  "linguist"){
+        brush.setColor(Orange);
+    }
+    if (Profession == "sociologist"){
+            brush.setColor(Qt::green);
+    }
+    if (Profession == "philosopher"){
+           brush.setColor(Qt::yellow);
+     }
+    if (Profession == "psychologist"){
+           brush.setColor(Qt::cyan);
+     }
+
     if (hasFocus()){
         painter->setPen(Qt::white);
         brush.setColor(Qt::blue);
-    }else{
-          brush.setColor(Orange );
-          painter->setPen(Qt::black);
     }
 
 
@@ -150,9 +179,25 @@ void gPerson::SortLinks(){
         float startingPoint;
         startingPoint =  -1.0 * ( (LS/2.0  ) * delta ) ;
         foreach (cLink* thislink, * thisList){
-            thislink->Offset(startingPoint + i * delta);
+            thislink->TopOffset(startingPoint + i * delta);
             i++;
+            //qDebug() << "gperson sortlinks: top offset"<< startingPoint + i * delta << "starting point"<< startingPoint;
         }
     }
+
+    delta = (boxwidth * 0.5) / GetBottomLinks()->size();
+    thisList = GetBottomLinks();
+    LS = thisList->size();
+    if (LS > 1){
+        int i = 0;
+        float startingPoint;
+        startingPoint =  -1.0 * ( (LS/2.0  ) * delta ) ;
+        foreach (cLink* thislink, * thisList){
+            thislink->BottomOffset(startingPoint + i * delta);
+            i++;
+            //qDebug() << "gperson sortlinks: bottomoffset"<< startingPoint + i * delta << "starting point"<< startingPoint <<LastName();
+        }
+    }
+
 }
 

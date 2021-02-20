@@ -32,8 +32,10 @@ class cLink: public QGraphicsItem
         void attachGraphicalPersons(gPerson *, gPerson *);
         gPerson* GPersonFrom()const {return gPersonFrom;}
         gPerson* GPersonTo() const {return gPersonTo;}
-        void Offset(float f) {offset = f;}
+        void BottomOffset(float f) {bottomOffset = f;}
+        void TopOffset(float f) {topOffset =f;}
         QString GetPositionOnFromPerson(){return PositionOnFromPerson;}
+        QString GetPositionOnToPerson(){return PositionOnToPerson;}
     private:
         QString fromPersonKey;
         QString toPersonKey;
@@ -43,7 +45,8 @@ class cLink: public QGraphicsItem
         gPerson* gPersonTo;
         QString PositionOnFromPerson;
         QString PositionOnToPerson;
-        float offset;
+        float bottomOffset;
+        float topOffset;
 
 };
 

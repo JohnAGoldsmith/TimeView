@@ -38,6 +38,7 @@ public:
     void AppendLink (cLink * link);
     QList<cLink*> * GetLinks() {return & myLinks;}
     QList<cLink*> * GetTopLinks() {return & topLinks;}
+    QList<cLink*> * GetBottomLinks() {return & bottomLinks;}
     void SortLinks();
 
 
@@ -68,6 +69,7 @@ private:
     QList<cLink*> myLinks;
 
     QList<cLink*> topLinks;
+    QList<cLink*> bottomLinks;
 
 };
 

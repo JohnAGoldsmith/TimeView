@@ -15,7 +15,8 @@ cLink::cLink()
     QString natureOfLink;
     gPerson* gPersonFrom;
     gPerson* gPersonTo;
-    offset = 0.0;
+    bottomOffset = 0.0;
+    topOffset = 0.0;
 }
 cLink::cLink(QStringList & data){
     gPersonFrom = NULL;
@@ -23,6 +24,8 @@ cLink::cLink(QStringList & data){
     setAcceptedMouseButtons(0);
     fromPersonKey = data[1];
     toPersonKey = data[2];
+    bottomOffset = 0.0;
+    topOffset = 0.0;
 
     if (data.size() >= 11 && data[10].length() > 0){
         natureOfLink = data[10];
@@ -81,20 +84,26 @@ QRectF cLink::boundingRect() const {
 
 
 void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-    double fraction1(0.9);
-    float  willbe_tophook = 50.0;
-    float willbe_bottomhook = 50.0;
-    float y_distance = GPersonTo()->scenePos().y() - GPersonFrom()->scenePos().y() + GPersonTo()->Height();
-    float x_distance = GPersonTo()->scenePos().x() - GPersonFrom()->scenePos().x();
-    QPointF point_end;
-    QPointF point_start;
+    double fraction1(0.7);
+
+    /* fix "centerX" function */
+    float GPersonFromCenterX = 50;
+    float GPersonToCenterX = 50;
+
+
+    float y_distance1 = GPersonFrom()->scenePos().y() - GPersonTo()->scenePos().y();
+    float y_distance2 = y_distance1 - GPersonTo()->Height();
+    float x_distance = GPersonFrom()->scenePos().x() - GPersonTo()->scenePos().x() + (GPersonFromCenterX - GPersonToCenterX);
+    QPointF start_point;
+    QPointF end_point;
     QPen pen;
-    if (natureOfLink == "teacher"){
+
+    if (natureOfLink == "teacher" || natureOfLink == "student"){
         pen.setColor(Qt::blue);
         pen.setWidth(3);
         painter->setPen(pen);
     } else {
-        if (natureOfLink == "postDoc"){
+        if (natureOfLink == "postDoc" || natureOfLink == "Semi-teacher" || natureOfLink == "influence"){
         pen.setColor(Qt::blue);
         pen.setWidth(3);
         pen.setStyle(Qt::DashLine);
@@ -104,24 +113,45 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
                pen.setWidth(3);
                painter->setPen(pen);
                 }
+        }
+    }
+
+    /* Now we do things in Link's coordinates, which is From */
+    if (PositionOnFromPerson == "Top") {
+       start_point  = QPointF(GPersonFromCenterX + topOffset,0 );
+    } else { if (PositionOnFromPerson == "Right") {
+        //point_start = QPoint(willbeX, willbeY );
+    } else{ if (PositionOnFromPerson == "Left") {
+        //point_start = QPoint(-1.0 * willbeX, willbeY );
             }
+        }
     }
-
-    point_start  = QPointF(willbe_tophook + offset,0 );
-    qDebug() << 61 << "offset:"<< offset;
-    point_end = QPoint(x_distance + willbe_bottomhook ,y_distance);
-    float verticalDistance = y_distance;
-
-    QPointF point1 (point_start.x(),  fraction1 * verticalDistance  );
-    QPointF point2 (point_end.x(), point1.y());
-
-    if ( verticalDistance < 0.0){
-
-        painter->drawLine(point_start,point1);
-        painter->drawLine(point1, point2);
-        painter->drawLine(point2,point_end);
-
+    if (PositionOnToPerson == "Bottom") {
+       end_point = QPointF(-1.0 * x_distance - bottomOffset + GPersonToCenterX, -1.0 * y_distance2);
+    } else { if (PositionOnToPerson == "Right") {
+        //point_end = QPoint(willbeX, willbeY );
+    } else{ if (PositionOnToPerson == "Left") {
+        //point_end = QPoint(-1.0 * willbeX, willbeY );
+            }
+        }
     }
+    if (GPersonFrom()->LastName() == "Wundt"){
+    qDebug() << "Wundt"<< GPersonTo()->LastName() << end_point.x() << end_point.y();
+    }
+    /*
+    if (GPersonFrom()->LastName()=="Sapir"){
+        int i = 0;
+        qDebug() << natureOfLink <<  gPersonFrom->LastName() << gPersonTo->LastName() << end_point.x() << end_point.y() << "top offset" << topOffset;
+    }*/
+    QPointF point1 (start_point.x(), start_point.y() - fraction1 * y_distance2  );
+    QPointF point2 (end_point.x(), point1.y());
+
+
+
+    painter->drawLine(start_point, point1);
+    painter->drawLine(point1, point2);
+    painter->drawLine(point2, end_point);
+
 }
 
 void cLink::write(QJsonObject & json) const{
