@@ -41,16 +41,13 @@ cLink::cLink(QStringList & data){
     else if (data[3] == "270") {PositionOnFromPerson = "Bottom";}
     else if (data[3] == "-90") {PositionOnFromPerson = "Bottom";}
     else {PositionOnFromPerson == "Not defined";}
-    if (data[6] == "0"){ PositionOnToPerson ==  "Right";
-      qDebug () << "___----" << toPersonKey;
-    }
+    if (data[6] == "0"){ PositionOnToPerson =  "Right";}
     else if (data[6] == "90"){ PositionOnToPerson="Top";}
     else if (data[6] == "180"){PositionOnToPerson = "Left";}
     else if (data[6] == "-180"){PositionOnToPerson = "Left";}
     else if (data[6] == "270") {PositionOnToPerson = "Bottom";}
     else if (data[6] == "-90") {PositionOnToPerson = "Bottom";}
     else {PositionOnToPerson = "Not defined";}
-
     update();
 }
 cLink::~cLink(){
@@ -125,7 +122,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     }
 
     if (GPersonFrom()->LastName() == "Chomsky"){
-        qDebug() <<"***" << PositionOnFromPerson << PositionOnToPerson << GPersonTo()->LastName();
+        qDebug() <<"***!!!" << PositionOnFromPerson << PositionOnToPerson << GPersonTo()->LastName();
     }
     /* Now we do things in Link's coordinates, which is From */
     if (PositionOnFromPerson == "Top") {
@@ -145,7 +142,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
        end_point = QPointF(-1.0 * x_distance - bottomOffset + GPersonToCenterX, -1.0 * y_distance2);
     }
     else if (PositionOnToPerson == "Right") {
-        end_point = QPoint(-1.0 * x_distance,  -1.0 * y_distance2 );
+        end_point = QPoint(-1.0 * x_distance + willbewidth *0.5 ,  -1.0 * y_distance2 - 0.5 * willbeheight );
         qDebug() << "####" << GPersonTo()->LastName();
     }
     else if (PositionOnToPerson == "Left") {
@@ -174,9 +171,12 @@ void cLink::write(QJsonObject & json) const{
  json["FromPersonKey"] = fromPersonKey;
  json["ToPersonKey"] = toPersonKey;
  json["NatureOfLink"] = natureOfLink;
+ json["PositionOnFromPerson"] = PositionOnFromPerson;
+ json["PositionOnToPerson"] = PositionOnToPerson;
 }
 void cLink::read(QJsonObject & json)  {
  fromPersonKey = json["FromPersonKey"].toString();
  toPersonKey = json["ToPersonKey"].toString() ;
  natureOfLink = json["NatureOfLink"].toString();
+
 }

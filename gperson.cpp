@@ -76,8 +76,6 @@ void gPerson::mousePressEvent(QGraphicsSceneMouseEvent * event){
     update();
 }
 void gPerson::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
-
-    qDebug() << "*** Released: gperson " <<  LastName();
     foreach (cLink* link, * GetLinks()){
         if (link->GPersonFrom() == this){
            link->setPos(pos());
@@ -131,7 +129,7 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
      }
 
     if (hasFocus()){
-        painter->setPen(Qt::white);
+        painter->setPen(Qt::black);
         brush.setColor(Qt::blue);
     }
 
@@ -146,10 +144,6 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     }else{
         totalwidth = namewidth;
     }
-    //QRectF completeRect;
-    //completeRect.setCoords(-1 * margin, 0,  totalwidth, height);
-    //painter->fillRect(completeRect,brush);
-
     QRectF rect(0,0,namewidth,20);
     QRectF boundingRect1;
     painter->drawText(rect ,Qt::AlignHCenter,  name ,  & boundingRect1);
@@ -157,8 +151,6 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     QRectF boundingRect2 (boundingRect1);
     rect.moveTo(0,lineHeight);
     painter->drawText(rect, Qt::AlignHCenter,years, &boundingRect2);
-    //QGraphicsItem::paint(painter, option, widget);
-
 }
 void gPerson::SortLinks(){
     float boxwidth = 100.0; // should be GetNameWidth();
@@ -173,7 +165,6 @@ void gPerson::SortLinks(){
         foreach (cLink* thislink, * thisList){
             thislink->TopOffset(startingPoint + i * delta);
             i++;
-            //qDebug() << "gperson sortlinks: top offset"<< startingPoint + i * delta << "starting point"<< startingPoint;
         }
     }
 
@@ -187,7 +178,6 @@ void gPerson::SortLinks(){
         foreach (cLink* thislink, * thisList){
             thislink->BottomOffset(startingPoint + i * delta);
             i++;
-            //qDebug() << "gperson sortlinks: bottomoffset"<< startingPoint + i * delta << "starting point"<< startingPoint <<LastName();
         }
     }
 
