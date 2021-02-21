@@ -34,7 +34,7 @@ public:
     int TopPosition() {return topPosition;}
     QGraphicsItem *  itemAt(const QPointF, const QTransform &);
     void AddLink(cLink * );
-    void AddPerson (dPerson *);
+    void AddGPerson (gPerson *);
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent * event) override;

@@ -50,19 +50,20 @@ void cScene::mouseReleaseEvent(QGraphicsSceneMouseEvent * event){
     QGraphicsScene::mouseReleaseEvent(event);
     update();
 }
-
+/*
 void cScene::AddPerson(dPerson * dperson){
     dperson->Ypos ( TopPosition() - dperson->BirthYear() ) ;
+    if (graphic)
     gPerson* gPerson1 = new gPerson(dperson);
     addItem(gPerson1);
     QPointF transformedCoordinates (dperson->Xpos() * ScaleFactor(), dperson->Ypos() * TimeScale());
     gPerson1->setPos(transformedCoordinates);
     dperson->set_gPerson(gPerson1);
-}
+} */
 void cScene::AddLink(cLink * link){
     addItem(link);
     link->setPos(link->GPersonFrom()->scenePos());
-    qDebug() << "scene add link"<< link->GPersonFrom()->LastName() << link->GPersonTo()->LastName();
+    //qDebug() << "scene add link"<< link->GPersonFrom()->LastName() << link->GPersonTo()->LastName();
 }
 
 

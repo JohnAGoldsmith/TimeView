@@ -24,7 +24,6 @@ MainWindow::MainWindow(QWidget *parent)
     QHBoxLayout *layout = new QHBoxLayout;
 
     cScene *  localScene = new cScene();
-    //QGraphicsView * view = new QGraphicsView(localScene);
     cView * view = new cView(localScene);
     view->scale(1,1);
     view->centerOn(-100,1900);
@@ -33,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
     QWidget *widget = new QWidget;
     widget->setLayout(layout);
 
+    //getData()->ReadJson( );
     getData()->ReadCSV();
     getData()->analyzeData();
     getData()->sendPersonsAndLinksToScene(localScene);

@@ -23,6 +23,8 @@ public:
                 QWidget * widget);
     bool Pressed;
 
+    void write(QJsonObject & json) const;
+
     double Width() {return width;}
     void SetY(int y) {ypos = y;}
     float Xpos(){return xpos;}
@@ -34,12 +36,14 @@ public:
     float CenterX( QPainter * painter );
     float Height() {return height;}
     float GetNameWidth(QPainter * )const;
+    //float GetNameWidth( )const;
     float GetDatesWidth(QPainter * ) const ;
     void AppendLink (cLink * link);
     QList<cLink*> * GetLinks() {return & myLinks;}
     QList<cLink*> * GetTopLinks() {return & topLinks;}
     QList<cLink*> * GetBottomLinks() {return & bottomLinks;}
     void SortLinks();
+    QString Key();
 
 
 protected:
@@ -54,6 +58,7 @@ private:
     QGraphicsRectItem * box;
     QGraphicsSimpleTextItem * nameItem;
     QGraphicsSimpleTextItem * yearsItem;
+    QString key;
     float xpos;
     float ypos;
     float height;

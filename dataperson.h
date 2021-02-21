@@ -28,8 +28,12 @@ public:
   int BirthYear() const {return birthYear;}
   int DeathYear() const {return deathYear;}
   gPerson* get_gPerson() {return graphicPerson;}
-  void set_gPerson(gPerson* gp){graphicPerson = gp;}
+  void setGraphicPerson(gPerson* gp){graphicPerson = gp;}
 
+  QString display();
+
+  // Json
+  void read(const QJsonObject & json);
 
 private:
   QString firstName;

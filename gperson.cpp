@@ -19,13 +19,15 @@ gPerson::gPerson(){
 }
 gPerson::gPerson( dPerson * dp )
 {
-   dataPerson = dp;
+  dataPerson = dp;
+  dp->setGraphicPerson(this);
   setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
 
   height = 40;
   margin = 5;
   firstName = dp->FirstName();
   lastName = dp->LastName();
+  key = dp->Key();
   myFont = new  QFont("Times", 12);
   QPainter painter;
   painter.setFont(* myFont);
@@ -37,7 +39,7 @@ gPerson::gPerson( dPerson * dp )
       totalwidth = datewidth;
   else
       totalwidth = namewidth;
-  //qDebug()<< "39 constructor"<<totalwidth;
+
   topHook.setX(totalwidth * 0.5);
   topHook.setY(0);
   bottomHook.setX(totalwidth * 0.5);
@@ -79,8 +81,6 @@ void gPerson::mousePressEvent(QGraphicsSceneMouseEvent * event){
     update();
 }
 void gPerson::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
-    Pressed = false;
-
 
     qDebug() << "*** Released: gperson " <<  LastName();
     foreach (cLink* link, * GetLinks()){
@@ -99,9 +99,12 @@ float gPerson::CenterX(QPainter * painter  ){
    return GetNameWidth(painter ) * 0.5;
 }
 
+
+
 float gPerson::GetNameWidth(QPainter * painter) const {
     QString name = firstName + " "  + lastName;
     QFontMetrics fm=painter->fontMetrics();
+
     return fm.horizontalAdvance(name);
 }
 float gPerson::GetDatesWidth(QPainter * painter) const {
@@ -198,6 +201,19 @@ void gPerson::SortLinks(){
             //qDebug() << "gperson sortlinks: bottomoffset"<< startingPoint + i * delta << "starting point"<< startingPoint <<LastName();
         }
     }
+
+}
+void gPerson::write(QJsonObject & json) const {
+    json["key"] = key;
+    json["type"] = "person";
+    json["firstName"] = firstName;
+    json["lastName"] = lastName;
+    json["xpos"] = xpos;
+    json["ypos"] = ypos;
+    json["height"] = height;
+    json["width"] = width;
+    json["margin"] = margin;
+    json["centerX"] = centerX;
 
 }
 

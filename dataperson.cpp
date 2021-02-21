@@ -50,4 +50,16 @@ void dPerson::write(QJsonObject & json) const {
     json["profession1"] = profession1;
 
 }
+void dPerson::read(const QJsonObject & json){
+    key = json["key"].toString();
+    firstName = json["firstName"].toString();
+    lastName = json["lastName"].toString();
+    birthYear = json["birthYear"].toInt();
+    deathYear = json["deathYear"].toInt();
+    xpos = json["xpos"].toDouble();
+    profession1 = json["profession1"].toString();
 
+}
+QString dPerson::display(){
+    return key + " " + firstName + " " + lastName + " " + key + " " + profession1;
+}

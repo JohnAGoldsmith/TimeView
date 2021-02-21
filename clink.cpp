@@ -27,6 +27,10 @@ cLink::cLink(QStringList & data){
     bottomOffset = 0.0;
     topOffset = 0.0;
 
+    if (fromPersonKey == "Chomsky" && toPersonKey=="Halle"){
+        int i = 0;
+    }
+
     if (data.size() >= 11 && data[10].length() > 0){
         natureOfLink = data[10];
     }
@@ -37,7 +41,9 @@ cLink::cLink(QStringList & data){
     else if (data[3] == "270") {PositionOnFromPerson = "Bottom";}
     else if (data[3] == "-90") {PositionOnFromPerson = "Bottom";}
     else {PositionOnFromPerson == "Not defined";}
-    if (data[6] == 0){ PositionOnToPerson ==  "Right";}
+    if (data[6] == "0"){ PositionOnToPerson ==  "Right";
+      qDebug () << "___----" << toPersonKey;
+    }
     else if (data[6] == "90"){ PositionOnToPerson="Top";}
     else if (data[6] == "180"){PositionOnToPerson = "Left";}
     else if (data[6] == "-180"){PositionOnToPerson = "Left";}
@@ -89,7 +95,8 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     /* fix "centerX" function */
     float GPersonFromCenterX = 50;
     float GPersonToCenterX = 50;
-
+    float willbewidth = 120;
+    float willbeheight = 80;
 
     float y_distance1 = GPersonFrom()->scenePos().y() - GPersonTo()->scenePos().y();
     float y_distance2 = y_distance1 - GPersonTo()->Height();
@@ -102,51 +109,63 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
         pen.setColor(Qt::blue);
         pen.setWidth(3);
         painter->setPen(pen);
-    } else {
-        if (natureOfLink == "postDoc" || natureOfLink == "Semi-teacher" || natureOfLink == "influence"){
+    }
+    if (natureOfLink == "postDoc" || natureOfLink == "Semi-teacher" || natureOfLink == "influence"){
         pen.setColor(Qt::blue);
         pen.setWidth(3);
         pen.setStyle(Qt::DashLine);
         painter->setPen(pen);
-        } else {if (natureOfLink == "colleagues") {
+     }
+    if (natureOfLink == "colleagues") {
                pen.setColor(Qt::green);
                pen.setWidth(3);
                painter->setPen(pen);
-                }
-        }
+    }
+    if (natureOfLink == "hostile") {
+               pen.setColor(Qt::red);
+               pen.setWidth(3);
+               painter->setPen(pen);
     }
 
+    if (GPersonFrom()->LastName() == "Chomsky"){
+        qDebug() <<"***" << PositionOnFromPerson << PositionOnToPerson << GPersonTo()->LastName();
+    }
     /* Now we do things in Link's coordinates, which is From */
     if (PositionOnFromPerson == "Top") {
        start_point  = QPointF(GPersonFromCenterX + topOffset,0 );
-    } else { if (PositionOnFromPerson == "Right") {
-        //point_start = QPoint(willbeX, willbeY );
-    } else{ if (PositionOnFromPerson == "Left") {
-        //point_start = QPoint(-1.0 * willbeX, willbeY );
-            }
-        }
     }
+    else if (PositionOnFromPerson == "Right") {
+        start_point = QPoint(willbewidth, willbeheight * 0.5 );
+    }
+    else if (PositionOnFromPerson == "Left") {
+        start_point = QPoint(0, willbeheight * 0.5 );
+    }
+    else{
+        start_point  = QPointF(GPersonFromCenterX + topOffset,0 );
+    }
+
     if (PositionOnToPerson == "Bottom") {
        end_point = QPointF(-1.0 * x_distance - bottomOffset + GPersonToCenterX, -1.0 * y_distance2);
-    } else { if (PositionOnToPerson == "Right") {
-        //point_end = QPoint(willbeX, willbeY );
-    } else{ if (PositionOnToPerson == "Left") {
-        //point_end = QPoint(-1.0 * willbeX, willbeY );
-            }
-        }
     }
+    else if (PositionOnToPerson == "Right") {
+        end_point = QPoint(-1.0 * x_distance,  -1.0 * y_distance2 );
+        qDebug() << "####" << GPersonTo()->LastName();
+    }
+    else if (PositionOnToPerson == "Left") {
+        //point_end = QPoint(-1.0 * willbeX, willbeY );
+    }
+    else {
+        end_point = QPointF(-1.0 * x_distance , -1.0 * y_distance2);
+    }
+
     if (GPersonFrom()->LastName() == "Wundt"){
     qDebug() << "Wundt"<< GPersonTo()->LastName() << end_point.x() << end_point.y();
     }
-    /*
-    if (GPersonFrom()->LastName()=="Sapir"){
-        int i = 0;
-        qDebug() << natureOfLink <<  gPersonFrom->LastName() << gPersonTo->LastName() << end_point.x() << end_point.y() << "top offset" << topOffset;
-    }*/
+
     QPointF point1 (start_point.x(), start_point.y() - fraction1 * y_distance2  );
     QPointF point2 (end_point.x(), point1.y());
 
-
+    //painter->drawLine(start_point,end_point);
 
     painter->drawLine(start_point, point1);
     painter->drawLine(point1, point2);
