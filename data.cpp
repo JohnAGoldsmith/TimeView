@@ -138,28 +138,20 @@ void cData::write(QJsonObject &json) const{
 }
 void cData::ReadJson() {
     QFile file ("./save.json");
-    qDebug() << QDir::currentPath();
+    //qDebug() << QDir::currentPath();
     if (! file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
 
     QByteArray thisData = file.readAll();
     QJsonDocument loadDoc(QJsonDocument::fromJson(thisData));
-
-    //read(loadDoc.object());
-
-
     QJsonObject rootItem = loadDoc.object(); // this should be the root item;
 
-
     if (  rootItem.contains ("DataPersons") && rootItem["DataPersons"].isArray()  ){
        QJsonArray dpArray = rootItem["DataPersons"].toArray();
-       qDebug() << 155 << dpArray.size();
-
        for (int index = 0; index < dpArray.size(); ++index){
            QJsonObject dpObject = dpArray[index].toObject();
            dPerson * dperson = new dPerson();
            dperson->read(dpObject);
-           qDebug() << dperson->display();
            dataPersons.append(dperson);
            if (Key2dataPerson.contains(dperson->Key())){
                  qWarning ("Collision of Keys for dataPersons; new person created nonetheless.");
@@ -167,24 +159,15 @@ void cData::ReadJson() {
            Key2dataPerson[dperson->Key()] = dperson;
        }
     }
-    if (  rootItem.contains ("DataPersons") && rootItem["DataPersons"].isArray()  ){
-       QJsonArray dpArray = rootItem["DataPersons"].toArray();
-       qDebug() << 155 << dpArray.size();
-
-       for (int index = 0; index < dpArray.size(); ++index){
-           QJsonObject dpObject = dpArray[index].toObject();
-           dPerson * dperson = new dPerson();
-           dperson->read(dpObject);
-           qDebug() << dperson->display();
-           dataPersons.append(dperson);
-           if (Key2dataPerson.contains(dperson->Key())){
-                 qWarning ("Collision of Keys for dataPersons; new person created nonetheless.");
-           }
-           Key2dataPerson[dperson->Key()] = dperson;
+    if (  rootItem.contains ("Links") && rootItem["Links"].isArray()  ){
+       QJsonArray linkArray = rootItem["Links"].toArray();
+       for (int index = 0; index < linkArray.size(); ++index){
+           QJsonObject linkObject = linkArray[index].toObject();
+           cLink * link = new cLink();
+           link->read(linkObject);
+           Links.append(link);
        }
     }
-
-
     return ;
 }
 void cData::ReadCSV()

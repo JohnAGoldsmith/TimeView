@@ -25,6 +25,7 @@ class cLink: public QGraphicsItem
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
         QString display() const;
         void write(QJsonObject & json) const;
+        void read(QJsonObject & json);
 
         QString getFromKey(){return fromPersonKey;}
         QString getToKey(){return toPersonKey;}

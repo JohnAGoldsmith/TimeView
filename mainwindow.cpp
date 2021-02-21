@@ -32,9 +32,9 @@ MainWindow::MainWindow(QWidget *parent)
     QWidget *widget = new QWidget;
     widget->setLayout(layout);
 
-    //getData()->ReadJson( );
-    getData()->ReadCSV();
-    getData()->analyzeData();
+    getData()->ReadJson( );
+    //getData()->ReadCSV();
+    //getData()->analyzeData();
     getData()->sendPersonsAndLinksToScene(localScene);
 
     setCentralWidget(widget);
@@ -42,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
     setUnifiedTitleAndToolBarOnMac(true);
 
     QJsonObject dataObject;
-    getData()->save( );
+    //getData()->save( );
 
 }
 

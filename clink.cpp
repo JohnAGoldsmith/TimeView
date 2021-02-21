@@ -63,11 +63,8 @@ QString cLink::display()const {
   out += " toPersonKey ";
   out += toPersonKey;
   out += " thru gPerson links";
-  if (gPersonFrom){
-      out += gPersonFrom->LastName();
-    } else{
-      out += "No From link";
-  }
+  out += natureOfLink;
+  return out;
 }
 void cLink::attachGraphicalPersons(gPerson * person1, gPerson * person2){
  gPersonFrom = person1;
@@ -177,4 +174,9 @@ void cLink::write(QJsonObject & json) const{
  json["FromPersonKey"] = fromPersonKey;
  json["ToPersonKey"] = toPersonKey;
  json["NatureOfLink"] = natureOfLink;
+}
+void cLink::read(QJsonObject & json)  {
+ fromPersonKey = json["FromPersonKey"].toString();
+ toPersonKey = json["ToPersonKey"].toString() ;
+ natureOfLink = json["NatureOfLink"].toString();
 }
