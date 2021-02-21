@@ -23,7 +23,8 @@ public:
                 QWidget * widget);
     bool Pressed;
 
-    void write(QJsonObject & json) const;
+
+
     void rememberPos(QPointF);
     //double Width() {return width;}
     void SetY(int y) {ypos = y;}
@@ -42,6 +43,10 @@ public:
     QList<cLink*> * GetBottomLinks() {return & bottomLinks;}
     void SortLinks();
     QString Key();
+
+    // Json:
+    void read(const QJsonObject & json);
+    void write(QJsonObject & json) const;
 
 
 protected:

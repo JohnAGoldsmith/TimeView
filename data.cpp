@@ -63,8 +63,6 @@ gPerson* cData::CreateGraphicalPerson(dPerson * dperson){
     dperson->setGraphicPerson(gPerson1);
     qDebug() << 85 << graphicalPersons.size();
     graphicalPersons.append(gPerson1);
-    qDebug() << 86 << gPerson1->LastName() << graphicalPersons.size();
-
 }
 
 void cData::sendPersonsAndLinksToScene(cScene* scene){
@@ -171,13 +169,16 @@ void cData::ReadJson() {
            Links.append(link);
        }
     }
+
+
+
     if (rootItem.contains("GraphicalPersons") && rootItem["GraphicalPersons"].isArray() ){
-        QJsonArray linkArray = rootItem["GraphicalPersons"].toArray();
-        for (int index = 0; index < linkArray.size(); ++index){
-            QJsonObject linkObject = linkArray[index].toObject();
-            cLink * link = new cLink();
-            link->read(linkObject);
-            Links.append(link);
+        QJsonArray gPersonArray = rootItem["GraphicalPersons"].toArray();
+        for (int index = 0; index < gPersonArray.size(); ++index){
+            QJsonObject gpObject = gPersonArray[index].toObject();
+            gPerson * gperson = new gPerson();
+            gperson->read(gpObject);
+            graphicalPersons.append(gperson);
             }
     }
     return ;

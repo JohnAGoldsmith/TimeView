@@ -205,6 +205,17 @@ void gPerson::write(QJsonObject & json) const {
 
 
 }
+void gPerson::read(const QJsonObject &json){
+    key = json["key"].toString();
+    firstName = json["firstName"].toString();
+    lastName = json["lastName"].toString();
+    xpos = json["xpos"].toDouble();
+    ypos = json["ypos"].toDouble();
+    height = json["height"].toInt();
+    //width = json["width"];
+    //margin = json["margin"];
+
+}
 void gPerson::rememberPos(QPointF point){
     xpos = point.x();
     ypos = point.y();
