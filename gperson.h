@@ -24,16 +24,14 @@ public:
     bool Pressed;
 
     void write(QJsonObject & json) const;
-
-    double Width() {return width;}
+    void rememberPos(QPointF);
+    //double Width() {return width;}
     void SetY(int y) {ypos = y;}
-    float Xpos(){return xpos;}
+    //float Xpos(){return xpos;}
     float Ypos(){return ypos;}
     QString LastName() {return lastName;}
-    QPointF BottomHook() {return bottomHook;}
-    QPointF TopHook(){return topHook;}
     dPerson* getDPerson() const {return dataPerson;}
-    float CenterX( QPainter * painter );
+
     float Height() {return height;}
     float GetNameWidth(QPainter * )const;
     //float GetNameWidth( )const;
@@ -54,25 +52,14 @@ private:
     cScene * scene;
     dPerson * dataPerson;
     QFont *  myFont;
-
-    QGraphicsRectItem * box;
-    QGraphicsSimpleTextItem * nameItem;
-    QGraphicsSimpleTextItem * yearsItem;
     QString key;
     float xpos;
     float ypos;
     float height;
-    float width;
-    double margin;
     QString firstName;
     QString lastName;
-
     QRectF personBoundingRect;
-    float centerX;
-    QPoint bottomHook;
-    QPoint topHook;
     QList<cLink*> myLinks;
-
     QList<cLink*> topLinks;
     QList<cLink*> bottomLinks;
 

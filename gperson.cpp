@@ -24,7 +24,7 @@ gPerson::gPerson( dPerson * dp )
   setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
 
   height = 40;
-  margin = 5;
+  float margin = 5;
   firstName = dp->FirstName();
   lastName = dp->LastName();
   key = dp->Key();
@@ -39,11 +39,6 @@ gPerson::gPerson( dPerson * dp )
       totalwidth = datewidth;
   else
       totalwidth = namewidth;
-
-  topHook.setX(totalwidth * 0.5);
-  topHook.setY(0);
-  bottomHook.setX(totalwidth * 0.5);
-  bottomHook.setY(height);
   personBoundingRect.setCoords(-1.0 * margin, 0, totalwidth, height);
 
 }
@@ -91,12 +86,6 @@ void gPerson::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
         }
     }
     QGraphicsItem::mouseReleaseEvent(event);
-}
-
-
-
-float gPerson::CenterX(QPainter * painter  ){
-   return GetNameWidth(painter ) * 0.5;
 }
 
 
@@ -157,9 +146,9 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     }else{
         totalwidth = namewidth;
     }
-    QRectF completeRect;
-    completeRect.setCoords(-1 * margin, 0,  totalwidth, height);
-    painter->fillRect(completeRect,brush);
+    //QRectF completeRect;
+    //completeRect.setCoords(-1 * margin, 0,  totalwidth, height);
+    //painter->fillRect(completeRect,brush);
 
     QRectF rect(0,0,namewidth,20);
     QRectF boundingRect1;
@@ -211,9 +200,12 @@ void gPerson::write(QJsonObject & json) const {
     json["xpos"] = xpos;
     json["ypos"] = ypos;
     json["height"] = height;
-    json["width"] = width;
-    json["margin"] = margin;
-    json["centerX"] = centerX;
+    //json["width"] = width;
+    //json["margin"] = margin;
+
 
 }
-
+void gPerson::rememberPos(QPointF point){
+    xpos = point.x();
+    ypos = point.y();
+}

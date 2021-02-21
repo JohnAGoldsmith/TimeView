@@ -82,6 +82,7 @@ void cData::sendPersonsAndLinksToScene(cScene* scene){
         dperson = gperson->getDPerson();
         QPointF transformedCoordinates (dperson->Xpos() * scene->ScaleFactor(), dperson->Ypos() * scene->TimeScale());
         gperson->setPos(transformedCoordinates);
+        gperson->rememberPos(transformedCoordinates);
     }
     foreach (cLink * link, Links){
         if ( Key2dataPersonHashContains(link->getFromKey())) {
@@ -131,9 +132,11 @@ void cData::write(QJsonObject &json) const{
     foreach (const gPerson * gp, graphicalPersons){
          QJsonObject gPersonObject;
          gp->write(gPersonObject);
-         linkArray.append(gPersonObject);
+         gPersonArray.append(gPersonObject);
     }
     json["GraphicalPersons"]=gPersonArray;
+
+
     return ;
 }
 void cData::ReadJson() {
@@ -167,6 +170,15 @@ void cData::ReadJson() {
            link->read(linkObject);
            Links.append(link);
        }
+    }
+    if (rootItem.contains("GraphicalPersons") && rootItem["GraphicalPersons"].isArray() ){
+        QJsonArray linkArray = rootItem["GraphicalPersons"].toArray();
+        for (int index = 0; index < linkArray.size(); ++index){
+            QJsonObject linkObject = linkArray[index].toObject();
+            cLink * link = new cLink();
+            link->read(linkObject);
+            Links.append(link);
+            }
     }
     return ;
 }
