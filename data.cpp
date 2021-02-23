@@ -58,7 +58,7 @@ gPerson* cData::CreateGraphicalPerson(dPerson * dperson){
        qDebug() << "cData:  collision of graphicalPerson keys" << dperson->LastName()<< "No graphical unit created.";
        return NULL;
     }
-    dperson->Ypos ( TopPosition() - dperson->BirthYear() ) ;
+    //dperson->Ypos ( TopPosition() - dperson->BirthYear() ) ;
     gPerson* gperson = new gPerson(dperson);
     Key2graphicalPerson[dperson->Key()]= gperson;
     dperson->setGraphicPerson(gperson);
@@ -96,9 +96,13 @@ void cData::sendPersonsAndLinksToScene(cScene* scene){
     foreach (gPerson * gperson, graphicalPersons){
         scene->addItem(gperson);
         dperson = gperson->getDPerson();
-        QPointF transformedCoordinates (dperson->Xpos() * scene->ScaleFactor(), dperson->Ypos() * scene->TimeScale());
-        gperson->setPos(transformedCoordinates);
-        gperson->rememberPos(transformedCoordinates);
+
+        float new_x = dperson->Xpos() * scene->ScaleFactor();
+        float new_y = scene->TimeScale() * ( scene->TopPosition() - dperson->BirthYear());
+        gperson->setPos(new_x, new_y  );
+        //QPointF transformedCoordinates (dperson->Xpos() * scene->ScaleFactor(), dperson->Ypos() * scene->TimeScale());
+        //gperson->setPos(transformedCoordinates);
+        gperson->rememberPos(QPointF(new_x,new_y));
     }
     foreach (cLink * link, Links){
         gPerson1 = link->GPersonFrom();

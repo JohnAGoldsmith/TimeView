@@ -32,7 +32,7 @@ gPerson::gPerson( dPerson * dp )
   myFont = new  QFont("Times", 12);
 
   personBoundingRect.setCoords(-1.0 * margin, 0, width, height);
-
+  xpos = 0;  // it will be set the first time it is add to scene, using the toppoint on the scene.
 }
 gPerson::~gPerson(){
 
