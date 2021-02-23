@@ -23,44 +23,37 @@ gPerson::gPerson( dPerson * dp )
   dp->setGraphicPerson(this);
   setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
 
+  width = 100; // this isn't right, it should be dynamic and based on relevant data; but that's not available till after Paint();
   height = 40;
   float margin = 5;
   firstName = dp->FirstName();
   lastName = dp->LastName();
   key = dp->Key();
   myFont = new  QFont("Times", 12);
-  QPainter painter;
-  painter.setFont(* myFont);
 
-  float totalwidth(0.0);
-  float namewidth = GetNameWidth(& painter);
-  float datewidth = GetDatesWidth(& painter );
-  if (datewidth > namewidth)
-      totalwidth = datewidth;
-  else
-      totalwidth = namewidth;
-  personBoundingRect.setCoords(-1.0 * margin, 0, totalwidth, height);
+  personBoundingRect.setCoords(-1.0 * margin, 0, width, height);
 
 }
 gPerson::~gPerson(){
 
 }
-
+/*void gPerson::LinkToDPersonBidirectional(dPerson* dperson) {
+    dataPerson=dperson;
+    dperson->setGraphicPerson(this);
+    setKey(dperson->Key());
+}
+*/
 
 void gPerson::AppendLink(cLink *link) {
     myLinks.append(link);
     if (link->GPersonFrom() == this){
         if (link->GetPositionOnFromPerson() == "Top"){
             topLinks.append(link);
-        } else{
-            //qDebug() << "gperson"<< 59 << "We have a From person not on Top" << link->GPersonFrom()->LastName();
         }
     }
-    if (link->GPersonTo() == this){
+    if (link->GPersonTo()==this){
         if (link->GetPositionOnToPerson() == "Bottom"){
             bottomLinks.append(link);
-        } else{
-            //qDebug() << "gperson"<< 59 << "We have a To person not on Bottom" << link->GPersonTo()->LastName();
         }
     }
 
@@ -103,9 +96,8 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
     dPerson * dp = getDPerson();
     double topMargin = 10.0;
-
     double lineHeight = 15.0;
-    double totalWidth = 0;
+
     painter->setFont(*myFont);
     QColor Orange;
     Orange.setRgb(255,153,51);
@@ -138,11 +130,11 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     QString years = QString::number(dp->BirthYear()) + "--" + QString::number(dp->DeathYear());
     float namewidth = GetNameWidth(painter);
     float datewidth = GetDatesWidth(painter);
-    float totalwidth(0.0);
+
     if (datewidth > namewidth){
-        totalwidth = datewidth;
+        width = datewidth;
     }else{
-        totalwidth = namewidth;
+        width = namewidth;
     }
     QRectF rect(0,0,namewidth,20);
     QRectF boundingRect1;
@@ -151,6 +143,9 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     QRectF boundingRect2 (boundingRect1);
     rect.moveTo(0,lineHeight);
     painter->drawText(rect, Qt::AlignHCenter,years, &boundingRect2);
+
+    float margin = 5;
+    personBoundingRect.setCoords(-1.0 * margin, 0, width, height);
 }
 void gPerson::SortLinks(){
     float boxwidth = 100.0; // should be GetNameWidth();
@@ -175,9 +170,11 @@ void gPerson::SortLinks(){
         int i = 0;
         float startingPoint;
         startingPoint =  -1.0 * ( (LS/2.0  ) * delta ) ;
+        qDebug() << "";
         foreach (cLink* thislink, * thisList){
             thislink->BottomOffset(startingPoint + i * delta);
             i++;
+            qDebug() << "gperson sort links"<< LastName() << "link to "<< thislink->GPersonTo()->LastName();
         }
     }
 
@@ -202,9 +199,6 @@ void gPerson::read(const QJsonObject &json){
     xpos = json["xpos"].toDouble();
     ypos = json["ypos"].toDouble();
     height = json["height"].toInt();
-    //width = json["width"];
-    //margin = json["margin"];
-
 }
 void gPerson::rememberPos(QPointF point){
     xpos = point.x();

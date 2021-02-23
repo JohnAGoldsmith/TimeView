@@ -15,9 +15,9 @@ cData::cData()
 
 void cData::analyzeData(){
     dPerson* dperson;
-    gPerson * gperson;
+    gPerson * gperson, * fromgperson, * togperson;
     cLink * l;
-    QString outfileName;
+    QString outfileName, fromKey, toKey;
     foreach (QString line1 , tempLines){
        QStringList line = line1.split(",");
        if (line.size() < 1)
@@ -40,6 +40,7 @@ void cData::analyzeData(){
            }
        }
     }
+    AddGPersonPtrsToLinks();
 }
 
 dPerson* cData::CreateDataPerson(QStringList line){
@@ -53,58 +54,85 @@ dPerson* cData::CreateDataPerson(QStringList line){
 }
 
 gPerson* cData::CreateGraphicalPerson(dPerson * dperson){
-
     if (Key2graphicalPersonHashContains(dperson->Key())) {
        qDebug() << "cData:  collision of graphicalPerson keys" << dperson->LastName()<< "No graphical unit created.";
        return NULL;
     }
     dperson->Ypos ( TopPosition() - dperson->BirthYear() ) ;
-    gPerson* gPerson1 = new gPerson(dperson);
-    dperson->setGraphicPerson(gPerson1);
-    qDebug() << 85 << graphicalPersons.size();
-    graphicalPersons.append(gPerson1);
+    gPerson* gperson = new gPerson(dperson);
+    Key2graphicalPerson[dperson->Key()]= gperson;
+    dperson->setGraphicPerson(gperson);
+    graphicalPersons.append(gperson);
 }
 
+void cData::AddGPersonPtrsToLinks(){
+    QString fromKey, toKey;
+    gPerson * fromgperson, *togperson;
+    foreach (cLink* link, Links){
+        fromKey = link->getFromKey();
+        toKey = link->getToKey();
+        if (! Key2graphicalPersonHashContains(fromKey)){
+            qDebug() << "Link containing "<<fromKey << "and" << toKey << "cannot be made;"<<fromKey << "is missing.";
+            continue;
+        }
+        if (! Key2graphicalPersonHashContains(toKey)){
+            qDebug() << "Link containing "<<fromKey << "and" << toKey << "cannot be made;"<<toKey << "is missing.";
+            continue;
+        }
+        //qDebug() << "data line 83"<<fromKey;
+        //qDebug() << "data line 84"<< toKey;
+        fromgperson = getGraphicPersonFromKey(fromKey);
+        //qDebug() << "data line 86"<< fromgperson->LastName();
+        togperson = getGraphicPersonFromKey(toKey);
+        link->attachGraphicalPersons(fromgperson,togperson);
+    }
+}
+
+
 void cData::sendPersonsAndLinksToScene(cScene* scene){
-    QGraphicsRectItem* rItem;
-    QGraphicsLineItem * line;
     gPerson * gPerson1, * gPerson2;
-    QString sPerson1, sPerson2;
     dPerson* dPerson1, * dPerson2, *dperson;
-    cLink * link;
 
     foreach (gPerson * gperson, graphicalPersons){
-
         scene->addItem(gperson);
-        //qDebug() << 99 << gperson->LastName() << graphicalPersons.size();
         dperson = gperson->getDPerson();
         QPointF transformedCoordinates (dperson->Xpos() * scene->ScaleFactor(), dperson->Ypos() * scene->TimeScale());
         gperson->setPos(transformedCoordinates);
         gperson->rememberPos(transformedCoordinates);
     }
     foreach (cLink * link, Links){
-        if ( Key2dataPersonHashContains(link->getFromKey())) {
-                    dPerson1 =  getDataPersonFromKey(link->getFromKey());
-        }else{
-            //qDebug() << "cData: missing someone" << link->getFromKey() ;
+        //qDebug() << "Data,104 sending to scene "<< link->display();
+        gPerson1 = link->GPersonFrom();
+        gPerson2 = link->GPersonTo();
+        if ( ! gPerson1 || ! gPerson2 ){
+            qDebug() << "Cannot send link to Scene 124 "<<link->display() << "Missing gperson." ;
             continue;
         }
-        if ( Key2dataPersonHashContains(link->getToKey())) {
-               dPerson2 =  getDataPersonFromKey(link->getToKey());
-        }else{
-            qDebug() << "cData: missing person for link;" << link->getToKey(); ;
-            continue;
-        }
-
-        gPerson1 = dPerson1->get_gPerson();
-        gPerson2 = dPerson2->get_gPerson();
-
-        link->attachGraphicalPersons(gPerson1, gPerson2);
+        //qDebug() << 111 << "data" << gPerson1->LastName() << gPerson2->LastName();
+        //link->attachGraphicalPersons(gPerson1, gPerson2);
         scene->AddLink(link);
-
     }
 }
-
+void cData::sendPersonsAndLinksToSceneJson(cScene* scene){
+    gPerson * gPerson1, * gPerson2;
+    dPerson* dPerson1, * dPerson2, *dperson;
+    foreach (gPerson * gperson, graphicalPersons){
+        scene->addItem(gperson);
+        dperson = gperson->getDPerson();
+        gperson->setPos(gperson->Xpos(), gperson->Ypos());
+    }
+    foreach (cLink * link, Links){
+        gPerson1 = link->GPersonFrom();
+        gPerson2 = link->GPersonTo();
+        if ( ! gPerson1 || ! gPerson2 ){
+            qDebug() << "Cannot send link to Scene 124 "<<link->display() << "Missing gperson." ;
+            continue;
+        }
+        link->attachGraphicalPersons(gPerson1, gPerson2);
+        qDebug() << 99 << "data" << gPerson1->LastName() << gPerson2->LastName();
+        scene->AddLink(link);
+    }
+}
 
 
 void cData::write(QJsonObject &json) const{
@@ -139,7 +167,6 @@ void cData::write(QJsonObject &json) const{
 }
 void cData::ReadJson() {
     QFile file ("./save.json");
-    //qDebug() << QDir::currentPath();
     if (! file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
 
@@ -151,7 +178,7 @@ void cData::ReadJson() {
        QJsonArray dpArray = rootItem["DataPersons"].toArray();
        for (int index = 0; index < dpArray.size(); ++index){
            QJsonObject dpObject = dpArray[index].toObject();
-           dPerson * dperson = new dPerson();
+           dPerson * dperson = new dPerson();  // create a new constructor for Json!!
            dperson->read(dpObject);
            dataPersons.append(dperson);
            if (Key2dataPerson.contains(dperson->Key())){
@@ -160,28 +187,56 @@ void cData::ReadJson() {
            Key2dataPerson[dperson->Key()] = dperson;
        }
     }
+    if (rootItem.contains("GraphicalPersons") && rootItem["GraphicalPersons"].isArray() ){
+        QJsonArray gPersonArray = rootItem["GraphicalPersons"].toArray();
+        for (int index = 0; index < gPersonArray.size(); ++index){
+            QJsonObject gpObject = gPersonArray[index].toObject();
+            QString key1 = gpObject["key"].toString();
+            if (!Key2dataPersonHashContains (key1)){
+                qDebug() << "!!! Trying to make a gperson with illicit key" << key1;
+                continue;
+            }
+            dPerson* dperson = Key2dataPerson[key1];
+            gPerson* gperson = new gPerson(dperson);
+            gperson->read(gpObject);
+            Key2graphicalPerson[key1] = gperson;
+            graphicalPersons.append(gperson);
+            }
+    }
+
     if (  rootItem.contains ("Links") && rootItem["Links"].isArray()  ){
        QJsonArray linkArray = rootItem["Links"].toArray();
        for (int index = 0; index < linkArray.size(); ++index){
            QJsonObject linkObject = linkArray[index].toObject();
            cLink * link = new cLink();
            link->read(linkObject);
+           //qDebug() << "Reading Json links 172" <<  link->getFromKey();
+           gPerson* gpersonFrom = Key2graphicalPerson[link->getFromKey()];
+           //qDebug() << "read Json link" << gpersonFrom->LastName();
+           gPerson* gpersonTo   = Key2graphicalPerson[link->getToKey()];
+           //qDebug() << "Read Json link 2"<< gpersonTo->LastName();
+           link->attachGraphicalPersons(gpersonFrom, gpersonTo);
            Links.append(link);
+           if (link->getFromKey()=="Sapir"){
+               qDebug() << "data line 188 read links with Sapir" << gpersonTo->LastName();
+           }
        }
     }
 
-
-
-    if (rootItem.contains("GraphicalPersons") && rootItem["GraphicalPersons"].isArray() ){
-        QJsonArray gPersonArray = rootItem["GraphicalPersons"].toArray();
-        for (int index = 0; index < gPersonArray.size(); ++index){
-            QJsonObject gpObject = gPersonArray[index].toObject();
-            gPerson * gperson = new gPerson();
-            gperson->read(gpObject);
-            graphicalPersons.append(gperson);
-            }
-    }
     return ;
+}
+
+/*
+void cLink::attachGraphicalPersons(gPerson * person1, gPerson * person2){
+ gPersonFrom = person1;
+ gPersonTo = person2;
+ person1->AppendLink(this);
+ person2->AppendLink(this);
+}
+*/
+void cData::AttachLinks(gPerson *){
+
+
 }
 void cData::ReadCSV()
 {

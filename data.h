@@ -26,7 +26,9 @@ public:
     void ReadJson();
     void analyzeData();
     void sendPersonsAndLinksToScene(cScene *);
+    void sendPersonsAndLinksToSceneJson(cScene *);
     dPerson* getDataPersonFromKey(QString key){return Key2dataPerson[key];}
+    gPerson* getGraphicPersonFromKey(QString key){return Key2graphicalPerson[key];}
     bool  Key2dataPersonHashContains (QString key ) {return  Key2dataPerson.contains(key);}
     bool  Key2graphicalPersonHashContains (QString key ) {return  Key2graphicalPerson.contains(key);}
     void save() const;
@@ -35,6 +37,9 @@ public:
     int TopPosition() {return topPosition;}
     dPerson* CreateDataPerson(QStringList line);
     gPerson* CreateGraphicalPerson(dPerson*);
+
+    void AttachLinks(gPerson * );
+    void AddGPersonPtrsToLinks();
 private:
     QList<dPerson*> dataPersons;
     QList<gPerson*> graphicalPersons;

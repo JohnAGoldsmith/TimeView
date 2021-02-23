@@ -28,21 +28,25 @@ public:
     void rememberPos(QPointF);
     //double Width() {return width;}
     void SetY(int y) {ypos = y;}
-    //float Xpos(){return xpos;}
+    float Xpos(){return xpos;}
     float Ypos(){return ypos;}
     QString LastName() {return lastName;}
     dPerson* getDPerson() const {return dataPerson;}
 
     float Height() {return height;}
     float GetNameWidth(QPainter * )const;
-    //float GetNameWidth( )const;
     float GetDatesWidth(QPainter * ) const ;
     void AppendLink (cLink * link);
     QList<cLink*> * GetLinks() {return & myLinks;}
     QList<cLink*> * GetTopLinks() {return & topLinks;}
     QList<cLink*> * GetBottomLinks() {return & bottomLinks;}
     void SortLinks();
-    QString Key();
+    QString Key(){return key;}
+    void setKey(QString thiskey){key = thiskey;}
+    void setWidth(float w){width = w;}
+    float Width(){return width;}
+   //void LinkToDPersonBidirectional(dPerson* dperson);
+
 
     // Json:
     void read(const QJsonObject & json);
@@ -61,6 +65,7 @@ private:
     float xpos;
     float ypos;
     float height;
+    float width;
     QString firstName;
     QString lastName;
     QRectF personBoundingRect;

@@ -27,10 +27,6 @@ cLink::cLink(QStringList & data){
     bottomOffset = 0.0;
     topOffset = 0.0;
 
-    if (fromPersonKey == "Chomsky" && toPersonKey=="Halle"){
-        int i = 0;
-    }
-
     if (data.size() >= 11 && data[10].length() > 0){
         natureOfLink = data[10];
     }
@@ -55,7 +51,7 @@ cLink::~cLink(){
 }
 QString cLink::display()const {
   QString out;
-  out += " fromPersonKey";
+  out += "Display a link: fromPersonKey ";
   out += fromPersonKey;
   out += " toPersonKey ";
   out += toPersonKey;
@@ -121,9 +117,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
                painter->setPen(pen);
     }
 
-    if (GPersonFrom()->LastName() == "Chomsky"){
-        qDebug() <<"***!!!" << PositionOnFromPerson << PositionOnToPerson << GPersonTo()->LastName();
-    }
+
     /* Now we do things in Link's coordinates, which is From */
     if (PositionOnFromPerson == "Top") {
        start_point  = QPointF(GPersonFromCenterX + topOffset,0 );
@@ -143,7 +137,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     }
     else if (PositionOnToPerson == "Right") {
         end_point = QPoint(-1.0 * x_distance + willbewidth *0.5 ,  -1.0 * y_distance2 - 0.5 * willbeheight );
-        qDebug() << "####" << GPersonTo()->LastName();
+        //qDebug() << "####" << GPersonTo()->LastName();
     }
     else if (PositionOnToPerson == "Left") {
         //point_end = QPoint(-1.0 * willbeX, willbeY );
@@ -152,9 +146,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
         end_point = QPointF(-1.0 * x_distance , -1.0 * y_distance2);
     }
 
-    if (GPersonFrom()->LastName() == "Wundt"){
-    qDebug() << "Wundt"<< GPersonTo()->LastName() << end_point.x() << end_point.y();
-    }
+
 
     QPointF point1 (start_point.x(), start_point.y() - fraction1 * y_distance2  );
     QPointF point2 (end_point.x(), point1.y());

@@ -32,17 +32,31 @@ MainWindow::MainWindow(QWidget *parent)
     QWidget *widget = new QWidget;
     widget->setLayout(layout);
 
-    //getData()->ReadJson( );
-    getData()->ReadCSV();
-    getData()->analyzeData();
-    getData()->sendPersonsAndLinksToScene(localScene);
+    bool Json(false);
+    if (Json){
+        getData()->ReadJson( );
+        getData()->sendPersonsAndLinksToSceneJson(localScene);
+        setCentralWidget(widget);
+        setWindowTitle(tr("Genealogy"));
+        setUnifiedTitleAndToolBarOnMac(true);
 
-    setCentralWidget(widget);
-    setWindowTitle(tr("Genealogy"));
-    setUnifiedTitleAndToolBarOnMac(true);
+        QJsonObject dataObject;
+        getData()->save( );
 
-    QJsonObject dataObject;
-    getData()->save( );
+    }else{
+        getData()->ReadCSV();
+        getData()->analyzeData();
+        getData()->sendPersonsAndLinksToScene(localScene);
+        setCentralWidget(widget);
+        setWindowTitle(tr("Genealogy"));
+        setUnifiedTitleAndToolBarOnMac(true);
+
+        QJsonObject dataObject;
+        getData()->save( );
+    }
+
+
+
 
 }
 
