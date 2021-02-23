@@ -46,17 +46,17 @@ gPerson::~gPerson(){
 
 void gPerson::AppendLink(cLink *link) {
     myLinks.append(link);
+    //qDebug() << "gperson 49" << link->display();
     if (link->GPersonFrom() == this){
         if (link->GetPositionOnFromPerson() == "Top"){
             topLinks.append(link);
         }
     }
-    if (link->GPersonTo()==this){
+    else if (link->GPersonTo()==this){
         if (link->GetPositionOnToPerson() == "Bottom"){
             bottomLinks.append(link);
         }
     }
-
     SortLinks();
 }
 
@@ -101,31 +101,36 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     painter->setFont(*myFont);
     QColor Orange;
     Orange.setRgb(255,153,51);
-    QBrush brush (Qt::SolidPattern);
-    brush.setColor(Qt::gray);
-    QPen pen(Qt::black,10);
+    QBrush brush1;
+    //qDebug() << " ";
+    //qDebug() << "gperson 122 "<< brush1.color().name();
+    //brush.setColor(Qt::blue);
+    //qDebug() << "gperson 122 "<< brush1.color().name();
+    QPen pen(Qt::black,1);
     painter->setPen(pen);
-    pen.setColor(Qt::black);
+    painter->setBrush(brush1);
     QString Profession = getDPerson()->profession1;
     if (Profession ==  "linguist"){
-        brush.setColor(Orange);
+        brush1.setColor(Orange);
+        //qDebug() << "gperson 122 "<< brush1.color().name();
     }
     if (Profession == "sociologist"){
-            brush.setColor(Qt::green);
+            brush1.setColor(Qt::green);
+            //qDebug() << "gperson 122 "<< brush1.color().name();
     }
     if (Profession == "philosopher"){
-           brush.setColor(Qt::yellow);
+           brush1.setColor(Qt::yellow);
+           //qDebug() << "gperson 122 "<< brush1.color().name();
      }
     if (Profession == "psychologist"){
-           brush.setColor(Qt::cyan);
+           brush1.setColor(Qt::cyan);
+           //qDebug() << "gperson 122 "<< brush1.color().name();
      }
-
+     //qDebug() << "gperson 122 "<< brush1.color().name();
     if (hasFocus()){
         painter->setPen(Qt::black);
-        brush.setColor(Qt::blue);
+        brush1.setColor(Qt::yellow);
     }
-
-
     QString name = firstName + " "  + lastName;
     QString years = QString::number(dp->BirthYear()) + "--" + QString::number(dp->DeathYear());
     float namewidth = GetNameWidth(painter);
@@ -136,6 +141,10 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     }else{
         width = namewidth;
     }
+
+    QRectF personrect(0,0,width, height);
+    painter->drawRect(personrect);
+    //qDebug() << "gperson 122 "<< brush1.color().name();
     QRectF rect(0,0,namewidth,20);
     QRectF boundingRect1;
     painter->drawText(rect ,Qt::AlignHCenter,  name ,  & boundingRect1);
@@ -160,7 +169,10 @@ void gPerson::SortLinks(){
         foreach (cLink* thislink, * thisList){
             thislink->TopOffset(startingPoint + i * delta);
             i++;
+            if (LastName() == "Sapir")
+                qDebug() << "gperson SortLinks 2 " << thislink->GPersonFrom()->LastName();
         }
+
     }
 
     delta = (boxwidth * 0.5) / GetBottomLinks()->size();
@@ -174,8 +186,10 @@ void gPerson::SortLinks(){
         foreach (cLink* thislink, * thisList){
             thislink->BottomOffset(startingPoint + i * delta);
             i++;
-            qDebug() << "gperson sort links"<< LastName() << "link to "<< thislink->GPersonTo()->LastName();
+            if (LastName() == "Sapir")
+               qDebug() << "gperson SortLinks 2 " << thislink->GPersonTo()->LastName();
         }
+
     }
 
 }

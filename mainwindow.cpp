@@ -4,6 +4,8 @@
 #include <QJsonObject>
 #include <QGraphicsRectItem>
 #include <QGraphicsScale>
+#include <QKeyEvent>
+#include <QTableWidget>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "cscene.h"
@@ -19,7 +21,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    personTable = NULL;
+    linkTable = NULL;
 
     QHBoxLayout *layout = new QHBoxLayout;
 
@@ -32,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
     QWidget *widget = new QWidget;
     widget->setLayout(layout);
 
-    bool Json(false);
+    bool Json(true);
     if (Json){
         getData()->ReadJson( );
         getData()->sendPersonsAndLinksToSceneJson(localScene);
@@ -64,7 +67,23 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-
+void MainWindow::keyPressEvent(QKeyEvent * event){
+  if (event->key() == Qt::Key_D){
+      if (! personTable){
+          personTable  = new QTableWidget;
+          getData()->populatePersonTable(personTable);
+          personTable->show();
+      }
+  }
+  if (event->key() == Qt::Key_L){
+      if (! linkTable){
+          linkTable  = new QTableWidget;
+          getData()->populateLinkTable(linkTable);
+          linkTable->show();
+      }
+  }
+  QMainWindow::keyPressEvent(event);
+}
 
 
 

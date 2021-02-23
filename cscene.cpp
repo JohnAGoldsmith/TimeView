@@ -4,6 +4,8 @@
 #include <QTransform>
 #include <QPointF>
 #include <QGraphicsItem>
+#include <QKeyEvent>
+#include <QTableWidget>
 #include "cscene.h"
 #include "gperson.h"
 #include "clink.h"
@@ -50,16 +52,7 @@ void cScene::mouseReleaseEvent(QGraphicsSceneMouseEvent * event){
     QGraphicsScene::mouseReleaseEvent(event);
     update();
 }
-/*
-void cScene::AddPerson(dPerson * dperson){
-    dperson->Ypos ( TopPosition() - dperson->BirthYear() ) ;
-    if (graphic)
-    gPerson* gPerson1 = new gPerson(dperson);
-    addItem(gPerson1);
-    QPointF transformedCoordinates (dperson->Xpos() * ScaleFactor(), dperson->Ypos() * TimeScale());
-    gPerson1->setPos(transformedCoordinates);
-    dperson->set_gPerson(gPerson1);
-} */
+
 void cScene::AddLink(cLink * link){
     addItem(link);
     link->setPos(link->GPersonFrom()->scenePos());

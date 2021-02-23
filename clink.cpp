@@ -55,8 +55,12 @@ QString cLink::display()const {
   out += fromPersonKey;
   out += " toPersonKey ";
   out += toPersonKey;
-  out += " thru gPerson links";
+  out += " thru gPerson links ";
   out += natureOfLink;
+  out += "Position on From Person: ";
+  out += PositionOnFromPerson;
+  out += "Position on To Person: ";
+  out += PositionOnToPerson;
   return out;
 }
 void cLink::attachGraphicalPersons(gPerson * person1, gPerson * person2){
@@ -140,7 +144,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
         //qDebug() << "####" << GPersonTo()->LastName();
     }
     else if (PositionOnToPerson == "Left") {
-        //point_end = QPoint(-1.0 * willbeX, willbeY );
+         end_point = QPoint(-1.0 * x_distance - willbewidth *0.5 ,  -1.0 * y_distance2 - 0.5 * willbeheight );
     }
     else {
         end_point = QPointF(-1.0 * x_distance , -1.0 * y_distance2);
@@ -165,10 +169,13 @@ void cLink::write(QJsonObject & json) const{
  json["NatureOfLink"] = natureOfLink;
  json["PositionOnFromPerson"] = PositionOnFromPerson;
  json["PositionOnToPerson"] = PositionOnToPerson;
+ //qDebug() << "clink writing json: " << display();
 }
 void cLink::read(QJsonObject & json)  {
  fromPersonKey = json["FromPersonKey"].toString();
  toPersonKey = json["ToPersonKey"].toString() ;
  natureOfLink = json["NatureOfLink"].toString();
-
+ PositionOnFromPerson = json["PositionOnFromPerson"].toString();
+ PositionOnToPerson = json["PositionOnToPerson"].toString();
+ //qDebug() << "clink line 179"<< display();
 }

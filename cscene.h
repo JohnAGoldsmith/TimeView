@@ -47,8 +47,6 @@ private:
     int scaleFactor; // x-axis
     int topPosition;
 
-    
-    
 };
 
 #endif // CSCENE_H

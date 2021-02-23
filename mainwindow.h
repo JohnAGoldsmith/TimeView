@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QWidget>
+#include <QTableWidget>
 #include "cscene.h"
 #include "data.h"
 
@@ -25,6 +27,10 @@ private:
     Ui::MainWindow *ui;
     cScene *scene;
     QGraphicsView *view;
+    QTableWidget *personTable;
+    QTableWidget *linkTable;
+
+    void keyPressEvent(QKeyEvent *);
 
     cData Data;
 };

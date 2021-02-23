@@ -4,6 +4,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QHash>
+#include <QTableWidget>
 #include "gperson.h"
 #include "dataperson.h"
 #include "clink.h"
@@ -40,6 +41,8 @@ public:
 
     void AttachLinks(gPerson * );
     void AddGPersonPtrsToLinks();
+    void populatePersonTable(QTableWidget*);
+    void populateLinkTable(QTableWidget*);
 private:
     QList<dPerson*> dataPersons;
     QList<gPerson*> graphicalPersons;

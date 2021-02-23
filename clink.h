@@ -37,6 +37,7 @@ class cLink: public QGraphicsItem
         void TopOffset(float f) {topOffset =f;}
         QString GetPositionOnFromPerson(){return PositionOnFromPerson;}
         QString GetPositionOnToPerson(){return PositionOnToPerson;}
+        QString NatureOfLink() {return natureOfLink;}
     private:
         QString fromPersonKey;
         QString toPersonKey;

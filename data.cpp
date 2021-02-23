@@ -128,8 +128,10 @@ void cData::sendPersonsAndLinksToSceneJson(cScene* scene){
             qDebug() << "Cannot send link to Scene 124 "<<link->display() << "Missing gperson." ;
             continue;
         }
-        link->attachGraphicalPersons(gPerson1, gPerson2);
-        qDebug() << 99 << "data" << gPerson1->LastName() << gPerson2->LastName();
+        //AddGPersonPtrsToLinks();
+        //link->attachGraphicalPersons(gPerson1, gPerson2);
+
+        //qDebug() << 99 << "data" << gPerson1->LastName() << gPerson2->LastName();
         scene->AddLink(link);
     }
 }
@@ -210,16 +212,21 @@ void cData::ReadJson() {
            QJsonObject linkObject = linkArray[index].toObject();
            cLink * link = new cLink();
            link->read(linkObject);
-           //qDebug() << "Reading Json links 172" <<  link->getFromKey();
+
+           if (! Key2graphicalPersonHashContains(link->getFromKey())){
+               qDebug() << "Link has From keyword that does not exist.";
+               continue;
+           }
+           if (! Key2graphicalPersonHashContains(link->getToKey())){
+               qDebug() << "Link has To keyword that does not exist.";
+               continue;
+           }
+
            gPerson* gpersonFrom = Key2graphicalPerson[link->getFromKey()];
-           //qDebug() << "read Json link" << gpersonFrom->LastName();
            gPerson* gpersonTo   = Key2graphicalPerson[link->getToKey()];
-           //qDebug() << "Read Json link 2"<< gpersonTo->LastName();
            link->attachGraphicalPersons(gpersonFrom, gpersonTo);
            Links.append(link);
-           if (link->getFromKey()=="Sapir"){
-               qDebug() << "data line 188 read links with Sapir" << gpersonTo->LastName();
-           }
+
        }
     }
 
@@ -274,4 +281,34 @@ void cData::save() const{
     QJsonDocument saveDoc(graphObject);
     saveFile.write(saveDoc.toJson());
 
+}
+void cData::populatePersonTable(QTableWidget * table){
+   table->setRowCount(dataPersons.size());
+   table->setColumnCount(20);
+   int row = 0;
+   foreach (dPerson * dperson, dataPersons){
+       QTableWidgetItem *item = new QTableWidgetItem(dperson->LastName());
+       table->setItem(row,0,item);
+       item = new QTableWidgetItem(dperson->FirstName());
+       table->setItem(row,1,item);
+       item = new QTableWidgetItem(dperson->Key());
+       table->setItem(row,2,item);
+       row++;
+   }
+   table->setSortingEnabled(true);
+}
+void cData::populateLinkTable(QTableWidget * table){
+   table->setRowCount(Links.size());
+   table->setColumnCount(20);
+   int row = 0;
+   foreach (cLink * link, Links){
+       QTableWidgetItem *item = new QTableWidgetItem(link->getFromKey());
+       table->setItem(row,0,item);
+       item = new QTableWidgetItem(link->getToKey());
+       table->setItem(row,1,item);
+       item = new QTableWidgetItem(link->NatureOfLink());
+       table->setItem(row,2,item);
+       row++;
+   }
+   table->setSortingEnabled(true);
 }
