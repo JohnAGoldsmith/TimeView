@@ -82,6 +82,9 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
           linkTable->show();
       }
   }
+  if (event->key() == Qt::Key_S){
+      getData()->save( );
+  }
   QMainWindow::keyPressEvent(event);
 }
 

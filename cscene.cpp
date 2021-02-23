@@ -46,6 +46,10 @@ void cScene::mousePressEvent(QGraphicsSceneMouseEvent * event){
 
 
 }
+void cScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event){
+    QGraphicsScene::mouseReleaseEvent(event);
+    update();
+}
 
 void cScene::mouseReleaseEvent(QGraphicsSceneMouseEvent * event){
     gPerson* gp;

@@ -38,6 +38,7 @@ public:
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent * event) override;
+    void mouseMoveEvent(QGraphicsSceneMouseEvent * event) override;
 private:
     QFont myFont;
     QColor myTextColor;

@@ -102,21 +102,16 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     QColor Orange;
     Orange.setRgb(255,153,51);
     QBrush brush1;
-    //qDebug() << " ";
-    //qDebug() << "gperson 122 "<< brush1.color().name();
-    //brush.setColor(Qt::blue);
-    //qDebug() << "gperson 122 "<< brush1.color().name();
+
     QPen pen(Qt::black,1);
     painter->setPen(pen);
     painter->setBrush(brush1);
     QString Profession = getDPerson()->profession1;
     if (Profession ==  "linguist"){
         brush1.setColor(Orange);
-        //qDebug() << "gperson 122 "<< brush1.color().name();
     }
     if (Profession == "sociologist"){
             brush1.setColor(Qt::green);
-            //qDebug() << "gperson 122 "<< brush1.color().name();
     }
     if (Profession == "philosopher"){
            brush1.setColor(Qt::yellow);
@@ -198,11 +193,11 @@ void gPerson::write(QJsonObject & json) const {
     json["type"] = "person";
     json["firstName"] = firstName;
     json["lastName"] = lastName;
-    json["xpos"] = xpos;
-    json["ypos"] = ypos;
+    json["xpos"] = x();
+    json["ypos"] = y();
     json["height"] = height;
-    //json["width"] = width;
-    //json["margin"] = margin;
+
+
 
 
 }

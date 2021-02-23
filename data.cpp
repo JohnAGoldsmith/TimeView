@@ -101,25 +101,22 @@ void cData::sendPersonsAndLinksToScene(cScene* scene){
         gperson->rememberPos(transformedCoordinates);
     }
     foreach (cLink * link, Links){
-        //qDebug() << "Data,104 sending to scene "<< link->display();
         gPerson1 = link->GPersonFrom();
         gPerson2 = link->GPersonTo();
         if ( ! gPerson1 || ! gPerson2 ){
             qDebug() << "Cannot send link to Scene 124 "<<link->display() << "Missing gperson." ;
             continue;
         }
-        //qDebug() << 111 << "data" << gPerson1->LastName() << gPerson2->LastName();
-        //link->attachGraphicalPersons(gPerson1, gPerson2);
         scene->AddLink(link);
     }
 }
 void cData::sendPersonsAndLinksToSceneJson(cScene* scene){
     gPerson * gPerson1, * gPerson2;
-    dPerson* dPerson1, * dPerson2, *dperson;
     foreach (gPerson * gperson, graphicalPersons){
         scene->addItem(gperson);
-        dperson = gperson->getDPerson();
         gperson->setPos(gperson->Xpos(), gperson->Ypos());
+        if (gperson->LastName() == "Bourdieu" )
+            qDebug() << "cdata sending Bourdieu to screen xpos"<< gperson->Xpos();
     }
     foreach (cLink * link, Links){
         gPerson1 = link->GPersonFrom();
@@ -128,10 +125,6 @@ void cData::sendPersonsAndLinksToSceneJson(cScene* scene){
             qDebug() << "Cannot send link to Scene 124 "<<link->display() << "Missing gperson." ;
             continue;
         }
-        //AddGPersonPtrsToLinks();
-        //link->attachGraphicalPersons(gPerson1, gPerson2);
-
-        //qDebug() << 99 << "data" << gPerson1->LastName() << gPerson2->LastName();
         scene->AddLink(link);
     }
 }
@@ -280,6 +273,7 @@ void cData::save() const{
     write(graphObject);
     QJsonDocument saveDoc(graphObject);
     saveFile.write(saveDoc.toJson());
+
 
 }
 void cData::populatePersonTable(QTableWidget * table){
