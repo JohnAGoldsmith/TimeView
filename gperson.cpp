@@ -25,7 +25,7 @@ gPerson::gPerson( dPerson * dp )
 
   width = 100; // this isn't right, it should be dynamic and based on relevant data; but that's not available till after Paint();
   height = 40;
-  float margin = 5;
+  margin = 5;
   firstName = dp->FirstName();
   lastName = dp->LastName();
   key = dp->Key();
@@ -34,6 +34,41 @@ gPerson::gPerson( dPerson * dp )
   personBoundingRect.setCoords(-1.0 * margin, 0, width, height);
   xpos = 0;  // it will be set the first time it is add to scene, using the toppoint on the scene.
 }
+
+gPerson::gPerson(QStringList  data){
+    setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
+
+    key = "no_key";
+    width = 100; // this isn't right, it should be dynamic and based on relevant data; but that's not available till after Paint();
+    height = 40;
+    myFont = new  QFont("Times", 12);
+    xpos = 0;               // it will be set the first time it is add to scene, using the toppoint on the scene.
+    birthYear = 0;
+    deathYear = 0;
+    margin = 5;
+    personBoundingRect.setCoords(-1.0 * margin, 0, width, height);
+    if (data.size() >= 8 && data[7].length() > 0){
+        key = data[7];
+    } else {
+        key = data[2];
+    }
+    firstName = data[1];
+    lastName = data[2];
+    birthYear = data[3].toInt();
+    if (birthYear == 0){
+        qDebug() << lastName << "zero birth year a";
+    }
+    if (data[4].length() > 0){
+        deathYear = data[4].toInt();
+    } else {
+        deathYear = 0;
+        qDebug() << lastName << "Zero death year" ;
+    }
+    x_fromspreadsheet = data[5].toFloat();
+    profession1 = data[6];
+
+}
+
 gPerson::~gPerson(){
 
 }
@@ -88,13 +123,13 @@ float gPerson::GetNameWidth(QPainter * painter) const {
     return fm.horizontalAdvance(name);
 }
 float gPerson::GetDatesWidth(QPainter * painter) const {
-    QString years = QString::number(getDPerson()->BirthYear()) + "--" + QString::number(getDPerson()->DeathYear());
+    QString years = QString::number(birthYear) + "--" + QString::number(deathYear);
     QFontMetrics fm=painter->fontMetrics();
     return fm.horizontalAdvance(years);
 }
 void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
 
-    dPerson * dp = getDPerson();
+    //dPerson * dp = getDPerson();
     double topMargin = 10.0;
     double lineHeight = 15.0;
 
@@ -106,7 +141,7 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     QPen pen(Qt::black,1);
     painter->setPen(pen);
     painter->setBrush(brush1);
-    QString Profession = getDPerson()->profession1;
+    QString Profession =  Profession1();
     if (Profession ==  "linguist"){
         brush1.setColor(Orange);
     }
@@ -127,7 +162,7 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
         brush1.setColor(Qt::yellow);
     }
     QString name = firstName + " "  + lastName;
-    QString years = QString::number(dp->BirthYear()) + "--" + QString::number(dp->DeathYear());
+    QString years = QString::number(birthYear) + "--" + QString::number(deathYear);
     float namewidth = GetNameWidth(painter);
     float datewidth = GetDatesWidth(painter);
 
@@ -197,6 +232,9 @@ void gPerson::write(QJsonObject & json) const {
     json["ypos"] = y();
     json["height"] = height;
 
+    json["birthYear"] = birthYear;
+    json["deathYear"] = deathYear;
+
 
 
 
@@ -208,6 +246,8 @@ void gPerson::read(const QJsonObject &json){
     xpos = json["xpos"].toDouble();
     ypos = json["ypos"].toDouble();
     height = json["height"].toInt();
+    birthYear = json["birthYear"].toInt();
+    deathYear = json["deathYear"].toInt();
 }
 void gPerson::rememberPos(QPointF point){
     xpos = point.x();

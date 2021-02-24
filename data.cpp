@@ -13,7 +13,7 @@ cData::cData()
 }
 
 
-void cData::analyzeData(){
+void cData::A_analyzeData(){
     dPerson* dperson;
     gPerson * gperson, * fromgperson, * togperson;
     cLink * l;
@@ -29,8 +29,9 @@ void cData::analyzeData(){
                continue;
            } else {
                if (line[0] == "P"){
-                   dperson = CreateDataPerson(line);
-                   gperson = CreateGraphicalPerson(dperson);
+                   //dperson = CreateDataPerson(line);
+                   //gperson = CreateGraphicalPerson(dperson);
+                   gperson = B_CreateGraphicalPerson(line);
                } else {
                    if (line[0] == "L"){
                         l = new cLink(line);
@@ -53,15 +54,19 @@ dPerson* cData::CreateDataPerson(QStringList line){
     return dPerson1;
 }
 
-gPerson* cData::CreateGraphicalPerson(dPerson * dperson){
-    if (Key2graphicalPersonHashContains(dperson->Key())) {
-       qDebug() << "cData:  collision of graphicalPerson keys" << dperson->LastName()<< "No graphical unit created.";
-       return NULL;
+gPerson* cData::B_CreateGraphicalPerson(QStringList line){
+    QString key;
+    if (line.size() >= 8 && line[7].length() > 0){
+        key = line[7];
+    } else {
+        key = line[2];
     }
-    //dperson->Ypos ( TopPosition() - dperson->BirthYear() ) ;
-    gPerson* gperson = new gPerson(dperson);
-    Key2graphicalPerson[dperson->Key()]= gperson;
-    dperson->setGraphicPerson(gperson);
+    if ( Key2graphicalPersonHashContains(key) ) {
+       qDebug() << "cData:  collision of graphicalPerson keys" << key << "No graphical unit created.";
+       return NULL;
+    };
+    gPerson* gperson = new gPerson(line);
+    Key2graphicalPerson[key]= gperson;
     graphicalPersons.append(gperson);
 }
 
@@ -89,19 +94,16 @@ void cData::AddGPersonPtrsToLinks(){
 }
 
 
-void cData::sendPersonsAndLinksToScene(cScene* scene){
+void cData::A_sendPersonsAndLinksToScene(cScene* scene){
     gPerson * gPerson1, * gPerson2;
     dPerson* dPerson1, * dPerson2, *dperson;
 
     foreach (gPerson * gperson, graphicalPersons){
         scene->addItem(gperson);
-        dperson = gperson->getDPerson();
-
-        float new_x = dperson->Xpos() * scene->ScaleFactor();
-        float new_y = scene->TimeScale() * ( scene->TopPosition() - dperson->BirthYear());
+        //dperson = gperson->getDPerson();
+        float new_x = gperson->X_fromspreadsheet() * scene->ScaleFactor();//   Xpos() * scene->ScaleFactor();
+        float new_y = scene->TimeScale() * ( scene->TopPosition() - gperson->BirthYear());
         gperson->setPos(new_x, new_y  );
-        //QPointF transformedCoordinates (dperson->Xpos() * scene->ScaleFactor(), dperson->Ypos() * scene->TimeScale());
-        //gperson->setPos(transformedCoordinates);
         gperson->rememberPos(QPointF(new_x,new_y));
     }
     foreach (cLink * link, Links){
@@ -114,13 +116,11 @@ void cData::sendPersonsAndLinksToScene(cScene* scene){
         scene->AddLink(link);
     }
 }
-void cData::sendPersonsAndLinksToSceneJson(cScene* scene){
+void cData::A_sendPersonsAndLinksToSceneJson(cScene* scene){
     gPerson * gPerson1, * gPerson2;
     foreach (gPerson * gperson, graphicalPersons){
         scene->addItem(gperson);
         gperson->setPos(gperson->Xpos(), gperson->Ypos());
-        if (gperson->LastName() == "Bourdieu" )
-            qDebug() << "cdata sending Bourdieu to screen xpos"<< gperson->Xpos();
     }
     foreach (cLink * link, Links){
         gPerson1 = link->GPersonFrom();
@@ -164,7 +164,7 @@ void cData::write(QJsonObject &json) const{
 
     return ;
 }
-void cData::ReadJson() {
+void cData::A_ReadJson() {
     QFile file ("./save.json");
     if (! file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
@@ -230,19 +230,12 @@ void cData::ReadJson() {
     return ;
 }
 
-/*
-void cLink::attachGraphicalPersons(gPerson * person1, gPerson * person2){
- gPersonFrom = person1;
- gPersonTo = person2;
- person1->AppendLink(this);
- person2->AppendLink(this);
-}
-*/
+
 void cData::AttachLinks(gPerson *){
 
 
 }
-void cData::ReadCSV()
+void cData::A_ReadCSV()
 {
 
     QFile file("./test.csv");
@@ -281,16 +274,23 @@ void cData::save() const{
 
 }
 void cData::populatePersonTable(QTableWidget * table){
-   table->setRowCount(dataPersons.size());
-   table->setColumnCount(20);
+   table->setRowCount(graphicalPersons.size());
+   table->setColumnCount(5);
    int row = 0;
-   foreach (dPerson * dperson, dataPersons){
-       QTableWidgetItem *item = new QTableWidgetItem(dperson->LastName());
-       table->setItem(row,0,item);
-       item = new QTableWidgetItem(dperson->FirstName());
+   foreach (gPerson * person, graphicalPersons){
+       QTableWidgetItem *item = new QTableWidgetItem(person->LastName());
        table->setItem(row,1,item);
-       item = new QTableWidgetItem(dperson->Key());
+       item = new QTableWidgetItem(person->FirstName());
        table->setItem(row,2,item);
+       item = new QTableWidgetItem(person->Key());
+       item->setTextColor(Qt::red);
+       table->setItem(row,0,item);
+       item = new QTableWidgetItem(QString::number(person->BirthYear()));
+       table->setItem(row,3,item);
+       qDebug() << ">>>"<< person->BirthYear();
+       item = new QTableWidgetItem(QString::number(person->DeathYear()));
+       table->setItem(row,4,item);
+
        row++;
    }
    table->setSortingEnabled(true);

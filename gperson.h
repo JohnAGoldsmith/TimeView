@@ -16,6 +16,7 @@ class gPerson : public QGraphicsItem
 public:
     gPerson();
     gPerson(dPerson * dPerson);
+    gPerson(QStringList   data);
     ~gPerson();
     QRectF boundingRect() const override;
 
@@ -31,7 +32,11 @@ public:
     float Xpos(){return xpos;}
     float Ypos(){return ypos;}
     QString LastName() {return lastName;}
-    dPerson* getDPerson() const {return dataPerson;}
+    QString FirstName() {return firstName;}
+    //dPerson* getDPerson() const {return dataPerson;}
+    float BirthYear() {return birthYear;}
+    float DeathYear() {return deathYear;}
+    QString Profession1() {return profession1;}
 
     float Height() {return height;}
     float GetNameWidth(QPainter * )const;
@@ -45,6 +50,7 @@ public:
     void setKey(QString thiskey){key = thiskey;}
     void setWidth(float w){width = w;}
     float Width(){return width;}
+    float X_fromspreadsheet() {return x_fromspreadsheet;}
    //void LinkToDPersonBidirectional(dPerson* dperson);
 
 
@@ -64,10 +70,16 @@ private:
     QString key;
     float xpos;
     float ypos;
+    float x_fromspreadsheet;
     float height;
     float width;
+    float margin;
     QString firstName;
     QString lastName;
+    int birthYear;
+    int deathYear;
+    QString profession1;
+    QString profession2;
     QRectF personBoundingRect;
     QList<cLink*> myLinks;
     QList<cLink*> topLinks;

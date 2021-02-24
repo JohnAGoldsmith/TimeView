@@ -23,11 +23,11 @@ public:
     QList<dPerson*>* getDataPersons(){return &dataPersons;};
     QList<cLink*>*    getLinks(){return &Links;};
 
-    void ReadCSV();
-    void ReadJson();
-    void analyzeData();
-    void sendPersonsAndLinksToScene(cScene *);
-    void sendPersonsAndLinksToSceneJson(cScene *);
+    void A_ReadCSV();
+    void A_ReadJson();
+    void A_analyzeData();
+    void A_sendPersonsAndLinksToScene(cScene *);
+    void A_sendPersonsAndLinksToSceneJson(cScene *);
     dPerson* getDataPersonFromKey(QString key){return Key2dataPerson[key];}
     gPerson* getGraphicPersonFromKey(QString key){return Key2graphicalPerson[key];}
     bool  Key2dataPersonHashContains (QString key ) {return  Key2dataPerson.contains(key);}
@@ -37,7 +37,7 @@ public:
     void addDataPerson(dPerson*);
     int TopPosition() {return topPosition;}
     dPerson* CreateDataPerson(QStringList line);
-    gPerson* CreateGraphicalPerson(dPerson*);
+    gPerson* B_CreateGraphicalPerson(QStringList line);
 
     void AttachLinks(gPerson * );
     void AddGPersonPtrsToLinks();
