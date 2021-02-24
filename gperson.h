@@ -65,7 +65,7 @@ protected:
 
 private:
     cScene * scene;
-    dPerson * dataPerson;
+    //dPerson * dataPerson;
     QFont *  myFont;
     QString key;
     float xpos;

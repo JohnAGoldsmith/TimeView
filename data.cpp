@@ -14,7 +14,6 @@ cData::cData()
 
 
 void cData::A_analyzeData(){
-    dPerson* dperson;
     gPerson * gperson, * fromgperson, * togperson;
     cLink * l;
     QString outfileName, fromKey, toKey;
@@ -29,8 +28,7 @@ void cData::A_analyzeData(){
                continue;
            } else {
                if (line[0] == "P"){
-                   //dperson = CreateDataPerson(line);
-                   //gperson = CreateGraphicalPerson(dperson);
+
                    gperson = B_CreateGraphicalPerson(line);
                } else {
                    if (line[0] == "L"){
@@ -42,16 +40,6 @@ void cData::A_analyzeData(){
        }
     }
     AddGPersonPtrsToLinks();
-}
-
-dPerson* cData::CreateDataPerson(QStringList line){
-    dPerson * dPerson1 = new dPerson(line);
-    dataPersons.append(dPerson1);
-    if (Key2dataPerson.contains(dPerson1->Key())){
-                    qWarning ("Collision of Keys for dataPersons; new person created nonetheless.");
-    }
-    Key2dataPerson[dPerson1->Key()] = dPerson1;
-    return dPerson1;
 }
 
 gPerson* cData::B_CreateGraphicalPerson(QStringList line){
@@ -84,10 +72,7 @@ void cData::AddGPersonPtrsToLinks(){
             qDebug() << "Link containing "<<fromKey << "and" << toKey << "cannot be made;"<<toKey << "is missing.";
             continue;
         }
-        //qDebug() << "data line 83"<<fromKey;
-        //qDebug() << "data line 84"<< toKey;
         fromgperson = getGraphicPersonFromKey(fromKey);
-        //qDebug() << "data line 86"<< fromgperson->LastName();
         togperson = getGraphicPersonFromKey(toKey);
         link->attachGraphicalPersons(fromgperson,togperson);
     }
@@ -96,11 +81,9 @@ void cData::AddGPersonPtrsToLinks(){
 
 void cData::A_sendPersonsAndLinksToScene(cScene* scene){
     gPerson * gPerson1, * gPerson2;
-    dPerson* dPerson1, * dPerson2, *dperson;
 
     foreach (gPerson * gperson, graphicalPersons){
         scene->addItem(gperson);
-        //dperson = gperson->getDPerson();
         float new_x = gperson->X_fromspreadsheet() * scene->ScaleFactor();//   Xpos() * scene->ScaleFactor();
         float new_y = scene->TimeScale() * ( scene->TopPosition() - gperson->BirthYear());
         gperson->setPos(new_x, new_y  );
@@ -118,9 +101,12 @@ void cData::A_sendPersonsAndLinksToScene(cScene* scene){
 }
 void cData::A_sendPersonsAndLinksToSceneJson(cScene* scene){
     gPerson * gPerson1, * gPerson2;
+    int i = 1;
     foreach (gPerson * gperson, graphicalPersons){
         scene->addItem(gperson);
         gperson->setPos(gperson->Xpos(), gperson->Ypos());
+        qDebug() << "data 107 "<< gperson->Key() << i;
+        i++;
     }
     foreach (cLink * link, Links){
         gPerson1 = link->GPersonFrom();
@@ -135,14 +121,6 @@ void cData::A_sendPersonsAndLinksToSceneJson(cScene* scene){
 
 
 void cData::write(QJsonObject &json) const{
-    QJsonArray personArray;
-    foreach (const  dPerson *  dperson, dataPersons){
-      QJsonObject personObject;
-      dperson->write(personObject);
-      personArray.append(personObject);
-    }
-    json["DataPersons"] = personArray;
-
     QJsonArray linkArray;
     foreach (const cLink * link, Links){
        if (link->GPersonTo()){
@@ -160,7 +138,6 @@ void cData::write(QJsonObject &json) const{
          gPersonArray.append(gPersonObject);
     }
     json["GraphicalPersons"]=gPersonArray;
-
 
     return ;
 }
@@ -191,12 +168,7 @@ void cData::A_ReadJson() {
         for (int index = 0; index < gPersonArray.size(); ++index){
             QJsonObject gpObject = gPersonArray[index].toObject();
             QString key1 = gpObject["key"].toString();
-            if (!Key2dataPersonHashContains (key1)){
-                qDebug() << "!!! Trying to make a gperson with illicit key" << key1;
-                continue;
-            }
-            dPerson* dperson = Key2dataPerson[key1];
-            gPerson* gperson = new gPerson(dperson);
+            gPerson* gperson = new gPerson();
             gperson->read(gpObject);
             Key2graphicalPerson[key1] = gperson;
             graphicalPersons.append(gperson);
@@ -275,7 +247,7 @@ void cData::save() const{
 }
 void cData::populatePersonTable(QTableWidget * table){
    table->setRowCount(graphicalPersons.size());
-   table->setColumnCount(5);
+   table->setColumnCount(6);
    int row = 0;
    foreach (gPerson * person, graphicalPersons){
        QTableWidgetItem *item = new QTableWidgetItem(person->LastName());
@@ -290,6 +262,9 @@ void cData::populatePersonTable(QTableWidget * table){
        qDebug() << ">>>"<< person->BirthYear();
        item = new QTableWidgetItem(QString::number(person->DeathYear()));
        table->setItem(row,4,item);
+       item = new QTableWidgetItem(person->Profession1());
+       table->setItem(row,5,item);
+
 
        row++;
    }

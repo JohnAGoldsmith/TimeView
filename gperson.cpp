@@ -15,12 +15,21 @@
 
 
 gPerson::gPerson(){
+ setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
+ myFont = new  QFont("Times", 12);
 
+ width = 100; // this isn't right, it should be dynamic and based on relevant data; but that's not available till after Paint();
+ height = 40;
+ margin = 5;
+
+ personBoundingRect.setCoords(-1.0 * margin, 0, width, height);
+ xpos = 0;  // it will be set the first time it is add to scene, using the toppoint on the scene.
 }
-gPerson::gPerson( dPerson * dp )
+
+
+
+gPerson::gPerson( dPerson * dp ) // this is not currently used at all.
 {
-  dataPerson = dp;
-  dp->setGraphicPerson(this);
   setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
 
   width = 100; // this isn't right, it should be dynamic and based on relevant data; but that's not available till after Paint();
@@ -35,7 +44,11 @@ gPerson::gPerson( dPerson * dp )
   xpos = 0;  // it will be set the first time it is add to scene, using the toppoint on the scene.
 }
 
-gPerson::gPerson(QStringList  data){
+
+
+
+
+gPerson::gPerson(QStringList  data){ // this is used when starting from data in a spreadsheet;
     setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
 
     key = "no_key";
@@ -129,38 +142,41 @@ float gPerson::GetDatesWidth(QPainter * painter) const {
 }
 void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
 
-    //dPerson * dp = getDPerson();
+
     double topMargin = 10.0;
     double lineHeight = 15.0;
-
+    QColor mycolor;
     painter->setFont(*myFont);
+
     QColor Orange;
     Orange.setRgb(255,153,51);
-    QBrush brush1;
+
 
     QPen pen(Qt::black,1);
     painter->setPen(pen);
-    painter->setBrush(brush1);
+    qDebug() << "gperson line 157" << profession1;
     QString Profession =  Profession1();
     if (Profession ==  "linguist"){
-        brush1.setColor(Orange);
+        mycolor = Orange;
     }
-    if (Profession == "sociologist"){
-            brush1.setColor(Qt::green);
+    else if (Profession == "sociologist"){
+             mycolor = Qt::green;
     }
-    if (Profession == "philosopher"){
-           brush1.setColor(Qt::yellow);
-           //qDebug() << "gperson 122 "<< brush1.color().name();
+    else if (Profession == "philosopher" || Profession == "Phil-psych"){
+            mycolor = Qt::yellow;
      }
-    if (Profession == "psychologist"){
-           brush1.setColor(Qt::cyan);
-           //qDebug() << "gperson 122 "<< brush1.color().name();
+    else if (Profession == "psychologist"){
+           mycolor = Qt::cyan;
      }
-     //qDebug() << "gperson 122 "<< brush1.color().name();
+    else{
+        mycolor = Qt::magenta;
+    }
     if (hasFocus()){
         painter->setPen(Qt::black);
-        brush1.setColor(Qt::yellow);
+        mycolor = Qt::yellow;
     }
+
+    //painter->setBrush(brush);
     QString name = firstName + " "  + lastName;
     QString years = QString::number(birthYear) + "--" + QString::number(deathYear);
     float namewidth = GetNameWidth(painter);
@@ -173,8 +189,9 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     }
 
     QRectF personrect(0,0,width, height);
-    painter->drawRect(personrect);
-    //qDebug() << "gperson 122 "<< brush1.color().name();
+    painter->fillRect(personrect,mycolor);
+    painter->drawRoundedRect(personrect,5,5);
+
     QRectF rect(0,0,namewidth,20);
     QRectF boundingRect1;
     painter->drawText(rect ,Qt::AlignHCenter,  name ,  & boundingRect1);
@@ -199,10 +216,7 @@ void gPerson::SortLinks(){
         foreach (cLink* thislink, * thisList){
             thislink->TopOffset(startingPoint + i * delta);
             i++;
-            if (LastName() == "Sapir")
-                qDebug() << "gperson SortLinks 2 " << thislink->GPersonFrom()->LastName();
         }
-
     }
 
     delta = (boxwidth * 0.5) / GetBottomLinks()->size();
@@ -216,8 +230,6 @@ void gPerson::SortLinks(){
         foreach (cLink* thislink, * thisList){
             thislink->BottomOffset(startingPoint + i * delta);
             i++;
-            if (LastName() == "Sapir")
-               qDebug() << "gperson SortLinks 2 " << thislink->GPersonTo()->LastName();
         }
 
     }
@@ -234,6 +246,7 @@ void gPerson::write(QJsonObject & json) const {
 
     json["birthYear"] = birthYear;
     json["deathYear"] = deathYear;
+    json["profession1"] = profession1;
 
 
 
@@ -248,6 +261,7 @@ void gPerson::read(const QJsonObject &json){
     height = json["height"].toInt();
     birthYear = json["birthYear"].toInt();
     deathYear = json["deathYear"].toInt();
+    profession1 = json["profession1"].toString();
 }
 void gPerson::rememberPos(QPointF point){
     xpos = point.x();
