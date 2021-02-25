@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
     QWidget *widget = new QWidget;
     widget->setLayout(layout);
 
-    bool Json(false);
+    bool Json(true);
     if (Json){
         getData()->A_ReadJson( );
         getData()->A_sendPersonsAndLinksToSceneJson(localScene);

@@ -156,6 +156,9 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     QPointF point2 (end_point.x(), point1.y());
 
     //painter->drawLine(start_point,end_point);
+    QRectF personrect(0,0,10, 10);
+    painter->fillRect(personrect,Qt::blue);
+    painter->drawRoundedRect(personrect,5,5);
 
     painter->drawLine(start_point, point1);
     painter->drawLine(point1, point2);

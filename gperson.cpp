@@ -116,14 +116,17 @@ void gPerson::mousePressEvent(QGraphicsSceneMouseEvent * event){
     QGraphicsItem::mousePressEvent(event);
     update();
 }
-void gPerson::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
+void gPerson::mouseMoveEvent(QGraphicsSceneMouseEvent * event){
     foreach (cLink* link, * GetLinks()){
         if (link->GPersonFrom() == this){
-           link->setPos(pos());
+           link->setPos(scenePos());
            link->update();
             qDebug() << "***" << link->GPersonFrom()->LastName() << link->GPersonTo()->LastName();
         }
     }
+    QGraphicsItem::mouseMoveEvent(event);
+}
+void gPerson::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
     QGraphicsItem::mouseReleaseEvent(event);
 }
 
