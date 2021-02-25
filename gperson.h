@@ -39,8 +39,13 @@ public:
     QString Profession1() {return profession1;}
 
     float Height() {return height;}
+    //void Height(float h ) {height = h;}
     float GetNameWidth(QPainter * )const;
+    float GetNameHeight(QPainter *) const;
     float GetDatesWidth(QPainter * ) const ;
+    float GetDatesHeight(QPainter * ) const ;
+    float GetTextHeight(QPainter* ) const;
+    float GetTextWidth (QPainter*, QString) const;
     void AppendLink (cLink * link);
     QList<cLink*> * GetLinks() {return & myLinks;}
     QList<cLink*> * GetTopLinks() {return & topLinks;}

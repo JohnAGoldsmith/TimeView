@@ -85,12 +85,7 @@ gPerson::gPerson(QStringList  data){ // this is used when starting from data in 
 gPerson::~gPerson(){
 
 }
-/*void gPerson::LinkToDPersonBidirectional(dPerson* dperson) {
-    dataPerson=dperson;
-    dperson->setGraphicPerson(this);
-    setKey(dperson->Key());
-}
-*/
+
 
 void gPerson::AppendLink(cLink *link) {
     myLinks.append(link);
@@ -121,7 +116,7 @@ void gPerson::mouseMoveEvent(QGraphicsSceneMouseEvent * event){
         if (link->GPersonFrom() == this){
            link->setPos(scenePos());
            link->update();
-            qDebug() << "***" << link->GPersonFrom()->LastName() << link->GPersonTo()->LastName();
+            //qDebug() << "***" << link->GPersonFrom()->LastName() << link->GPersonTo()->LastName();
         }
     }
     QGraphicsItem::mouseMoveEvent(event);
@@ -130,14 +125,25 @@ void gPerson::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
     QGraphicsItem::mouseReleaseEvent(event);
 }
 
-
-
+float gPerson::GetTextWidth(QPainter * painter, QString string) const{
+    QFontMetrics fm=painter->fontMetrics();
+    return fm.horizontalAdvance(string);
+}
+float gPerson::GetTextHeight(QPainter * painter) const{
+    QFontMetrics fm=painter->fontMetrics();
+    return fm.height( );
+}
 float gPerson::GetNameWidth(QPainter * painter) const {
     QString name = firstName + " "  + lastName;
     QFontMetrics fm=painter->fontMetrics();
-
     return fm.horizontalAdvance(name);
 }
+float gPerson::GetNameHeight(QPainter * painter) const {
+    QString name = firstName + " "  + lastName;
+    QFontMetrics fm=painter->fontMetrics();
+    return fm.height();
+}
+
 float gPerson::GetDatesWidth(QPainter * painter) const {
     QString years = QString::number(birthYear) + "--" + QString::number(deathYear);
     QFontMetrics fm=painter->fontMetrics();
@@ -157,7 +163,7 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
     QPen pen(Qt::black,1);
     painter->setPen(pen);
-    qDebug() << "gperson line 157" << profession1;
+
     QString Profession =  Profession1();
     if (Profession ==  "linguist"){
         mycolor = Orange;
@@ -191,9 +197,14 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
         width = namewidth;
     }
 
-    QRectF personrect(0,0,width, height);
+    float interline = 2.0;
+    height = 2.0 * GetTextHeight(painter) + interline  + 2.0 * margin;
+
+
+    width +=  2.0 * margin;
+    QRectF personrect(-1.0 * margin,0,width + 2.0 * margin, height);
     painter->fillRect(personrect,mycolor);
-    painter->drawRoundedRect(personrect,5,5);
+    painter->drawRect(personrect);
 
     QRectF rect(0,0,namewidth,20);
     QRectF boundingRect1;
@@ -203,8 +214,10 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     rect.moveTo(0,lineHeight);
     painter->drawText(rect, Qt::AlignHCenter,years, &boundingRect2);
 
-    float margin = 5;
-    personBoundingRect.setCoords(-1.0 * margin, 0, width, height);
+
+    personBoundingRect.setCoords(personrect.left(), personrect.top(), personrect.right(), personrect.bottom() );
+    height = personBoundingRect.height();
+    //personBoundingRect.setCoords(-1.0 * margin, 0, width + margin,  2 * height);
 }
 void gPerson::SortLinks(){
     float boxwidth = 100.0; // should be GetNameWidth();

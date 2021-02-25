@@ -101,12 +101,10 @@ void cData::A_sendPersonsAndLinksToScene(cScene* scene){
 }
 void cData::A_sendPersonsAndLinksToSceneJson(cScene* scene){
     gPerson * gPerson1, * gPerson2;
-    int i = 1;
+
     foreach (gPerson * gperson, graphicalPersons){
         scene->addItem(gperson);
         gperson->setPos(gperson->Xpos(), gperson->Ypos());
-        qDebug() << "data 107 "<< gperson->Key() << i;
-        i++;
     }
     foreach (cLink * link, Links){
         gPerson1 = link->GPersonFrom();
@@ -281,6 +279,10 @@ void cData::populateLinkTable(QTableWidget * table){
        table->setItem(row,1,item);
        item = new QTableWidgetItem(link->NatureOfLink());
        table->setItem(row,2,item);
+       item = new QTableWidgetItem(link->GetPositionOnFromPerson());
+       table->setItem(row,3,item);
+       item = new QTableWidgetItem(link->GetPositionOnToPerson());
+       table->setItem(row,4,item);
        row++;
    }
    table->setSortingEnabled(true);
