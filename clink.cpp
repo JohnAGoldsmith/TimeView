@@ -130,7 +130,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
        start_point  = QPointF(GPersonFromCenterX + topOffset,0 );
     }
     else if (PositionOnFromPerson == "Right") {
-        start_point = QPoint(GPersonFrom()->Width(), willbeheight * 0.5 );
+        start_point = QPoint(GPersonFrom()->Width(), GPersonFrom()->Height() * 0.5 );
     }
     else if (PositionOnFromPerson == "Left") {
         start_point = QPoint(0, willbeheight * 0.5 );
@@ -147,7 +147,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
         end_point = QPoint(-1.0 * x_distance + GPersonTo()->Width() ,  -1.0 * y_distance2  - 0.5 *  GPersonTo()->Height()  );
     }
     else if (PositionOnToPerson == "Left") {
-         end_point = QPoint(-1.0 * x_distance - GPersonFrom()->Width() *0.5 ,  -1.0 * y_distance2 - 0.5 * GPersonTo()->Height() );
+         end_point = QPoint(-1.0 * x_distance - GPersonFrom()->Width() ,  -1.0 * y_distance2 - 0.5 * GPersonTo()->Height() );
     }
     else {
         end_point = QPointF(-1.0 * x_distance , -1.0 * y_distance2);
@@ -174,21 +174,30 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
                 point2.setY( point1.y() );
             }
     }
+    if (PositionOnFromPerson=="Top"){
+            point1.setX(start_point.x());
+            point1.setY( start_point.y() - fraction1 * y_distance2  );
+            if (PositionOnToPerson == "Left"){
+                point2.setX (end_point.x());
+                point2.setY( point1.y() );
+            }
+    }
 
     if (PositionOnFromPerson=="Right"){
-        point1.setX(start_point.x());
-        point1.setY( start_point.y() - fraction1 * y_distance2  );
         if (PositionOnToPerson == "Bottom"){
-            point2.setX (end_point.x());
+            point1.setX(end_point.x() );
+            point1.setY( start_point.y()  );
+            point2.setX (point1.x());
             point2.setY( point1.y() );
         }
     }
     if (PositionOnFromPerson=="Right"){
-          point1.setX(start_point.x());
-          point1.setY( start_point.y() - fraction1 * y_distance2  );
+         float local_x_distance = start_point.x() - end_point.x();
+          point1.setX(start_point.x() - fraction1 * local_x_distance );
+          point1.setY( start_point.y()   );
           if (PositionOnToPerson == "Left"){
-              point2.setX (end_point.x());
-              point2.setY( point1.y() );
+              point2.setX (point1.x());
+              point2.setY( end_point.y() );
           }
       }
 

@@ -201,7 +201,7 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     height = 2.0 * GetTextHeight(painter) + interline  + 2.0 * margin;
 
 
-    width +=  2.0 * margin;
+
     QRectF personrect(-1.0 * margin,0,width + 2.0 * margin, height);
     painter->fillRect(personrect,mycolor);
     painter->drawRect(personrect);
