@@ -43,6 +43,8 @@ public:
     void AddGPersonPtrsToLinks();
     void populatePersonTable(QTableWidget*);
     void populateLinkTable(QTableWidget*);
+
+    void MoveInvisibleToLimbo();
 private:
     QList<dPerson*> dataPersons;
     QList<gPerson*> graphicalPersons;

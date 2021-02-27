@@ -116,6 +116,10 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
                pen.setWidth(3);
                painter->setPen(pen);
     }
+    else if (! GPersonFrom()->Visible()){
+
+        pen.setStyle(Qt::DotLine);
+    }
     else {
                pen.setColor(Qt::black);
                pen.setWidth(3);
@@ -147,7 +151,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
         end_point = QPoint(-1.0 * x_distance + GPersonTo()->Width() ,  -1.0 * y_distance2  - 0.5 *  GPersonTo()->Height()  );
     }
     else if (PositionOnToPerson == "Left") {
-         end_point = QPoint(-1.0 * x_distance - GPersonFrom()->Width() ,  -1.0 * y_distance2 - 0.5 * GPersonTo()->Height() );
+         end_point = QPoint(-1.0 * x_distance ,  -1.0 * y_distance2 - 0.5 * GPersonTo()->Height() );
     }
     else {
         end_point = QPointF(-1.0 * x_distance , -1.0 * y_distance2);
@@ -159,26 +163,26 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     /*   point1 and point2    */
 
     if (PositionOnFromPerson=="Top"){
-            point1.setX(start_point.x());
-            point1.setY( start_point.y() - fraction1 * y_distance2  );
             if (PositionOnToPerson == "Right"){
+                point1.setX(start_point.x());
+                point1.setY( start_point.y() - fraction1 * y_distance2  );
                 point2.setX (end_point.x());
                 point2.setY( point1.y() );
             }
     }
     if (PositionOnFromPerson=="Top"){
-            point1.setX(start_point.x());
-            point1.setY( start_point.y() - fraction1 * y_distance2  );
             if (PositionOnToPerson == "Bottom"){
+                point1.setX(start_point.x());
+                point1.setY( start_point.y() - fraction1 * y_distance2  );
                 point2.setX (end_point.x());
                 point2.setY( point1.y() );
             }
     }
     if (PositionOnFromPerson=="Top"){
-            point1.setX(start_point.x());
-            point1.setY( start_point.y() - fraction1 * y_distance2  );
             if (PositionOnToPerson == "Left"){
-                point2.setX (end_point.x());
+                point1.setX(start_point.x());
+                point1.setY( end_point.y() ); //- fraction1 * y_distance2  );
+                point2.setX (point1.x());
                 point2.setY( point1.y() );
             }
     }
@@ -192,10 +196,10 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
         }
     }
     if (PositionOnFromPerson=="Right"){
-         float local_x_distance = start_point.x() - end_point.x();
-          point1.setX(start_point.x() - fraction1 * local_x_distance );
           point1.setY( start_point.y()   );
           if (PositionOnToPerson == "Left"){
+              float local_x_distance = start_point.x() - end_point.x();
+              point1.setX(start_point.x() - fraction1 * local_x_distance );
               point2.setX (point1.x());
               point2.setY( end_point.y() );
           }
@@ -203,47 +207,37 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 
 
     if (PositionOnFromPerson=="Left"){
-        float local_x_distance = start_point.x() - end_point.x();
-        point1.setX(start_point.x() - fraction1 * local_x_distance);
-        point1.setY( start_point.y()   );
         if (PositionOnToPerson == "Right"){
+            float local_x_distance = start_point.x() - end_point.x();
+            point1.setX(start_point.x() - fraction1 * local_x_distance);
+            point1.setY( start_point.y()   );
             point2.setX (point1.x());
             point2.setY( end_point.y() );
         }
     }
     if (PositionOnFromPerson=="Left"){
-        float local_x_distance = start_point.x() - end_point.x();
-        point1.setX(start_point.x() - fraction1 * local_x_distance);
-        point1.setY( start_point.y()   );
         if (PositionOnToPerson == "Bottom"){
+            float local_x_distance = start_point.x() - end_point.x();
+            point1.setX(start_point.x() - fraction1 * local_x_distance);
+            point1.setY( start_point.y()   );
             point2.setX (end_point.x());
             point2.setY( point1.y() );
         }
     }
     if (PositionOnFromPerson=="Left"){
-        float local_x_distance = start_point.x() - end_point.x();
-        point1.setX(start_point.x() - fraction1 * local_x_distance);
-        point1.setY( start_point.y()   );
         if (PositionOnToPerson == "Top"){
+            float local_x_distance = start_point.x() - end_point.x();
+            point1.setX(start_point.x() - fraction1 * local_x_distance);
+            point1.setY( start_point.y()   );
             point2.setX (end_point.x());
             point2.setY( point1.y() );
         }
     }
 
-
-
-
-/*
-   if (PositionOnToPerson=="Bottom"){
-       point2.setX (end_point.x());
-       point2.setY( point1.y() );
-   }
-    if (PositionOnToPerson=="Right"){
-        point2.setX (end_point.x());
-        point2.setY( point1.y() );
-    }
-*/
     //painter->drawLine(start_point,end_point);
+
+
+
 
     painter->drawLine(start_point, point1);
     painter->drawLine(point1, point2);

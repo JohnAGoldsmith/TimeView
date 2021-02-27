@@ -21,7 +21,7 @@ gPerson::gPerson(){
  width = 100; // this isn't right, it should be dynamic and based on relevant data; but that's not available till after Paint();
  height = 40;
  margin = 5;
-
+ visible=true;
  personBoundingRect.setCoords(-1.0 * margin, 0, width, height);
  xpos = 0;  // it will be set the first time it is add to scene, using the toppoint on the scene.
 }
@@ -39,7 +39,7 @@ gPerson::gPerson( dPerson * dp ) // this is not currently used at all.
   lastName = dp->LastName();
   key = dp->Key();
   myFont = new  QFont("Times", 12);
-
+   visible=true;
   personBoundingRect.setCoords(-1.0 * margin, 0, width, height);
   xpos = 0;  // it will be set the first time it is add to scene, using the toppoint on the scene.
 }
@@ -79,7 +79,7 @@ gPerson::gPerson(QStringList  data){ // this is used when starting from data in 
     }
     x_fromspreadsheet = data[5].toFloat();
     profession1 = data[6];
-
+    visible=true;
 }
 
 gPerson::~gPerson(){
@@ -122,8 +122,19 @@ void gPerson::mouseMoveEvent(QGraphicsSceneMouseEvent * event){
     QGraphicsItem::mouseMoveEvent(event);
 }
 void gPerson::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
-    QGraphicsItem::mouseReleaseEvent(event);
+    if (event->modifiers()==Qt::ShiftModifier){
+          visible = false;
+          update();
+    }
+   QGraphicsItem::mouseReleaseEvent(event);
 }
+
+void gPerson::mouseDoubleClickEvent (QGraphicsSceneMouseEvent * event) {
+    //QueryKeyboardModifiers
+    QGraphicsItem::mouseDoubleClickEvent(event);
+}
+
+
 
 float gPerson::GetTextWidth(QPainter * painter, QString string) const{
     QFontMetrics fm=painter->fontMetrics();
@@ -154,7 +165,7 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
     double topMargin = 10.0;
     double lineHeight = 15.0;
-    QColor mycolor;
+    QColor mycolor, oldcolor;
     painter->setFont(*myFont);
 
     QColor Orange;
@@ -185,6 +196,15 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
         mycolor = Qt::yellow;
     }
 
+    if (!visible){
+        oldcolor = painter->brush().color();
+        mycolor =  QColor(255, 255, 255, .4);
+        pen.setStyle(Qt::DotLine);
+        pen.setColor(Qt::gray);
+        painter->setPen(pen);
+
+    }
+
     //painter->setBrush(brush);
     QString name = firstName + " "  + lastName;
     QString years = QString::number(birthYear) + "--" + QString::number(deathYear);
@@ -203,6 +223,14 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
 
     QRectF personrect(-1.0 * margin,0,width + 2.0 * margin, height);
+
+    QLinearGradient gradient(personrect.topLeft(),personrect.bottomRight());
+    gradient.setColorAt(0,Qt::white);
+    gradient.setColorAt(1,mycolor);
+    QBrush brush(gradient);
+    painter->setBrush(brush);
+
+
     painter->fillRect(personrect,mycolor);
     painter->drawRect(personrect);
 
@@ -213,11 +241,9 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     QRectF boundingRect2 (boundingRect1);
     rect.moveTo(0,lineHeight);
     painter->drawText(rect, Qt::AlignHCenter,years, &boundingRect2);
-
-
     personBoundingRect.setCoords(personrect.left(), personrect.top(), personrect.right(), personrect.bottom() );
     height = personBoundingRect.height();
-    //personBoundingRect.setCoords(-1.0 * margin, 0, width + margin,  2 * height);
+
 }
 void gPerson::SortLinks(){
     float boxwidth = 100.0; // should be GetNameWidth();
@@ -263,6 +289,8 @@ void gPerson::write(QJsonObject & json) const {
     json["birthYear"] = birthYear;
     json["deathYear"] = deathYear;
     json["profession1"] = profession1;
+    json["visible"] = visible;
+    json["limbo"] = limbo;
 
 
 
@@ -278,6 +306,8 @@ void gPerson::read(const QJsonObject &json){
     birthYear = json["birthYear"].toInt();
     deathYear = json["deathYear"].toInt();
     profession1 = json["profession1"].toString();
+    limbo = json["limbo"].toBool();
+    visible = json["visible"].toBool();
 }
 void gPerson::rememberPos(QPointF point){
     xpos = point.x();

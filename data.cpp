@@ -287,3 +287,8 @@ void cData::populateLinkTable(QTableWidget * table){
    }
    table->setSortingEnabled(true);
 }
+void cData::MoveInvisibleToLimbo(){
+
+    // move all gpersons marked invisible to Limbo container, and then update.
+
+}

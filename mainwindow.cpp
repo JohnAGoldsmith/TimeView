@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
     QWidget *widget = new QWidget;
     widget->setLayout(layout);
 
-    bool Json(false);
+    bool Json(true);
     if (Json){
         getData()->A_ReadJson( );
         getData()->A_sendPersonsAndLinksToSceneJson(localScene);
@@ -68,21 +68,27 @@ MainWindow::~MainWindow()
     delete ui;
 }
 void MainWindow::keyPressEvent(QKeyEvent * event){
-  if (event->key() == Qt::Key_D){
+    if (event->key() == Qt::Key_C && event->modifiers()==Qt::CTRL){
+        if (! personTable){
+            getData()->MoveInvisibleToLimbo();
+        }
+    }
+  if (event->key() == Qt::Key_D && event->modifiers()==Qt::CTRL){
       if (! personTable){
           personTable  = new QTableWidget;
           getData()->populatePersonTable(personTable);
           personTable->show();
       }
   }
-  if (event->key() == Qt::Key_L){
+
+  if (event->key() == Qt::Key_L&& event->modifiers()==Qt::CTRL){
       if (! linkTable){
           linkTable  = new QTableWidget;
           getData()->populateLinkTable(linkTable);
           linkTable->show();
       }
   }
-  if (event->key() == Qt::Key_S){
+  if (event->key() == Qt::Key_S && event->modifiers()==Qt::CTRL){
       getData()->save( );
   }
   QMainWindow::keyPressEvent(event);

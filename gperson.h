@@ -57,6 +57,8 @@ public:
     float Width(){return width;}
     float X_fromspreadsheet() {return x_fromspreadsheet;}
    //void LinkToDPersonBidirectional(dPerson* dperson);
+    bool Limbo() {return limbo;}
+    bool Visible() {return visible;}
 
 
     // Json:
@@ -68,6 +70,8 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent * event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent * event) override;
+
+    void mouseDoubleClickEvent (QGraphicsSceneMouseEvent * event) override;
 
 private:
     cScene * scene;
@@ -90,6 +94,8 @@ private:
     QList<cLink*> myLinks;
     QList<cLink*> topLinks;
     QList<cLink*> bottomLinks;
+    bool visible;
+    bool limbo;
 
 };
 
