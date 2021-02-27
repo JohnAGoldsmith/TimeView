@@ -54,10 +54,12 @@ MainWindow::MainWindow(QWidget *parent)
         setWindowTitle(tr("Genealogy"));
         setUnifiedTitleAndToolBarOnMac(true);
 
-        QJsonObject dataObject;
-        getData()->save( );
+
+
     }
 
+    QJsonObject dataObject;
+    getData()->save( );
 
 
 
@@ -69,10 +71,9 @@ MainWindow::~MainWindow()
 }
 void MainWindow::keyPressEvent(QKeyEvent * event){
     if (event->key() == Qt::Key_C && event->modifiers()==Qt::CTRL){
-        if (! personTable){
-            getData()->MoveInvisibleToLimbo();
-        }
+            getData()->MoveInvisibleToLimbo();         
     }
+
   if (event->key() == Qt::Key_D && event->modifiers()==Qt::CTRL){
       if (! personTable){
           personTable  = new QTableWidget;

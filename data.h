@@ -49,6 +49,7 @@ private:
     QList<dPerson*> dataPersons;
     QList<gPerson*> graphicalPersons;
     QList<cLink*>   Links;
+    QList<gPerson*> Limbo;
     QHash<QString, dPerson*>  Key2dataPerson;
     QHash<QString, gPerson*>  Key2graphicalPerson;
     QStringList     tempLines;

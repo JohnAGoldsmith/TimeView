@@ -17,6 +17,7 @@ cLink::cLink()
     gPerson* gPersonTo;
     bottomOffset = 0.0;
     topOffset = 0.0;
+    visible = true;
 }
 cLink::cLink(QStringList & data){
     gPersonFrom = NULL;
@@ -26,6 +27,7 @@ cLink::cLink(QStringList & data){
     toPersonKey = data[2];
     bottomOffset = 0.0;
     topOffset = 0.0;
+    visible = true;
 
     if (data.size() >= 11 && data[10].length() > 0){
         natureOfLink = data[10];
@@ -61,6 +63,8 @@ QString cLink::display()const {
   out += PositionOnFromPerson;
   out += "Position on To Person: ";
   out += PositionOnToPerson;
+  out += "Visible? ";
+  out += visible;
   return out;
 }
 void cLink::attachGraphicalPersons(gPerson * person1, gPerson * person2){
@@ -100,7 +104,11 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     QPen pen;
     QPointF point1, point2;
 
-    if (natureOfLink == "teacher" || natureOfLink == "student"){
+    if (! GPersonFrom()->Visible()){
+        pen.setStyle(Qt::DotLine);
+        painter->setPen(pen);
+    }
+    else if (natureOfLink == "teacher" || natureOfLink == "student"){
         pen.setColor(Qt::blue);
         pen.setWidth(3);
         painter->setPen(pen);
@@ -115,10 +123,6 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
                pen.setColor(Qt::green);
                pen.setWidth(3);
                painter->setPen(pen);
-    }
-    else if (! GPersonFrom()->Visible()){
-
-        pen.setStyle(Qt::DotLine);
     }
     else {
                pen.setColor(Qt::black);
@@ -251,6 +255,7 @@ void cLink::write(QJsonObject & json) const{
  json["NatureOfLink"] = natureOfLink;
  json["PositionOnFromPerson"] = PositionOnFromPerson;
  json["PositionOnToPerson"] = PositionOnToPerson;
+ json["Visible"] = visible;
  //qDebug() << "clink writing json: " << display();
 }
 void cLink::read(QJsonObject & json)  {
@@ -259,5 +264,6 @@ void cLink::read(QJsonObject & json)  {
  natureOfLink = json["NatureOfLink"].toString();
  PositionOnFromPerson = json["PositionOnFromPerson"].toString();
  PositionOnToPerson = json["PositionOnToPerson"].toString();
+ visible = json["Visible"].toBool();
  //qDebug() << "clink line 179"<< display();
 }

@@ -38,6 +38,8 @@ class cLink: public QGraphicsItem
         QString GetPositionOnFromPerson(){return PositionOnFromPerson;}
         QString GetPositionOnToPerson(){return PositionOnToPerson;}
         QString NatureOfLink() {return natureOfLink;}
+        void Invisible() {visible = false;}
+        void Visible() {visible = true;}
     private:
         QString fromPersonKey;
         QString toPersonKey;
@@ -49,6 +51,7 @@ class cLink: public QGraphicsItem
         QString PositionOnToPerson;
         float bottomOffset;
         float topOffset;
+        bool visible;
 
 };
 

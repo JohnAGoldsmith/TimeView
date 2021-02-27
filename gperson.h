@@ -59,6 +59,7 @@ public:
    //void LinkToDPersonBidirectional(dPerson* dperson);
     bool Limbo() {return limbo;}
     bool Visible() {return visible;}
+    bool setVisible(bool b) {visible = b;}
 
 
     // Json:

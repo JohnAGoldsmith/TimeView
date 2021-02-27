@@ -123,8 +123,21 @@ void gPerson::mouseMoveEvent(QGraphicsSceneMouseEvent * event){
 }
 void gPerson::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
     if (event->modifiers()==Qt::ShiftModifier){
+        if (visible){
           visible = false;
           update();
+          foreach(cLink* link, myLinks){
+             link->Invisible();
+             link->update();
+          }
+        } else {
+            visible = true;
+            update();
+            foreach(cLink * link, myLinks){
+                link->Visible();
+                link->update();
+            }
+        }
     }
    QGraphicsItem::mouseReleaseEvent(event);
 }
@@ -197,7 +210,7 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     }
 
     if (!visible){
-        oldcolor = painter->brush().color();
+        //oldcolor = painter->brush().color();
         mycolor =  QColor(255, 255, 255, .4);
         pen.setStyle(Qt::DotLine);
         pen.setColor(Qt::gray);
@@ -308,6 +321,11 @@ void gPerson::read(const QJsonObject &json){
     profession1 = json["profession1"].toString();
     limbo = json["limbo"].toBool();
     visible = json["visible"].toBool();
+    if( !visible){
+        qDebug() << "read invisible person 325 in gperson "<<key;
+    }
+
+
 }
 void gPerson::rememberPos(QPointF point){
     xpos = point.x();

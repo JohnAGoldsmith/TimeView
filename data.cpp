@@ -148,6 +148,7 @@ void cData::A_ReadJson() {
     QJsonDocument loadDoc(QJsonDocument::fromJson(thisData));
     QJsonObject rootItem = loadDoc.object(); // this should be the root item;
 
+    /* remove this; we don't use dataPersons anymore */
     if (  rootItem.contains ("DataPersons") && rootItem["DataPersons"].isArray()  ){
        QJsonArray dpArray = rootItem["DataPersons"].toArray();
        for (int index = 0; index < dpArray.size(); ++index){
@@ -290,5 +291,12 @@ void cData::populateLinkTable(QTableWidget * table){
 void cData::MoveInvisibleToLimbo(){
 
     // move all gpersons marked invisible to Limbo container, and then update.
+    QMutableListIterator<gPerson*> iter(graphicalPersons);
+    while (iter.hasNext()){
+        if (! iter.next()->Visible()){
+           //Limbo.append(iter);
+           iter.remove();
+        }
+    }
 
 }
