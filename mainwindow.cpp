@@ -92,6 +92,10 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
   if (event->key() == Qt::Key_S && event->modifiers()==Qt::CTRL){
       getData()->save( );
   }
+  if (event->key() == Qt::Key_X && event->modifiers()==Qt::CTRL){
+      qApp->exit( );
+  }
+
   QMainWindow::keyPressEvent(event);
 }
 
