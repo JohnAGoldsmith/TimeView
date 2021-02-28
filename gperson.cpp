@@ -7,6 +7,8 @@
 #include <QGradient>
 #include <QDebug>
 #include <QColor>
+#include <QPixmap>
+#include <QImage>
 #include <QFontMetrics>
 #include "gperson.h"
 #include "cscene.h"
@@ -24,6 +26,8 @@ gPerson::gPerson(){
  visible=true;
  personBoundingRect.setCoords(-1.0 * margin, 0, width, height);
  xpos = 0;  // it will be set the first time it is add to scene, using the toppoint on the scene.
+ selectedLinkSet = "top";
+ selectedLink = NULL;
 }
 
 
@@ -42,6 +46,8 @@ gPerson::gPerson( dPerson * dp ) // this is not currently used at all.
    visible=true;
   personBoundingRect.setCoords(-1.0 * margin, 0, width, height);
   xpos = 0;  // it will be set the first time it is add to scene, using the toppoint on the scene.
+   selectedLinkSet = "top";
+    selectedLink = NULL;
 }
 
 
@@ -80,6 +86,8 @@ gPerson::gPerson(QStringList  data){ // this is used when starting from data in 
     x_fromspreadsheet = data[5].toFloat();
     profession1 = data[6];
     visible=true;
+     selectedLinkSet = "top";
+      selectedLink = NULL;
 }
 
 gPerson::~gPerson(){
@@ -106,11 +114,25 @@ void gPerson::AppendLink(cLink *link) {
 QRectF gPerson::boundingRect() const  {
     return personBoundingRect;
 }
+
+
+void gPerson::focusInEvent(QFocusEvent * event){
+    ShowSelectedLinkSet();
+    QGraphicsItem::focusInEvent(event);
+}
+void gPerson::focusOutEvent(QFocusEvent * event){
+    qDebug() << "gperson line 124 "<< LastName();
+    UnselectAllLinks();
+    QGraphicsItem::focusOutEvent(event);
+}
+
 void gPerson::mousePressEvent(QGraphicsSceneMouseEvent * event){
     qDebug() << "gPerson clicked" << "x" << event->scenePos().x() << "y" << event->scenePos().y();
+
     QGraphicsItem::mousePressEvent(event);
     update();
 }
+
 void gPerson::mouseMoveEvent(QGraphicsSceneMouseEvent * event){
     foreach (cLink* link, * GetLinks()){
         if (link->GPersonFrom() == this){
@@ -121,6 +143,9 @@ void gPerson::mouseMoveEvent(QGraphicsSceneMouseEvent * event){
     }
     QGraphicsItem::mouseMoveEvent(event);
 }
+
+
+
 void gPerson::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
     if (event->modifiers()==Qt::ShiftModifier){
         if (visible){
@@ -206,7 +231,8 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     }
     if (hasFocus()){
         painter->setPen(Qt::black);
-        mycolor = Qt::yellow;
+        mycolor = Qt::red;
+        //pen.setWidth(5);
     }
 
     if (!visible){
@@ -215,7 +241,6 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
         pen.setStyle(Qt::DotLine);
         pen.setColor(Qt::gray);
         painter->setPen(pen);
-
     }
 
     //painter->setBrush(brush);
@@ -237,14 +262,27 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
     QRectF personrect(-1.0 * margin,0,width + 2.0 * margin, height);
 
+
     QLinearGradient gradient(personrect.topLeft(),personrect.bottomRight());
     gradient.setColorAt(0,Qt::white);
     gradient.setColorAt(1,mycolor);
-    QBrush brush(gradient);
-    painter->setBrush(brush);
+    //QBrush brush(gradient);
+
+    QBrush brush;
+    //brush.setStyle(gradient);
 
 
+
+
+    // THIS IS THE USUAL CODE
     painter->fillRect(personrect,mycolor);
+
+    if(hasFocus()){
+        painter->fillRect(personrect, brush);
+    } else{
+        painter->fillRect(personrect,gradient);
+    }
+
     painter->drawRect(personrect);
 
     QRectF rect(0,0,namewidth,20);
@@ -321,13 +359,33 @@ void gPerson::read(const QJsonObject &json){
     profession1 = json["profession1"].toString();
     limbo = json["limbo"].toBool();
     visible = json["visible"].toBool();
-    if( !visible){
-        qDebug() << "read invisible person 325 in gperson "<<key;
-    }
 
 
 }
 void gPerson::rememberPos(QPointF point){
     xpos = point.x();
     ypos = point.y();
+}
+
+void gPerson::ShowSelectedLinkSet(){
+  if (selectedLinkSet == "top"){
+     if (selectedLink){
+         if (topLinks.contains(selectedLink)){
+             selectedLink->setSelected();
+         }
+     }else{   // this is temporary --- ultimately we should check all four sides for which is selected.
+         if (topLinks.size() > 0){
+             topLinks.at(0)->setSelected();
+             topLinks.at(0)->update();
+             SetSelectedLink(topLinks.at(0));
+         }
+     }
+  }
+}
+void gPerson::UnselectAllLinks(){
+    if (selectedLink){
+        selectedLink->setUnSelected();
+        selectedLink->update();
+    }
+    selectedLink = NULL;
 }

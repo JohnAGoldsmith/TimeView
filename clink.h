@@ -40,6 +40,9 @@ class cLink: public QGraphicsItem
         QString NatureOfLink() {return natureOfLink;}
         void Invisible() {visible = false;}
         void Visible() {visible = true;}
+        bool Selected() {return selected;}
+        void setSelected(){selected = true;}
+        void setUnSelected() {selected = false;}
     private:
         QString fromPersonKey;
         QString toPersonKey;
@@ -52,6 +55,7 @@ class cLink: public QGraphicsItem
         float bottomOffset;
         float topOffset;
         bool visible;
+        bool selected;
 
 };
 

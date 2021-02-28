@@ -4,6 +4,7 @@
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QList>
+#include <QFocusEvent>
 #include "dataperson.h"
 
 class cScene;
@@ -50,7 +51,11 @@ public:
     QList<cLink*> * GetLinks() {return & myLinks;}
     QList<cLink*> * GetTopLinks() {return & topLinks;}
     QList<cLink*> * GetBottomLinks() {return & bottomLinks;}
+    void ShowSelectedLinkSet();
+    void SetSelectedLink(cLink * link) {selectedLink = link;}
+    void UnselectAllLinks();
     void SortLinks();
+
     QString Key(){return key;}
     void setKey(QString thiskey){key = thiskey;}
     void setWidth(float w){width = w;}
@@ -73,6 +78,8 @@ protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent * event) override;
 
     void mouseDoubleClickEvent (QGraphicsSceneMouseEvent * event) override;
+    void focusInEvent(QFocusEvent * event)   override;
+    void focusOutEvent(QFocusEvent* event) override;
 
 private:
     cScene * scene;
@@ -97,7 +104,8 @@ private:
     QList<cLink*> bottomLinks;
     bool visible;
     bool limbo;
-
+    QString selectedLinkSet; // should be an enum: options are top, bottom, left, right.
+    cLink *  selectedLink;
 };
 
 
