@@ -55,6 +55,7 @@ public:
     void SetSelectedLink(cLink * link) {selectedLink = link;}
     void UnselectAllLinks();
     void SortLinks();
+    void ShiftLink();
 
     QString Key(){return key;}
     void setKey(QString thiskey){key = thiskey;}

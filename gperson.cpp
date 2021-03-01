@@ -296,6 +296,24 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     height = personBoundingRect.height();
 
 }
+
+void gPerson::ShiftLink(){
+    QList<cLink*> * thisList = GetTopLinks();
+    if (thisList->size() < 2)
+        return;
+    if (!selectedLink)
+        return;
+    int thisindex;
+    thisindex = thisList->indexOf(selectedLink);
+    if (thisindex < 0)
+        return;
+    if (thisindex==0){
+        thisList->move(0,thisList->size()-1);
+    }else{
+        thisList->move(thisindex,thisindex-1);
+    }
+
+}
 void gPerson::SortLinks(){
     float boxwidth = 100.0; // should be GetNameWidth();
     float delta = (boxwidth * 0.5) / GetTopLinks()->size();

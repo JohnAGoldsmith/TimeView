@@ -39,10 +39,13 @@ void cScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event){
     update();
 }
 
+
 void cScene::mouseReleaseEvent(QGraphicsSceneMouseEvent * event){
     QGraphicsScene::mouseReleaseEvent(event);
 }
+void cScene::focusInEvent(QFocusEvent * event){
 
+}
 void cScene::AddLink(cLink * link){
     addItem(link);
     //link->setPos(link->GPersonFrom()->scenePos());

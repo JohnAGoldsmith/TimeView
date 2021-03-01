@@ -23,8 +23,8 @@ public:
     QList<dPerson*>* getDataPersons(){return &dataPersons;};
     QList<cLink*>*    getLinks(){return &Links;};
 
-    void A_ReadCSV();
-    void A_ReadJson();
+    void A_ReadCSV(QString filename);
+    void A_ReadJson(QString filename);
     void A_analyzeData();
     void A_sendPersonsAndLinksToScene(cScene *);
     void A_sendPersonsAndLinksToSceneJson(cScene *);
@@ -38,9 +38,11 @@ public:
     int TopPosition() {return topPosition;}
     dPerson* CreateDataPerson(QStringList line);
     gPerson* B_CreateGraphicalPerson(QStringList line);
+    void B_AddGPersonPtrsToLinks();
 
+    void Clear();
     void AttachLinks(gPerson * );
-    void AddGPersonPtrsToLinks();
+
     void populatePersonTable(QTableWidget*);
     void populateLinkTable(QTableWidget*);
 

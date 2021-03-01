@@ -29,9 +29,10 @@ private:
     QGraphicsView *view;
     QTableWidget *personTable;
     QTableWidget *linkTable;
+    cData Data;
 
+    void StartAfresh();
     void keyPressEvent(QKeyEvent *);
 
-    cData Data;
 };
 #endif // MAINWINDOW_H

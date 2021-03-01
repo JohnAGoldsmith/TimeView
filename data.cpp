@@ -11,7 +11,38 @@ cData::cData()
 {
    topPosition = 1950;
 }
+void cData::Clear(){
 
+    dataPersons.clear();
+    graphicalPersons.clear();
+    Links.clear();
+    Limbo.clear();
+    Key2dataPerson.clear();
+    Key2graphicalPerson.clear();
+    tempLines.clear();
+
+}
+void cData::A_ReadCSV(QString filename)
+{
+
+    QFile file(filename);
+    qDebug() << QDir::currentPath();
+    if (! file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
+
+    QTextStream stream(&file);
+    QStringList data;
+    QString separator(",");
+    int topPosition = 1950;
+    while (stream.atEnd() == false)
+    {
+        QString line = stream.readLine();
+        tempLines << line;
+    }
+
+    file.close();
+    return;
+}
 
 void cData::A_analyzeData(){
     gPerson * gperson, * fromgperson, * togperson;
@@ -39,7 +70,7 @@ void cData::A_analyzeData(){
            }
        }
     }
-    AddGPersonPtrsToLinks();
+    B_AddGPersonPtrsToLinks();
 }
 
 gPerson* cData::B_CreateGraphicalPerson(QStringList line){
@@ -58,7 +89,7 @@ gPerson* cData::B_CreateGraphicalPerson(QStringList line){
     graphicalPersons.append(gperson);
 }
 
-void cData::AddGPersonPtrsToLinks(){
+void cData::B_AddGPersonPtrsToLinks(){
     QString fromKey, toKey;
     gPerson * fromgperson, *togperson;
     foreach (cLink* link, Links){
@@ -139,8 +170,8 @@ void cData::write(QJsonObject &json) const{
 
     return ;
 }
-void cData::A_ReadJson() {
-    QFile file ("./save.json");
+void cData::A_ReadJson(QString filename) {
+    QFile file (filename);
     if (! file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
 
@@ -205,27 +236,6 @@ void cData::A_ReadJson() {
 void cData::AttachLinks(gPerson *){
 
 
-}
-void cData::A_ReadCSV()
-{
-
-    QFile file("./test.csv");
-    qDebug() << QDir::currentPath();
-    if (! file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return;
-
-    QTextStream stream(&file);
-    QStringList data;
-    QString separator(",");
-    int topPosition = 1950;
-    while (stream.atEnd() == false)
-    {
-        QString line = stream.readLine();
-        tempLines << line;
-    }
-
-    file.close();
-    return;
 }
 
 

@@ -6,6 +6,7 @@
 #include <QGraphicsScale>
 #include <QKeyEvent>
 #include <QTableWidget>
+#include <QFileDialog>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "cscene.h"
@@ -26,8 +27,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     QHBoxLayout *layout = new QHBoxLayout;
 
-    cScene *  localScene = new cScene();
-    cView * view = new cView(localScene);
+    scene = new cScene();
+    view = new cView(scene);
     view->scale(1,1);
     view->centerOn(-100,1900);
     layout->addWidget(view);
@@ -35,33 +36,34 @@ MainWindow::MainWindow(QWidget *parent)
     QWidget *widget = new QWidget;
     widget->setLayout(layout);
 
-    bool Json(true);
+
+    setCentralWidget(widget);
+    setWindowTitle(tr("Genealogy"));
+    setUnifiedTitleAndToolBarOnMac(true);
+
+    bool Json(false);
     if (Json){
-        getData()->A_ReadJson( );
-        getData()->A_sendPersonsAndLinksToSceneJson(localScene);
-        setCentralWidget(widget);
-        setWindowTitle(tr("Genealogy"));
-        setUnifiedTitleAndToolBarOnMac(true);
-
-        QJsonObject dataObject;
-        getData()->save( );
-
+        QString jsonfilename = "./timeview.json";
+        getData()->A_ReadJson(jsonfilename);
+        getData()->A_sendPersonsAndLinksToSceneJson(scene);
     }else{
-        getData()->A_ReadCSV();
+        QString csvfilename = "./timeview.csv";
+        getData()->A_ReadCSV(csvfilename);
         getData()->A_analyzeData();
-        getData()->A_sendPersonsAndLinksToScene(localScene);
-        setCentralWidget(widget);
-        setWindowTitle(tr("Genealogy"));
-        setUnifiedTitleAndToolBarOnMac(true);
-
-
-
+        getData()->A_sendPersonsAndLinksToScene(scene);
     }
+    //QJsonObject dataObject;
+}
 
-    QJsonObject dataObject;
-    getData()->save( );
-
-
+void MainWindow::StartAfresh(){
+    if (personTable){
+        delete personTable;
+        personTable = NULL;
+    }
+    if (linkTable){
+        delete linkTable;
+        linkTable = NULL;
+    }
 
 }
 
@@ -89,13 +91,36 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
           linkTable->show();
       }
   }
+
+  /*         Open                                    */
+  if (event->key() == Qt::Key_O && event->modifiers()==Qt::CTRL){
+       QString fileName = QFileDialog::getOpenFileName(this,"Open document",QDir::currentPath(), "*.csv *.json");
+       if (!fileName.isEmpty()){
+          if (fileName.endsWith(".json")){
+              getData()->A_ReadJson(fileName);
+              getData()->A_sendPersonsAndLinksToSceneJson(scene);
+          } else if (fileName.endsWith(".csv")){
+              getData()->A_ReadCSV(fileName);
+              getData()->A_analyzeData();
+              getData()->A_sendPersonsAndLinksToScene(scene);
+          }
+       }
+  }
+
   if (event->key() == Qt::Key_S && event->modifiers()==Qt::CTRL){
       getData()->save( );
   }
+
   if (event->key() == Qt::Key_X && event->modifiers()==Qt::CTRL){
+      getData()->save( );
       qApp->exit( );
   }
+  /*          Clear all data                 */
+  if (event->key() == Qt::Key_Z && event->modifiers()==Qt::CTRL){
+    getData()->Clear();
+    scene->clear();
 
+  }
   QMainWindow::keyPressEvent(event);
 }
 

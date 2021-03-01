@@ -39,6 +39,7 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent * event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent * event) override;
+    void focusInEvent (QFocusEvent *) override;
 private:
     QFont myFont;
     QColor myTextColor;
@@ -47,6 +48,7 @@ private:
     int   timeScale;
     int scaleFactor; // x-axis
     int topPosition;
+    gPerson* selectedPerson;
 
 };
 
