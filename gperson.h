@@ -25,8 +25,8 @@ public:
                 QWidget * widget);
     bool Pressed;
 
-
-
+    cScene * Scene() {return scene;}
+    void Scene(cScene * iscene) {scene = iscene;}
     void rememberPos(QPointF);
     //double Width() {return width;}
     void SetY(int y) {ypos = y;}
@@ -107,6 +107,7 @@ private:
     bool limbo;
     QString selectedLinkSet; // should be an enum: options are top, bottom, left, right.
     cLink *  selectedLink;
+
 };
 
 

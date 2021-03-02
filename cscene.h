@@ -1,7 +1,8 @@
 #ifndef CSCENE_H
 #define CSCENE_H
 #include <QGraphicsScene>
-
+#include <QHash>
+#include <QPixmap>
 class QGraphicsSceneMouseEvent;
 class QMenu;
 class QPointF;
@@ -9,6 +10,7 @@ class QGraphicsLineItem;
 class QFont;
 class QGraphicsTextItem;
 class QColor;
+
 
 class cLink;
 class gPerson;
@@ -35,6 +37,7 @@ public:
     QGraphicsItem *  itemAt(const QPointF, const QTransform &);
     void AddLink(cLink * );
     void AddGPerson (gPerson *);
+    QHash<QString, QPixmap*> * Pixmaps() {return pixmaps;}
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent * event) override;
@@ -49,6 +52,7 @@ private:
     int scaleFactor; // x-axis
     int topPosition;
     gPerson* selectedPerson;
+    QHash<QString, QPixmap*> *  pixmaps;
 
 };
 

@@ -5,6 +5,8 @@
 #include <QPointF>
 #include <QGraphicsItem>
 #include <QKeyEvent>
+#include <QHash>
+#include <QPixmap>
 #include <QTableWidget>
 #include "cscene.h"
 #include "gperson.h"
@@ -18,9 +20,31 @@ cScene::cScene(QObject* parent): QGraphicsScene(parent)
     timeScale = 20.0;
     scaleFactor = 25.0;
     topPosition = 2000;
+    pixmaps = new QHash<QString, QPixmap*>();
+    QPixmap * pixmap;
+    pixmap = new QPixmap("./blue.jpg");
+    pixmaps->insert("blue", pixmap);
+    pixmap = new QPixmap("./lightbrown.jpg");
+    pixmaps->insert("lightbrown", pixmap);
+    pixmap = new QPixmap("./apricot.webp");
+    pixmaps->insert("apricot", pixmap);
+    pixmap = new QPixmap("./darkredwood.webp");
+    pixmaps->insert("darkredwood", pixmap);
+    pixmap = new QPixmap("./blue.jpg");
+    pixmaps->insert("blue", pixmap);
+    pixmap = new QPixmap("./dark_light_wood.webp");
+    pixmaps->insert("dark_lightg_wood", pixmap);
+    pixmap = new QPixmap("./red.png");
+    pixmaps->insert("red", pixmap);
+
 
 }
 cScene::~cScene(){
+    if (pixmaps){
+        foreach (QPixmap* pixmap, *pixmaps)
+           delete pixmap;
+    }
+    delete pixmaps;
 
 }
 

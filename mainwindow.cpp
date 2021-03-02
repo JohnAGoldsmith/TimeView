@@ -71,7 +71,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-void MainWindow::keyPressEvent(QKeyEvent * event){
+void MainWindow::keyPressEvent(QKeyEvent * event){                         /* Don't forget "focusItem" */
     if (event->key() == Qt::Key_C && event->modifiers()==Qt::CTRL){
             getData()->MoveInvisibleToLimbo();         
     }

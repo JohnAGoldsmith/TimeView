@@ -206,9 +206,11 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     QColor mycolor, oldcolor;
     painter->setFont(*myFont);
 
+    QHash<QString,QPixmap*> * pixmaps = dynamic_cast<cScene*>(scene)->Pixmaps();
+    QPixmap * pixmap;
+
     QColor Orange;
     Orange.setRgb(255,153,51);
-
 
     QPen pen(Qt::black,1);
     painter->setPen(pen);
@@ -216,18 +218,37 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     QString Profession =  Profession1();
     if (Profession ==  "linguist"){
         mycolor = Orange;
+        if (pixmaps->contains("apricot")){
+           pixmap = pixmaps->value("apricot");
+        }
     }
     else if (Profession == "sociologist"){
              mycolor = Qt::green;
+             if (pixmaps->contains("red")){
+                pixmap = pixmaps->value("red");
+                pen.setColor(Qt::white);
+                painter->setPen(pen);
+             }
     }
     else if (Profession == "philosopher" || Profession == "Phil-psych"){
             mycolor = Qt::yellow;
+            if (pixmaps->contains("blue")){
+               pixmap = pixmaps->value("blue");
+            }
      }
     else if (Profession == "psychologist"){
            mycolor = Qt::cyan;
+           if (pixmaps->contains("darkredwood")){
+              pixmap = pixmaps->value("darkredwood");
+           }
      }
     else{
         mycolor = Qt::magenta;
+        if (pixmaps->contains("red")){
+           pixmap = pixmaps->value("red");
+           pen.setColor(Qt::white);
+           painter->setPen(pen);
+        }
     }
     if (hasFocus()){
         painter->setPen(Qt::black);
@@ -243,7 +264,12 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
         painter->setPen(pen);
     }
 
-    //painter->setBrush(brush);
+
+
+
+
+
+
     QString name = firstName + " "  + lastName;
     QString years = QString::number(birthYear) + "--" + QString::number(deathYear);
     float namewidth = GetNameWidth(painter);
@@ -262,15 +288,17 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
     QRectF personrect(-1.0 * margin,0,width + 2.0 * margin, height);
 
-
+    //pixmap.load("./lightbrown.jpg");
+    //QPixmap pixmap("./texture2.jpg");
+    //QRadialGradient gradient(QPointF(50,20),50);
     QLinearGradient gradient(personrect.topLeft(),personrect.bottomRight());
-    gradient.setColorAt(0,Qt::white);
+    gradient.setColorAt(0,mycolor);
+    gradient.setColorAt(0.5,Qt::white);
     gradient.setColorAt(1,mycolor);
     //QBrush brush(gradient);
 
     QBrush brush;
     //brush.setStyle(gradient);
-
 
 
 
@@ -284,6 +312,8 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     }
 
     painter->drawRect(personrect);
+
+    painter->drawPixmap(personrect,*pixmap,QRectF(0,0,50,50));
 
     QRectF rect(0,0,namewidth,20);
     QRectF boundingRect1;
