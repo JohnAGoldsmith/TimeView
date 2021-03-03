@@ -23,11 +23,11 @@ gPerson::gPerson(){
  setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
  myFont = new  QFont("Times", 12);
 
- width = 100; // this isn't right, it should be dynamic and based on relevant data; but that's not available till after Paint();
- height = 40;
+ width = 250; // this isn't right, it should be dynamic and based on relevant data; but that's not available till after Paint();
+ height = 70;
  margin = 5;
  visible=true;
- personBoundingRect.setCoords(-1.0 * margin, 0, width, height);
+ personBoundingRect.setCoords(-1.0 * margin, 0, width + 2*margin, height+2*margin);
  xpos = 0;  // it will be set the first time it is add to scene, using the toppoint on the scene.
  selectedLinkSet = "top";
  selectedLink = NULL;
@@ -39,8 +39,8 @@ gPerson::gPerson( dPerson * dp ) // this is not currently used at all.
 {
   setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
 
-  width = 100; // this isn't right, it should be dynamic and based on relevant data; but that's not available till after Paint();
-  height = 40;
+  width = 250; // this isn't right, it should be dynamic and based on relevant data; but that's not available till after Paint();
+  height = 70;
   margin = 5;
   firstName = dp->FirstName();
   lastName = dp->LastName();
@@ -61,14 +61,14 @@ gPerson::gPerson(QStringList  data){ // this is used when starting from data in 
     setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
 
     key = "no_key";
-    width = 100; // this isn't right, it should be dynamic and based on relevant data; but that's not available till after Paint();
-    height = 40;
+    width = 250; // this isn't right, it should be dynamic and based on relevant data; but that's not available till after Paint();
+    height = 70;
     myFont = new  QFont("Times", 12);
     xpos = 0;               // it will be set the first time it is add to scene, using the toppoint on the scene.
     birthYear = 0;
     deathYear = 0;
     margin = 5;
-    personBoundingRect.setCoords(-1.0 * margin, 0, width, height);
+    personBoundingRect.setCoords(-1.0 * margin, 0, width + 2*margin, height+ 2*margin);
     if (data.size() >= 8 && data[7].length() > 0){
         key = data[7];
     } else {
@@ -121,6 +121,7 @@ QRectF gPerson::boundingRect() const  {
 
 void gPerson::focusInEvent(QFocusEvent * event){
   //  ShowSelectedLinkSet();
+    qDebug() << "124 I have focus" << LastName();
     QGraphicsItem::focusInEvent(event);
 }
 void gPerson::focusOutEvent(QFocusEvent * event){
@@ -131,9 +132,15 @@ void gPerson::focusOutEvent(QFocusEvent * event){
 
 void gPerson::mousePressEvent(QGraphicsSceneMouseEvent * event){
     qDebug() << "gPerson clicked" << "x" << event->scenePos().x() << "y" << event->scenePos().y();
-
     QGraphicsItem::mousePressEvent(event);
     update();
+}
+
+void gPerson::keyPressEvent (QKeyEvent * event){
+   if (event->key() == Qt::Key_L ){
+       ShowSelectedLinkSet();
+   }
+  QGraphicsItem::keyPressEvent(event);
 }
 
 void gPerson::mouseMoveEvent(QGraphicsSceneMouseEvent * event){
@@ -141,7 +148,6 @@ void gPerson::mouseMoveEvent(QGraphicsSceneMouseEvent * event){
         if (link->GPersonFrom() == this){
            link->setPos(scenePos());
            link->update();
-            //qDebug() << "***" << link->GPersonFrom()->LastName() << link->GPersonTo()->LastName();
         }
     }
     QGraphicsItem::mouseMoveEvent(event);
@@ -227,8 +233,8 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     }
     else if (Profession == "sociologist"){
              mycolor = Qt::green;
-             if (pixmaps->contains("red")){
-                pixmap = pixmaps->value("red");
+             if (pixmaps->contains("blueslate")){
+                pixmap = pixmaps->value("blueslate");
                 pen.setColor(Qt::white);
                 painter->setPen(pen);
              }
@@ -241,14 +247,14 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
      }
     else if (Profession == "psychologist"){
            mycolor = Qt::cyan;
-           if (pixmaps->contains("darkredwood")){
-              pixmap = pixmaps->value("darkredwood");
+           if (pixmaps->contains("lightbrown")){
+              pixmap = pixmaps->value("lightbrown");
            }
      }
     else{
         mycolor = Qt::magenta;
-        if (pixmaps->contains("red")){
-           pixmap = pixmaps->value("red");
+        if (pixmaps->contains("blueslate")){
+           pixmap = pixmaps->value("blueslate");
            pen.setColor(Qt::white);
            painter->setPen(pen);
         }
@@ -256,7 +262,9 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     if (hasFocus()){
         painter->setPen(Qt::black);
         mycolor = Qt::red;
-        //pen.setWidth(5);
+        if (pixmaps->contains("red")){
+           pixmap = pixmaps->value("red");
+        }
     }
 
     if (!visible){
@@ -322,7 +330,7 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     QRectF boundingRect2 (boundingRect1);
     rect.moveTo(0,lineHeight);
     painter->drawText(rect, Qt::AlignHCenter,years, &boundingRect2);
-    personBoundingRect.setCoords(personrect.left(), personrect.top(), personrect.right(), personrect.bottom() );
+    personBoundingRect.setCoords(personrect.left(), personrect.top(), personrect.right(), personrect.bottom());
     height = personBoundingRect.height();
 
 

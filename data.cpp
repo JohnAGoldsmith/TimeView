@@ -130,7 +130,7 @@ void cData::A_sendPersonsAndLinksToScene(cScene* scene){
         effect->setBlurRadius(5);
         effect->setXOffset(5);
         effect->setYOffset(5);
-        effect->setColor(QColor("#00ff00"));
+        effect->setColor(QColor("#ffffff"));
         gperson->setGraphicsEffect(effect);
 
         }
@@ -225,9 +225,9 @@ void cData::A_ReadJson(QString filename) {
 
             auto effect = new QGraphicsDropShadowEffect();
             effect->setBlurRadius(5);
-            effect->setXOffset(5);
+            effect->setXOffset(15);
             effect->setYOffset(5);
-            effect->setColor(QColor("#00ff00"));
+            effect->setColor(QColor("#555555"));
             gperson->setGraphicsEffect(effect);
 
 
