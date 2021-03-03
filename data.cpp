@@ -3,6 +3,10 @@
 #include <QDebug>
 #include <QDir>
 #include <QFile>
+#include <QGraphicsWidget>
+#include <QGraphicsProxyWidget>
+#include <QPushButton>
+#include <QGraphicsDropShadowEffect>
 #include "data.h"
 #include "clink.h"
 #include "cscene.h"
@@ -120,6 +124,16 @@ void cData::A_sendPersonsAndLinksToScene(cScene* scene){
         float new_y = scene->TimeScale() * ( scene->TopPosition() - gperson->BirthYear());
         gperson->setPos(new_x, new_y  );
         gperson->rememberPos(QPointF(new_x,new_y));
+
+        if (false) {
+        auto effect = new QGraphicsDropShadowEffect();
+        effect->setBlurRadius(5);
+        effect->setXOffset(5);
+        effect->setYOffset(5);
+        effect->setColor(QColor("#00ff00"));
+        gperson->setGraphicsEffect(effect);
+
+        }
     }
     foreach (cLink * link, Links){
         gPerson1 = link->GPersonFrom();
@@ -204,6 +218,26 @@ void cData::A_ReadJson(QString filename) {
             gperson->read(gpObject);
             Key2graphicalPerson[key1] = gperson;
             graphicalPersons.append(gperson);
+
+
+
+
+
+            auto effect = new QGraphicsDropShadowEffect();
+            effect->setBlurRadius(5);
+            effect->setXOffset(5);
+            effect->setYOffset(5);
+            effect->setColor(QColor("#00ff00"));
+            gperson->setGraphicsEffect(effect);
+
+
+
+
+
+
+
+
+
             }
     }
 

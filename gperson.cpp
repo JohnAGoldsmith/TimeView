@@ -2,6 +2,7 @@
 #include <QGraphicsTextItem>
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsProxyWidget>
 #include <QPainter>
 #include <QStylePainter>
 #include <QGradient>
@@ -9,7 +10,9 @@
 #include <QColor>
 #include <QPixmap>
 #include <QImage>
+#include <QGraphicsDropShadowEffect>
 #include <QFontMetrics>
+#include <QPushButton>
 #include "gperson.h"
 #include "cscene.h"
 #include "clink.h"
@@ -117,12 +120,12 @@ QRectF gPerson::boundingRect() const  {
 
 
 void gPerson::focusInEvent(QFocusEvent * event){
-    ShowSelectedLinkSet();
+  //  ShowSelectedLinkSet();
     QGraphicsItem::focusInEvent(event);
 }
 void gPerson::focusOutEvent(QFocusEvent * event){
     qDebug() << "gperson line 124 "<< LastName();
-    UnselectAllLinks();
+   // UnselectAllLinks();
     QGraphicsItem::focusOutEvent(event);
 }
 
@@ -201,13 +204,13 @@ float gPerson::GetDatesWidth(QPainter * painter) const {
 void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
 
 
-    double topMargin = 10.0;
+
     double lineHeight = 15.0;
-    QColor mycolor, oldcolor;
+    QColor mycolor;
     painter->setFont(*myFont);
 
     QHash<QString,QPixmap*> * pixmaps = dynamic_cast<cScene*>(scene)->Pixmaps();
-    QPixmap * pixmap;
+    QPixmap * pixmap(NULL);
 
     QColor Orange;
     Orange.setRgb(255,153,51);
@@ -258,17 +261,11 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
     if (!visible){
         //oldcolor = painter->brush().color();
-        mycolor =  QColor(255, 255, 255, .4);
+        mycolor =  QColor(255, 255, 255, 1);
         pen.setStyle(Qt::DotLine);
         pen.setColor(Qt::gray);
         painter->setPen(pen);
     }
-
-
-
-
-
-
 
     QString name = firstName + " "  + lastName;
     QString years = QString::number(birthYear) + "--" + QString::number(deathYear);
@@ -283,26 +280,16 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
     float interline = 2.0;
     height = 2.0 * GetTextHeight(painter) + interline  + 2.0 * margin;
-
-
-
     QRectF personrect(-1.0 * margin,0,width + 2.0 * margin, height);
 
-    //pixmap.load("./lightbrown.jpg");
-    //QPixmap pixmap("./texture2.jpg");
-    //QRadialGradient gradient(QPointF(50,20),50);
     QLinearGradient gradient(personrect.topLeft(),personrect.bottomRight());
     gradient.setColorAt(0,mycolor);
     gradient.setColorAt(0.5,Qt::white);
     gradient.setColorAt(1,mycolor);
-    //QBrush brush(gradient);
+
 
     QBrush brush;
-    //brush.setStyle(gradient);
 
-
-
-    // THIS IS THE USUAL CODE
     painter->fillRect(personrect,mycolor);
 
     if(hasFocus()){
@@ -313,8 +300,21 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
     painter->drawRect(personrect);
 
-    painter->drawPixmap(personrect,*pixmap,QRectF(0,0,50,50));
+    if (visible){
+       painter->drawPixmap(personrect,*pixmap,QRectF(0,0,50,50));
+    }
 
+
+
+
+
+
+
+
+
+    ////////////////////////////////////////
+    /// \brief rect
+    ///
     QRectF rect(0,0,namewidth,20);
     QRectF boundingRect1;
     painter->drawText(rect ,Qt::AlignHCenter,  name ,  & boundingRect1);
@@ -324,6 +324,9 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     painter->drawText(rect, Qt::AlignHCenter,years, &boundingRect2);
     personBoundingRect.setCoords(personrect.left(), personrect.top(), personrect.right(), personrect.bottom() );
     height = personBoundingRect.height();
+
+
+
 
 }
 
