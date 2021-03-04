@@ -33,7 +33,7 @@ cScene::cScene(QObject* parent): QGraphicsScene(parent)
     pixmap = new QPixmap("./blueslate.jpg");
     pixmaps->insert("blueslate", pixmap);
     pixmap = new QPixmap("./dark_light_wood.webp");
-    pixmaps->insert("dark_lightg_wood", pixmap);
+    pixmaps->insert("darklightwood", pixmap);
     pixmap = new QPixmap("./red.png");
     pixmaps->insert("red", pixmap);
 

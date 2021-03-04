@@ -105,9 +105,11 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     QPen pen;
     QPointF point1, point2;
 
+    qDebug() << 108 << "just painting";
     if (! GPersonFrom()->Visible()){
         pen.setStyle(Qt::DotLine);
         painter->setPen(pen);
+        qDebug() << "clink 111" << "invisible link...";
     }
     else if (Selected()){
         //qDebug() << "clink selected"<< display();

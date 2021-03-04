@@ -51,8 +51,9 @@ public:
     QList<cLink*> * GetLinks() {return & myLinks;}
     QList<cLink*> * GetTopLinks() {return & topLinks;}
     QList<cLink*> * GetBottomLinks() {return & bottomLinks;}
-    void ShowSelectedLinkSet();
+    //void ShowSelectedLinkSet();
     void SetSelectedLink(cLink * link) {selectedLink = link;}
+    cLink* SelectedLink() {return selectedLink;}
     void UnselectAllLinks();
     void SortLinks();
     void ShiftLink();

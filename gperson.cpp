@@ -120,13 +120,13 @@ QRectF gPerson::boundingRect() const  {
 
 
 void gPerson::focusInEvent(QFocusEvent * event){
-  //  ShowSelectedLinkSet();
+
     qDebug() << "124 I have focus" << LastName();
     QGraphicsItem::focusInEvent(event);
 }
 void gPerson::focusOutEvent(QFocusEvent * event){
     qDebug() << "gperson line 124 "<< LastName();
-   // UnselectAllLinks();
+    UnselectAllLinks();
     QGraphicsItem::focusOutEvent(event);
 }
 
@@ -137,8 +137,13 @@ void gPerson::mousePressEvent(QGraphicsSceneMouseEvent * event){
 }
 
 void gPerson::keyPressEvent (QKeyEvent * event){
+    qDebug() << "gperson 140"<< LastName() <<  "key press" << event->key() << Qt::Key_L;
    if (event->key() == Qt::Key_L ){
-       ShowSelectedLinkSet();
+      if (selectedLink){
+          qDebug() << "gperson 142" << LastName();
+        SelectedLink()->setSelected();
+        selectedLink->update();
+      }
    }
   QGraphicsItem::keyPressEvent(event);
 }
@@ -253,8 +258,8 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
      }
     else{
         mycolor = Qt::magenta;
-        if (pixmaps->contains("blueslate")){
-           pixmap = pixmaps->value("blueslate");
+        if (pixmaps->contains("darkredwood")){
+           pixmap = pixmaps->value("darkredwood");
            pen.setColor(Qt::white);
            painter->setPen(pen);
         }
@@ -426,21 +431,7 @@ void gPerson::rememberPos(QPointF point){
     ypos = point.y();
 }
 
-void gPerson::ShowSelectedLinkSet(){
-  if (selectedLinkSet == "top"){
-     if (selectedLink){
-         if (topLinks.contains(selectedLink)){
-             selectedLink->setSelected();
-         }
-     }else{   // this is temporary --- ultimately we should check all four sides for which is selected.
-         if (topLinks.size() > 0){
-             topLinks.at(0)->setSelected();
-             topLinks.at(0)->update();
-             SetSelectedLink(topLinks.at(0));
-         }
-     }
-  }
-}
+
 void gPerson::UnselectAllLinks(){
     if (selectedLink){
         selectedLink->setUnSelected();
