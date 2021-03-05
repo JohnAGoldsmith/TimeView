@@ -148,6 +148,25 @@ void gPerson::keyPressEvent (QKeyEvent * event){
           }
       }    
    }
+   else if (event->key() == Qt::Key_K){
+      if (selectedLink){
+          if (myLinks.size() > 1){
+              selectedLink->setUnChosen();
+              int index = myLinks.indexOf(selectedLink);
+              if (index == myLinks.size()-1 ){
+                  index = 0;
+              } else{
+                  index += 1;
+              }
+              selectedLink = myLinks.at(index);
+              selectedLink->setChosen();
+              Scene()->update();
+          }
+      }
+   }
+
+
+
   QGraphicsItem::keyPressEvent(event);
 }
 
