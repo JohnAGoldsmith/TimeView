@@ -28,7 +28,7 @@ public:
     void A_analyzeData();
     void A_sendPersonsAndLinksToScene(cScene *);
     void A_sendPersonsAndLinksToSceneJson(cScene *);
-    dPerson* getDataPersonFromKey(QString key){return Key2dataPerson[key];}
+    //dPerson* getDataPersonFromKey(QString key){return Key2dataPerson[key];}
     gPerson* getGraphicPersonFromKey(QString key){return Key2graphicalPerson[key];}
     bool  Key2dataPersonHashContains (QString key ) {return  Key2dataPerson.contains(key);}
     bool  Key2graphicalPersonHashContains (QString key ) {return  Key2graphicalPerson.contains(key);}

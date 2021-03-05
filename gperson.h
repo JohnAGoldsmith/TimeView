@@ -5,6 +5,7 @@
 #include <QGraphicsScene>
 #include <QList>
 #include <QFocusEvent>
+#include <QEvent>
 #include "dataperson.h"
 
 class cScene;
@@ -25,7 +26,7 @@ public:
                 QWidget * widget);
     bool Pressed;
 
-    cScene * Scene() {return scene;}
+    cScene * Scene() {return scene;}  /* This really shouldn't be necessary; it should inherit this from QGraphicsItem */
     void Scene(cScene * iscene) {scene = iscene;}
     void rememberPos(QPointF);
     //double Width() {return width;}
@@ -69,6 +70,7 @@ public:
     bool setVisible(bool b) {visible = b;}
 
 
+
     // Json:
     void read(const QJsonObject & json);
     void write(QJsonObject & json) const;
@@ -108,8 +110,9 @@ private:
     QList<cLink*> bottomLinks;
     bool visible;
     bool limbo;
-    QString selectedLinkSet; // should be an enum: options are top, bottom, left, right.
+    //QString selectedLinkSet; // should be an enum: options are top, bottom, left, right.
     cLink *  selectedLink;
+
 
 };
 

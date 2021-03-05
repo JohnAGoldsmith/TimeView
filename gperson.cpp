@@ -16,6 +16,7 @@
 #include "gperson.h"
 #include "cscene.h"
 #include "clink.h"
+#include "cview.h"
 
 
 
@@ -27,9 +28,9 @@ gPerson::gPerson(){
  height = 70;
  margin = 5;
  visible=true;
- personBoundingRect.setCoords(-1.0 * margin, 0, width + 2*margin, height+2*margin);
+ personBoundingRect.setCoords(-1.0 * margin, 0, width + 2*margin, height+2*margin );
  xpos = 0;  // it will be set the first time it is add to scene, using the toppoint on the scene.
- selectedLinkSet = "top";
+ //selectedLinkSet = "top";
  selectedLink = NULL;
 }
 
@@ -49,7 +50,7 @@ gPerson::gPerson( dPerson * dp ) // this is not currently used at all.
    visible=true;
   personBoundingRect.setCoords(-1.0 * margin, 0, width, height);
   xpos = 0;  // it will be set the first time it is add to scene, using the toppoint on the scene.
-   selectedLinkSet = "top";
+   //selectedLinkSet = "top";
     selectedLink = NULL;
 }
 
@@ -89,7 +90,7 @@ gPerson::gPerson(QStringList  data){ // this is used when starting from data in 
     x_fromspreadsheet = data[5].toFloat();
     profession1 = data[6];
     visible=true;
-     selectedLinkSet = "top";
+     //selectedLinkSet = "top";
       selectedLink = NULL;
 }
 
@@ -119,6 +120,7 @@ QRectF gPerson::boundingRect() const  {
 }
 
 
+
 void gPerson::focusInEvent(QFocusEvent * event){
 
     qDebug() << "124 I have focus" << LastName();
@@ -131,19 +133,20 @@ void gPerson::focusOutEvent(QFocusEvent * event){
 }
 
 void gPerson::mousePressEvent(QGraphicsSceneMouseEvent * event){
-    qDebug() << "gPerson clicked" << "x" << event->scenePos().x() << "y" << event->scenePos().y();
+    qDebug() << "gPerson mousepressevent clicked" << "x" << event->scenePos().x() << "y" << event->scenePos().y();
     QGraphicsItem::mousePressEvent(event);
-    update();
+    //update();
 }
 
 void gPerson::keyPressEvent (QKeyEvent * event){
-    qDebug() << "gperson 140"<< LastName() <<  "key press" << event->key() << Qt::Key_L;
    if (event->key() == Qt::Key_L ){
-      if (selectedLink){
-          qDebug() << "gperson 142" << LastName();
-        SelectedLink()->setSelected();
-        selectedLink->update();
-      }
+      if (!selectedLink){
+          if (myLinks.size()){
+             selectedLink = myLinks.first();
+             selectedLink->setChosen();
+             Scene()->update();
+          }
+      }    
    }
   QGraphicsItem::keyPressEvent(event);
 }
@@ -188,6 +191,7 @@ void gPerson::mouseDoubleClickEvent (QGraphicsSceneMouseEvent * event) {
 
 
 
+
 float gPerson::GetTextWidth(QPainter * painter, QString string) const{
     QFontMetrics fm=painter->fontMetrics();
     return fm.horizontalAdvance(string);
@@ -214,8 +218,6 @@ float gPerson::GetDatesWidth(QPainter * painter) const {
 }
 void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
 
-
-
     double lineHeight = 15.0;
     QColor mycolor;
     painter->setFont(*myFont);
@@ -238,8 +240,8 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     }
     else if (Profession == "sociologist"){
              mycolor = Qt::green;
-             if (pixmaps->contains("blueslate")){
-                pixmap = pixmaps->value("blueslate");
+             if (pixmaps->contains("darkredwood")){
+                pixmap = pixmaps->value("darkredwood");
                 pen.setColor(Qt::white);
                 painter->setPen(pen);
              }
@@ -258,12 +260,11 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
      }
     else{
         mycolor = Qt::magenta;
-        if (pixmaps->contains("darkredwood")){
-           pixmap = pixmaps->value("darkredwood");
-           pen.setColor(Qt::white);
+        if (pixmaps->contains("yellow")){
+           pixmap = pixmaps->value("yellow");
+           //pen.setColor(Qt::white);
            painter->setPen(pen);
-        }
-    }
+        }    }
     if (hasFocus()){
         painter->setPen(Qt::black);
         mycolor = Qt::red;
@@ -319,15 +320,6 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
 
 
-
-
-
-
-
-
-    ////////////////////////////////////////
-    /// \brief rect
-    ///
     QRectF rect(0,0,namewidth,20);
     QRectF boundingRect1;
     painter->drawText(rect ,Qt::AlignHCenter,  name ,  & boundingRect1);
@@ -434,7 +426,7 @@ void gPerson::rememberPos(QPointF point){
 
 void gPerson::UnselectAllLinks(){
     if (selectedLink){
-        selectedLink->setUnSelected();
+        selectedLink->setUnChosen();
         selectedLink->update();
     }
     selectedLink = NULL;

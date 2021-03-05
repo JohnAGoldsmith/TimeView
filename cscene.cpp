@@ -24,6 +24,9 @@ cScene::cScene(QObject* parent): QGraphicsScene(parent)
     QPixmap * pixmap;
     pixmap = new QPixmap("./blue.jpg");
     pixmaps->insert("blue", pixmap);
+    pixmap = new QPixmap("./yellow.jpg");
+    pixmaps->insert("yellow", pixmap);
+
     pixmap = new QPixmap("./lightbrown.jpg");
     pixmaps->insert("lightbrown", pixmap);
     pixmap = new QPixmap("./apricot.webp");

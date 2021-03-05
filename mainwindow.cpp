@@ -121,6 +121,7 @@ void MainWindow::keyPressEvent(QKeyEvent * event){                         /* Do
     scene->clear();
 
   }
+  //view->update();// this doesn't update the view either.
   QMainWindow::keyPressEvent(event);
 }
 

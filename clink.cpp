@@ -18,7 +18,7 @@ cLink::cLink()
     bottomOffset = 0.0;
     topOffset = 0.0;
     visible = true;
-    selected = false;
+    chosen = false;
 }
 cLink::cLink(QStringList & data){
     gPersonFrom = NULL;
@@ -29,7 +29,7 @@ cLink::cLink(QStringList & data){
     bottomOffset = 0.0;
     topOffset = 0.0;
     visible = true;
-    selected = false;
+    chosen = false;
     if (data.size() >= 11 && data[10].length() > 0){
         natureOfLink = data[10];
     }
@@ -105,18 +105,18 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     QPen pen;
     QPointF point1, point2;
 
-    qDebug() << 108 << "just painting";
+    if (false)
+        qDebug() << 108 << "just painting" << fromPersonKey << toPersonKey << chosen;
     if (! GPersonFrom()->Visible()){
         pen.setStyle(Qt::DotLine);
         painter->setPen(pen);
         qDebug() << "clink 111" << "invisible link...";
     }
-    else if (Selected()){
-        //qDebug() << "clink selected"<< display();
+    else if (chosen){
+        qDebug() << "clink selected line 115"<< display();
         pen.setColor(Qt::red);
         pen.setWidth(6);
         painter->setPen(pen);
-
     }
     else if (natureOfLink == "teacher" || natureOfLink == "student"){
         pen.setColor(Qt::blue);
