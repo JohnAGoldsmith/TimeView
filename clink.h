@@ -56,6 +56,7 @@ class cLink: public QGraphicsItem
         float topOffset;
         bool visible;
         bool chosen;
+        float proportion1;
 
 };
 

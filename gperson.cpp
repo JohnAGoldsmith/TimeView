@@ -164,8 +164,36 @@ void gPerson::keyPressEvent (QKeyEvent * event){
           }
       }
    }
-
-
+   else if (event->key() == Qt::Key_J){
+      if (selectedLink){
+          if (myLinks.size() > 1){
+              qDebug() << "gperson 170 moving selected link to right ";
+              int index(topLinks.indexOf(selectedLink));
+              if (index >= 0 && index < topLinks.size()-1){
+                  qDebug() << 173 << index;
+                  topLinks.swapItemsAt(index,index+1);
+                  qDebug() << 175;
+                  SortLinks();
+                  Scene()->update();
+              }
+          }
+      }
+   }
+   else if (event->key() == Qt::Key_H){
+      if (selectedLink){
+          if (myLinks.size() > 1){
+              qDebug() << "gperson 185 moving selected link to right ";
+              int index(topLinks.indexOf(selectedLink));
+              if (index > 0){
+                  qDebug() << 188 << index;
+                  topLinks.swapItemsAt(index,index-1);
+                  qDebug() << 190;
+                  SortLinks();
+                  Scene()->update();
+              }
+          }
+      }
+   }
 
   QGraphicsItem::keyPressEvent(event);
 }
@@ -386,7 +414,6 @@ void gPerson::SortLinks(){
             i++;
         }
     }
-
     delta = (boxwidth * 0.5) / GetBottomLinks()->size();
     thisList = GetBottomLinks();
     LS = thisList->size();
@@ -399,10 +426,9 @@ void gPerson::SortLinks(){
             thislink->BottomOffset(startingPoint + i * delta);
             i++;
         }
-
     }
-
 }
+
 void gPerson::write(QJsonObject & json) const {
     json["key"] = key;
     json["type"] = "person";

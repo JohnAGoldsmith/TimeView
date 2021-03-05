@@ -19,6 +19,7 @@ cLink::cLink()
     topOffset = 0.0;
     visible = true;
     chosen = false;
+    proportion1 = 0.6;
 }
 cLink::cLink(QStringList & data){
     gPersonFrom = NULL;
@@ -30,6 +31,8 @@ cLink::cLink(QStringList & data){
     topOffset = 0.0;
     visible = true;
     chosen = false;
+    proportion1 = 0.6;
+
     if (data.size() >= 11 && data[10].length() > 0){
         natureOfLink = data[10];
     }
@@ -89,7 +92,7 @@ QRectF cLink::boundingRect() const {
 
 
 void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-    double fraction1(0.7);
+
 
     /* fix "centerX" function */
     float GPersonFromCenterX = 50;
@@ -179,7 +182,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     if (PositionOnFromPerson=="Top"){
             if (PositionOnToPerson == "Right"){
                 point1.setX(start_point.x());
-                point1.setY( start_point.y() - fraction1 * y_distance2  );
+                point1.setY( start_point.y() - proportion1 * y_distance2  );
                 point2.setX (end_point.x());
                 point2.setY( point1.y() );
             }
@@ -187,7 +190,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     if (PositionOnFromPerson=="Top"){
             if (PositionOnToPerson == "Bottom"){
                 point1.setX(start_point.x());
-                point1.setY( start_point.y() - fraction1 * y_distance2  );
+                point1.setY( start_point.y() - proportion1 * y_distance2  );
                 point2.setX (end_point.x());
                 point2.setY( point1.y() );
             }
@@ -213,7 +216,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
           point1.setY( start_point.y()   );
           if (PositionOnToPerson == "Left"){
               float local_x_distance = start_point.x() - end_point.x();
-              point1.setX(start_point.x() - fraction1 * local_x_distance );
+              point1.setX(start_point.x() - proportion1 * local_x_distance );
               point2.setX (point1.x());
               point2.setY( end_point.y() );
           }
@@ -223,7 +226,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     if (PositionOnFromPerson=="Left"){
         if (PositionOnToPerson == "Right"){
             float local_x_distance = start_point.x() - end_point.x();
-            point1.setX(start_point.x() - fraction1 * local_x_distance);
+            point1.setX(start_point.x() - proportion1 * local_x_distance);
             point1.setY( start_point.y()   );
             point2.setX (point1.x());
             point2.setY( end_point.y() );
@@ -232,7 +235,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     if (PositionOnFromPerson=="Left"){
         if (PositionOnToPerson == "Bottom"){
             float local_x_distance = start_point.x() - end_point.x();
-            point1.setX(start_point.x() - fraction1 * local_x_distance);
+            point1.setX(start_point.x() - proportion1 * local_x_distance);
             point1.setY( start_point.y()   );
             point2.setX (end_point.x());
             point2.setY( point1.y() );
@@ -241,7 +244,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     if (PositionOnFromPerson=="Left"){
         if (PositionOnToPerson == "Top"){
             float local_x_distance = start_point.x() - end_point.x();
-            point1.setX(start_point.x() - fraction1 * local_x_distance);
+            point1.setX(start_point.x() - proportion1 * local_x_distance);
             point1.setY( start_point.y()   );
             point2.setX (end_point.x());
             point2.setY( point1.y() );

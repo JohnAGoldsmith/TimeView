@@ -57,6 +57,7 @@ public:
     cLink* SelectedLink() {return selectedLink;}
     void UnselectAllLinks();
     void SortLinks();
+    //void ReattachLinks();
     void ShiftLink();
 
     QString Key(){return key;}
