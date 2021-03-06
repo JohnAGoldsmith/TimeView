@@ -7,6 +7,7 @@
 #include <QKeyEvent>
 #include <QTableWidget>
 #include <QFileDialog>
+#include <QLineEdit>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "cscene.h"
@@ -25,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
     personTable = NULL;
     linkTable = NULL;
 
-    QHBoxLayout *layout = new QHBoxLayout;
+    QVBoxLayout *layout = new QVBoxLayout;
 
     scene = new cScene();
     view = new cView(scene);
@@ -35,13 +36,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     QWidget *widget = new QWidget;
     widget->setLayout(layout);
+    myLineEdit = new cLineEdit();
+    layout->addWidget(myLineEdit);
 
 
     setCentralWidget(widget);
     setWindowTitle(tr("Genealogy"));
     setUnifiedTitleAndToolBarOnMac(true);
 
-    bool Json(true);
+    bool Json(false);
     if (Json){
         QString jsonfilename = "./timeview.json";
         getData()->A_ReadJson(jsonfilename);
@@ -71,7 +74,11 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-void MainWindow::keyPressEvent(QKeyEvent * event){                         /* Don't forget "focusItem" */
+void MainWindow::keyPressEvent(QKeyEvent * event){
+
+    myLineEdit->setText(myLineEdit->text() + event->text());
+
+    /* Don't forget "focusItem" */
     if (event->key() == Qt::Key_C && event->modifiers()==Qt::CTRL){
             getData()->MoveInvisibleToLimbo();         
     }
@@ -122,7 +129,9 @@ void MainWindow::keyPressEvent(QKeyEvent * event){                         /* Do
 
   }
   //view->update();// this doesn't update the view either.
+    qDebug() << "Main window "<<event->text();
   QMainWindow::keyPressEvent(event);
+
 }
 
 

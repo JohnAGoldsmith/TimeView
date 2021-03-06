@@ -263,6 +263,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 }
 
 void cLink::write(QJsonObject & json) const{
+    json["Key"] = fromPersonKey + ":" + toPersonKey;
  json["FromPersonKey"] = fromPersonKey;
  json["ToPersonKey"] = toPersonKey;
  json["NatureOfLink"] = natureOfLink;

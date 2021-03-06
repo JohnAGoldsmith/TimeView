@@ -13,6 +13,8 @@
 #include <QGraphicsDropShadowEffect>
 #include <QFontMetrics>
 #include <QPushButton>
+#include <QJsonArray>
+#include <QKeyEvent>
 #include "gperson.h"
 #include "cscene.h"
 #include "clink.h"
@@ -127,7 +129,7 @@ void gPerson::focusInEvent(QFocusEvent * event){
     QGraphicsItem::focusInEvent(event);
 }
 void gPerson::focusOutEvent(QFocusEvent * event){
-    qDebug() << "gperson line 124 "<< LastName();
+    qDebug() << "gperson line 124 leaving focus"<< LastName();
     UnselectAllLinks();
     QGraphicsItem::focusOutEvent(event);
 }
@@ -139,6 +141,7 @@ void gPerson::mousePressEvent(QGraphicsSceneMouseEvent * event){
 }
 
 void gPerson::keyPressEvent (QKeyEvent * event){
+    qDebug() << "person 143" << event->text();
    if (event->key() == Qt::Key_L ){
       if (!selectedLink){
           if (myLinks.size()){
@@ -149,8 +152,9 @@ void gPerson::keyPressEvent (QKeyEvent * event){
       }    
    }
    else if (event->key() == Qt::Key_K){
-      if (selectedLink){
+        if (selectedLink){
           if (myLinks.size() > 1){
+              qDebug() << "gperson tab key";
               selectedLink->setUnChosen();
               int index = myLinks.indexOf(selectedLink);
               if (index == myLinks.size()-1 ){
@@ -182,7 +186,7 @@ void gPerson::keyPressEvent (QKeyEvent * event){
    else if (event->key() == Qt::Key_H){
       if (selectedLink){
           if (myLinks.size() > 1){
-              qDebug() << "gperson 185 moving selected link to right ";
+              qDebug() << "gperson 185 moving selected link to LEFT ";
               int index(topLinks.indexOf(selectedLink));
               if (index > 0){
                   qDebug() << 188 << index;
@@ -269,7 +273,14 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     QColor mycolor;
     painter->setFont(*myFont);
 
-    QHash<QString,QPixmap*> * pixmaps = dynamic_cast<cScene*>(scene)->Pixmaps();
+    cScene * thisScene = dynamic_cast<cScene*>(scene);
+    if (!thisScene){
+        int i ;
+        i = 1;
+    }
+    QGraphicsScene * j = scene;
+    QHash<QString,QPixmap*> * pixmaps = thisScene->Pixmaps();
+    //QHash<QString,QPixmap*> * pixmaps = dynamic_cast<cScene*>(scene)->Pixmaps();
     QPixmap * pixmap(NULL);
 
     QColor Orange;
@@ -444,8 +455,13 @@ void gPerson::write(QJsonObject & json) const {
     json["visible"] = visible;
     json["limbo"] = limbo;
 
-
-
+    QJsonArray linkArray;
+    foreach ( cLink * link, myLinks){
+        QJsonObject linkObject;
+        link->write(linkObject);
+        linkArray.append(linkObject);
+    }
+    json["Links"] = linkArray;
 
 }
 void gPerson::read(const QJsonObject &json){

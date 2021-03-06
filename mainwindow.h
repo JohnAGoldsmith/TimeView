@@ -6,6 +6,7 @@
 #include <QTableWidget>
 #include "cscene.h"
 #include "data.h"
+#include "clineedit.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -27,6 +28,7 @@ private:
     Ui::MainWindow *ui;
     cScene *scene;
     QGraphicsView *view;
+    cLineEdit * myLineEdit;
     QTableWidget *personTable;
     QTableWidget *linkTable;
     cData Data;

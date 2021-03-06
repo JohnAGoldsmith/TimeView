@@ -63,7 +63,6 @@ void cData::A_analyzeData(){
                continue;
            } else {
                if (line[0] == "P"){
-
                    gperson = B_CreateGraphicalPerson(line);
                } else {
                    if (line[0] == "L"){
@@ -119,7 +118,7 @@ void cData::A_sendPersonsAndLinksToScene(cScene* scene){
 
     foreach (gPerson * gperson, graphicalPersons){
         scene->addItem(gperson);
-        //gperson->Scene(scene); // why is this necessary? Why can't I get this from the gperson?
+        gperson->Scene(scene); // why is this necessary? Why can't I get this from the gperson?
         float new_x = gperson->X_fromspreadsheet() * scene->ScaleFactor();//   Xpos() * scene->ScaleFactor();
         float new_y = scene->TimeScale() * ( scene->TopPosition() - gperson->BirthYear());
         gperson->setPos(new_x, new_y  );
@@ -210,7 +209,8 @@ void cData::A_ReadJson(QString filename) {
             Key2graphicalPerson[key1] = gperson;
             graphicalPersons.append(gperson);
 
-
+            //ReadLinksInsideGPersons(gpObject);
+            //ConnectPersonAndLinks(gperson);
 
 
 
