@@ -11,6 +11,7 @@
 #include "cscene.h"
 #include "gperson.h"
 #include "clink.h"
+#include "clineedit.h"
 
 cScene::cScene(QObject* parent): QGraphicsScene(parent)
 {
@@ -40,7 +41,7 @@ cScene::cScene(QObject* parent): QGraphicsScene(parent)
     pixmap = new QPixmap("./red.png");
     pixmaps->insert("red", pixmap);
 
-
+    QObject::connect (this, SIGNAL(sendToLineEdit(QString)), parent, SLOT(cLineEdit.setText(QString)));
 }
 cScene::~cScene(){
     if (pixmaps){
@@ -52,21 +53,18 @@ cScene::~cScene(){
 }
 
 
-
-
 QGraphicsItem * cScene::itemAt(const QPointF   pos, const QTransform & transform ){
     return QGraphicsScene::itemAt(pos, transform);
 }
 
 void cScene::mousePressEvent(QGraphicsSceneMouseEvent * event){
    QGraphicsScene::mousePressEvent(event);
+   update();
 }
 void cScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event){
-    QGraphicsScene::mouseReleaseEvent(event);
-    update();
+    QGraphicsScene::mouseMoveEvent(event);
+    update(); // this updates links -- although with json, not always...
 }
-
-
 void cScene::mouseReleaseEvent(QGraphicsSceneMouseEvent * event){
     QGraphicsScene::mouseReleaseEvent(event);
 }
@@ -78,5 +76,4 @@ void cScene::AddLink(cLink * link){
     //link->setPos(link->GPersonFrom()->scenePos());
     link->setPos(link->GPersonFrom()->pos());
 }
-
 

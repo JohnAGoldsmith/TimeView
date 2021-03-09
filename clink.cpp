@@ -7,20 +7,25 @@
 #include "gperson.h"
 #include "cscene.h"
 
+/* Used when reading json file */
 cLink::cLink()
 {
-    QString fromPersonKey ("");
-    QString toPersonKey("");
-
-    QString natureOfLink;
-    gPerson* gPersonFrom;
-    gPerson* gPersonTo;
+    fromPersonKey = "";
+    toPersonKey="";
+    natureOfLink= "";
+    gPersonFrom  =  NULL;
+    gPersonTo = NULL;
     bottomOffset = 0.0;
     topOffset = 0.0;
     visible = true;
     chosen = false;
     proportion1 = 0.6;
+    startPoint = QPoint(0.0, 0.0);
+    endPoint = QPoint(0.0, 0.0);
+    update();
 }
+
+/*  Used when reading csv file */
 cLink::cLink(QStringList & data){
     gPersonFrom = NULL;
     gPersonTo = NULL;
@@ -32,6 +37,8 @@ cLink::cLink(QStringList & data){
     visible = true;
     chosen = false;
     proportion1 = 0.6;
+    startPoint =QPoint(0.0, 0.0);
+    endPoint = QPoint(0.0, 0.0);
 
     if (data.size() >= 11 && data[10].length() > 0){
         natureOfLink = data[10];
@@ -53,7 +60,18 @@ cLink::cLink(QStringList & data){
     update();
 }
 cLink::~cLink(){
-
+}
+void cLink::setPersonFrom(gPerson * person){
+    gPersonFrom = person;
+}
+void cLink::setPersonTo(gPerson * person){
+    gPersonTo = person;
+}
+void cLink::BottomOffset(float f){
+    bottomOffset = f;
+}
+void cLink::TopOffset(float f){
+    topOffset = f;
 }
 QString cLink::display()const {
   QString out;
@@ -79,7 +97,7 @@ void cLink::attachGraphicalPersons(gPerson * person1, gPerson * person2){
 }
 
 QRectF cLink::boundingRect() const {
-
+/*
     float  willbe_tophook = 50.0;
     float willbe_bottomhook = 50.0;
     float y_distance = GPersonTo()->scenePos().y() - GPersonFrom()->scenePos().y() + GPersonTo()->Height();
@@ -88,10 +106,19 @@ QRectF cLink::boundingRect() const {
     QPointF point_end   (x_distance + willbe_bottomhook ,y_distance);
 
     return QRectF( point_start, point_end );
+*/
+
+  return QRectF(startPoint, endPoint);
+
 }
 
 
 void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+
+    if (! GPersonFrom())
+       qDebug() << "link painting but no link from.";
+    if (! GPersonTo())
+       qDebug() << "link painting but no link to.";
 
 
     /* fix "centerX" function */
@@ -103,8 +130,6 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     float y_distance1 = GPersonFrom()->scenePos().y() - GPersonTo()->scenePos().y();
     float y_distance2 = y_distance1 - GPersonTo()->Height();
     float x_distance = GPersonFrom()->scenePos().x() - GPersonTo()->scenePos().x() + (GPersonFromCenterX - GPersonToCenterX);
-    QPointF start_point;
-    QPointF end_point;
     QPen pen;
     QPointF point1, point2;
 
@@ -148,30 +173,44 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 
     /*   startpoint   */
     if (PositionOnFromPerson == "Top") {
-       start_point  = QPointF(GPersonFromCenterX + topOffset,0 );
+       //startPoint  = QPointF(GPersonFromCenterX + topOffset,0 );
+       //startPoint  = QPointF(GPersonFrom()->scenePos().x() + topOffset,0 );
+       //startPoint = QPointF(GPersonFrom()->pos().x() + topOffset,0);
+        startPoint = QPointF(topOffset + GPersonFromCenterX,0);
+        if (GPersonFrom()->LastName() == "Sapir"){
+                   qDebug() << "link painting 178" <<
+                               "StartPoint x"<< startPoint.x() <<
+                               "GPersonFrom()->Pos" << GPersonFrom()->pos().x() <<
+                               "fixed amount " << GPersonFromCenterX <<
+                               GPersonFrom()->LastName() <<
+                               GPersonTo()->LastName() <<
+                               "Starting point" ;
+         }
+
+
     }
     else if (PositionOnFromPerson == "Right") {
-        start_point = QPoint(GPersonFrom()->Width(), GPersonFrom()->Height() * 0.5 );
+        startPoint = QPoint(GPersonFrom()->Width(), GPersonFrom()->Height() * 0.5 );
     }
     else if (PositionOnFromPerson == "Left") {
-        start_point = QPoint(0, willbeheight * 0.5 );
+        startPoint = QPoint(0, willbeheight * 0.5 );
     }
     else{
-        start_point  = QPointF(GPersonFromCenterX + topOffset,0 );
+        startPoint  = QPointF(GPersonFromCenterX + topOffset,0 );
     }
 
     /*  endpoint */
     if (PositionOnToPerson == "Bottom") {
-       end_point = QPointF(-1.0 * x_distance - bottomOffset + GPersonToCenterX, -1.0 * y_distance2);
+       endPoint = QPointF(-1.0 * x_distance - bottomOffset + GPersonToCenterX, -1.0 * y_distance2);
     }
     else if (PositionOnToPerson == "Right") {
-        end_point = QPoint(-1.0 * x_distance + GPersonTo()->Width() ,  -1.0 * y_distance2  - 0.5 *  GPersonTo()->Height()  );
+        endPoint = QPoint(-1.0 * x_distance + GPersonTo()->Width() ,  -1.0 * y_distance2  - 0.5 *  GPersonTo()->Height()  );
     }
     else if (PositionOnToPerson == "Left") {
-         end_point = QPoint(-1.0 * x_distance ,  -1.0 * y_distance2 - 0.5 * GPersonTo()->Height() );
+         endPoint = QPoint(-1.0 * x_distance ,  -1.0 * y_distance2 - 0.5 * GPersonTo()->Height() );
     }
     else {
-        end_point = QPointF(-1.0 * x_distance , -1.0 * y_distance2);
+        endPoint = QPointF(-1.0 * x_distance , -1.0 * y_distance2);
     }
 
 
@@ -181,24 +220,24 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 
     if (PositionOnFromPerson=="Top"){
             if (PositionOnToPerson == "Right"){
-                point1.setX(start_point.x());
-                point1.setY( start_point.y() - proportion1 * y_distance2  );
-                point2.setX (end_point.x());
+                point1.setX(startPoint.x());
+                point1.setY( startPoint.y() - proportion1 * y_distance2  );
+                point2.setX (endPoint.x());
                 point2.setY( point1.y() );
             }
     }
     if (PositionOnFromPerson=="Top"){
             if (PositionOnToPerson == "Bottom"){
-                point1.setX(start_point.x());
-                point1.setY( start_point.y() - proportion1 * y_distance2  );
-                point2.setX (end_point.x());
+                point1.setX(startPoint.x());
+                point1.setY( startPoint.y() - proportion1 * y_distance2  );
+                point2.setX (endPoint.x());
                 point2.setY( point1.y() );
             }
     }
     if (PositionOnFromPerson=="Top"){
             if (PositionOnToPerson == "Left"){
-                point1.setX(start_point.x());
-                point1.setY( end_point.y() ); //- fraction1 * y_distance2  );
+                point1.setX(startPoint.x());
+                point1.setY( endPoint.y() ); //- fraction1 * y_distance2  );
                 point2.setX (point1.x());
                 point2.setY( point1.y() );
             }
@@ -206,47 +245,47 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 
     if (PositionOnFromPerson=="Right"){
         if (PositionOnToPerson == "Bottom"){
-            point1.setX(end_point.x() );
-            point1.setY( start_point.y()  );
+            point1.setX(endPoint.x() );
+            point1.setY( startPoint.y()  );
             point2.setX (point1.x());
             point2.setY( point1.y() );
         }
     }
     if (PositionOnFromPerson=="Right"){
-          point1.setY( start_point.y()   );
+          point1.setY( startPoint.y()   );
           if (PositionOnToPerson == "Left"){
-              float local_x_distance = start_point.x() - end_point.x();
-              point1.setX(start_point.x() - proportion1 * local_x_distance );
+              float local_x_distance = startPoint.x() - endPoint.x();
+              point1.setX(startPoint.x() - proportion1 * local_x_distance );
               point2.setX (point1.x());
-              point2.setY( end_point.y() );
+              point2.setY( endPoint.y() );
           }
       }
 
 
     if (PositionOnFromPerson=="Left"){
         if (PositionOnToPerson == "Right"){
-            float local_x_distance = start_point.x() - end_point.x();
-            point1.setX(start_point.x() - proportion1 * local_x_distance);
-            point1.setY( start_point.y()   );
+            float local_x_distance = startPoint.x() - endPoint.x();
+            point1.setX(startPoint.x() - proportion1 * local_x_distance);
+            point1.setY( startPoint.y()   );
             point2.setX (point1.x());
-            point2.setY( end_point.y() );
+            point2.setY( endPoint.y() );
         }
     }
     if (PositionOnFromPerson=="Left"){
         if (PositionOnToPerson == "Bottom"){
-            float local_x_distance = start_point.x() - end_point.x();
-            point1.setX(start_point.x() - proportion1 * local_x_distance);
-            point1.setY( start_point.y()   );
-            point2.setX (end_point.x());
+            float local_x_distance = startPoint.x() - endPoint.x();
+            point1.setX(startPoint.x() - proportion1 * local_x_distance);
+            point1.setY( startPoint.y()   );
+            point2.setX (endPoint.x());
             point2.setY( point1.y() );
         }
     }
     if (PositionOnFromPerson=="Left"){
         if (PositionOnToPerson == "Top"){
-            float local_x_distance = start_point.x() - end_point.x();
-            point1.setX(start_point.x() - proportion1 * local_x_distance);
-            point1.setY( start_point.y()   );
-            point2.setX (end_point.x());
+            float local_x_distance = startPoint.x() - endPoint.x();
+            point1.setX(startPoint.x() - proportion1 * local_x_distance);
+            point1.setY( startPoint.y()   );
+            point2.setX (endPoint.x());
             point2.setY( point1.y() );
         }
     }
@@ -256,9 +295,9 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 
 
 
-    painter->drawLine(start_point, point1);
+    painter->drawLine(startPoint, point1);
     painter->drawLine(point1, point2);
-    painter->drawLine(point2, end_point);
+    painter->drawLine(point2, endPoint);
 
 }
 
@@ -270,8 +309,10 @@ void cLink::write(QJsonObject & json) const{
  json["PositionOnFromPerson"] = PositionOnFromPerson;
  json["PositionOnToPerson"] = PositionOnToPerson;
  json["Visible"] = visible;
- //qDebug() << "clink writing json: " << display();
+ json["bottomOffset"] = bottomOffset;
+ json["topOffset"] = topOffset;
 }
+
 void cLink::read(QJsonObject & json)  {
  fromPersonKey = json["FromPersonKey"].toString();
  toPersonKey = json["ToPersonKey"].toString() ;
@@ -279,5 +320,7 @@ void cLink::read(QJsonObject & json)  {
  PositionOnFromPerson = json["PositionOnFromPerson"].toString();
  PositionOnToPerson = json["PositionOnToPerson"].toString();
  visible = json["Visible"].toBool();
- //qDebug() << "clink line 179"<< display();
+ BottomOffset ( json["bottomOffset"].toDouble() );
+ TopOffset ( json["topOffset"].toDouble() );
+ qDebug() << "reading topoffset from json"<< topOffset;
 }

@@ -53,6 +53,8 @@ private:
     int topPosition;
     gPerson* selectedPerson;
     QHash<QString, QPixmap*> *  pixmaps;
+signals:
+    //void sendToLineEdit(QString message);
 
 };
 

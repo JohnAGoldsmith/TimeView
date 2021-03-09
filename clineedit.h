@@ -7,6 +7,8 @@ class cLineEdit : public QLineEdit
 {
 public:
     cLineEdit();
+public slots:
+    void setLineEditText(QString);
 };
 
 #endif // CLINEEDIT_H

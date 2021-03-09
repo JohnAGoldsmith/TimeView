@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle(tr("Genealogy"));
     setUnifiedTitleAndToolBarOnMac(true);
 
-    bool Json(false);
+    bool Json(true);
     if (Json){
         QString jsonfilename = "./timeview.json";
         getData()->A_ReadJson(jsonfilename);
@@ -88,6 +88,7 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
           personTable  = new QTableWidget;
           getData()->populatePersonTable(personTable);
           personTable->show();
+          myLineEdit->setText("Load persons table.");
       }
   }
 
@@ -96,6 +97,7 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
           linkTable  = new QTableWidget;
           getData()->populateLinkTable(linkTable);
           linkTable->show();
+            myLineEdit->setText("Load link table.");
       }
   }
 
@@ -116,6 +118,7 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
 
   if (event->key() == Qt::Key_S && event->modifiers()==Qt::CTRL){
       getData()->save( );
+        myLineEdit->setText("Save data to Json file.");
   }
 
   if (event->key() == Qt::Key_X && event->modifiers()==Qt::CTRL){
@@ -126,9 +129,10 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
   if (event->key() == Qt::Key_Z && event->modifiers()==Qt::CTRL){
     getData()->Clear();
     scene->clear();
+      myLineEdit->setText("Clear all data.");
 
   }
-  //view->update();// this doesn't update the view either.
+
     qDebug() << "Main window "<<event->text();
   QMainWindow::keyPressEvent(event);
 

@@ -21,7 +21,7 @@
 #include "cview.h"
 
 
-
+// constructor used with Json input //
 gPerson::gPerson(){
  setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
  myFont = new  QFont("Times", 12);
@@ -32,35 +32,12 @@ gPerson::gPerson(){
  visible=true;
  personBoundingRect.setCoords(-1.0 * margin, 0, width + 2*margin, height+2*margin );
  xpos = 0;  // it will be set the first time it is add to scene, using the toppoint on the scene.
- //selectedLinkSet = "top";
  selectedLink = NULL;
 }
 
 
-
-gPerson::gPerson( dPerson * dp ) // this is not currently used at all.
-{
-  setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
-
-  width = 250; // this isn't right, it should be dynamic and based on relevant data; but that's not available till after Paint();
-  height = 70;
-  margin = 5;
-  firstName = dp->FirstName();
-  lastName = dp->LastName();
-  key = dp->Key();
-  myFont = new  QFont("Times", 12);
-   visible=true;
-  personBoundingRect.setCoords(-1.0 * margin, 0, width, height);
-  xpos = 0;  // it will be set the first time it is add to scene, using the toppoint on the scene.
-   //selectedLinkSet = "top";
-    selectedLink = NULL;
-}
-
-
-
-
-
-gPerson::gPerson(QStringList  data){ // this is used when starting from data in a spreadsheet;
+// constructor used with .csv  file.
+gPerson::gPerson(QStringList  data){
     setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
 
     key = "no_key";
@@ -92,8 +69,7 @@ gPerson::gPerson(QStringList  data){ // this is used when starting from data in 
     x_fromspreadsheet = data[5].toFloat();
     profession1 = data[6];
     visible=true;
-     //selectedLinkSet = "top";
-      selectedLink = NULL;
+    selectedLink = NULL;
 }
 
 gPerson::~gPerson(){
@@ -164,7 +140,7 @@ void gPerson::keyPressEvent (QKeyEvent * event){
               }
               selectedLink = myLinks.at(index);
               selectedLink->setChosen();
-              Scene()->update();
+              Scene()->update();             
           }
       }
    }
@@ -202,7 +178,7 @@ void gPerson::keyPressEvent (QKeyEvent * event){
   QGraphicsItem::keyPressEvent(event);
 }
 
-void gPerson::mouseMoveEvent(QGraphicsSceneMouseEvent * event){
+void gPerson::mouseMoveEvent(QGraphicsSceneMouseEvent * event){ // this doesn't get called with json, but it does with csv!!
     foreach (cLink* link, * GetLinks()){
         if (link->GPersonFrom() == this){
            link->setPos(scenePos());
@@ -476,6 +452,7 @@ void gPerson::read(const QJsonObject &json){
     profession1 = json["profession1"].toString();
     limbo = json["limbo"].toBool();
     visible = json["visible"].toBool();
+
 
 
 }

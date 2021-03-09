@@ -29,13 +29,11 @@ public:
     cScene * Scene() {return scene;}  /* This really shouldn't be necessary; it should inherit this from QGraphicsItem */
     void Scene(cScene * iscene) {scene = iscene;}
     void rememberPos(QPointF);
-    //double Width() {return width;}
     void SetY(int y) {ypos = y;}
     float Xpos(){return xpos;}
     float Ypos(){return ypos;}
     QString LastName() {return lastName;}
     QString FirstName() {return firstName;}
-    //dPerson* getDPerson() const {return dataPerson;}
     float BirthYear() {return birthYear;}
     float DeathYear() {return deathYear;}
     QString Profession1() {return profession1;}
@@ -57,7 +55,6 @@ public:
     cLink* SelectedLink() {return selectedLink;}
     void UnselectAllLinks();
     void SortLinks();
-    //void ReattachLinks();
     void ShiftLink();
 
     QString Key(){return key;}
@@ -65,7 +62,6 @@ public:
     void setWidth(float w){width = w;}
     float Width(){return width;}
     float X_fromspreadsheet() {return x_fromspreadsheet;}
-   //void LinkToDPersonBidirectional(dPerson* dperson);
     bool Limbo() {return limbo;}
     bool Visible() {return visible;}
     bool setVisible(bool b) {visible = b;}

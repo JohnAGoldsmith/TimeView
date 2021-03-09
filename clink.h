@@ -33,8 +33,10 @@ class cLink: public QGraphicsItem
         void attachGraphicalPersons(gPerson *, gPerson *);
         gPerson* GPersonFrom()const {return gPersonFrom;}
         gPerson* GPersonTo() const {return gPersonTo;}
-        void BottomOffset(float f) {bottomOffset = f;}
-        void TopOffset(float f) {topOffset =f;}
+        void BottomOffset(float f) ;
+        void TopOffset(float f) ;
+        double TopOffset() {return topOffset;}
+        double BottomOffset() {return bottomOffset;}
         QString GetPositionOnFromPerson(){return PositionOnFromPerson;}
         QString GetPositionOnToPerson(){return PositionOnToPerson;}
         QString NatureOfLink() {return natureOfLink;}
@@ -43,6 +45,8 @@ class cLink: public QGraphicsItem
         bool Chosen() {return chosen;}
         void setChosen(){chosen = true;}
         void setUnChosen() {chosen = false;}
+        void setPersonFrom(gPerson*);
+        void setPersonTo(gPerson*);
     private:
         QString fromPersonKey;
         QString toPersonKey;
@@ -57,6 +61,8 @@ class cLink: public QGraphicsItem
         bool visible;
         bool chosen;
         float proportion1;
+        QPointF startPoint;
+        QPointF endPoint;
 
 };
 
