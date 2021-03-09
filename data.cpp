@@ -158,7 +158,6 @@ void cData::A_sendPersonsAndLinksToSceneJson(cScene* scene){
         scene->addItem(gperson);
         gperson->Scene(scene); // why is this necessary? Why can't I get this from the gperson?
         gperson->setPos(gperson->Xpos(), gperson->Ypos());  // Was this the problem of the links that didn move?´
-        qDebug() << gperson->Xpos() << gperson->Ypos() << "line 161 data";
         gperson->rememberPos(QPointF(gperson->Xpos(),gperson->Ypos()));
     }
     foreach (cLink * link, Links){
@@ -209,11 +208,11 @@ void cData::A_ReadJson(QString filename) {
             QJsonObject gpObject = gPersonArray[index].toObject();
             QString key1 = gpObject["key"].toString();
             gPerson* gperson = new gPerson();
-            gperson->read(gpObject);
+            gperson->read(gpObject);               /*  this ignores links   */
             Key2graphicalPerson[key1] = gperson;
             graphicalPersons.append(gperson);
-
-            if (gpObject.contains("Links")){
+            /* The next lines should go into Json-read function, *except* that they call a cData function which creates a new cLink */
+            if (gpObject.contains("Links") && gpObject["Links"].isArray() ){
               QJsonArray linkArray = gpObject["Links"].toArray();
               for (int index = 0; index < linkArray.size(); index++){
                  QJsonObject linkObject = linkArray[index].toObject();
@@ -224,6 +223,7 @@ void cData::A_ReadJson(QString filename) {
                  }
                  link = getLink(key);
                  gperson->AppendLink(link);
+                 /*   What follows should be impossible    */
                  if (! link->GPersonFrom()){
                     QString fromKey = link->getFromKey();
                     if (Key2PersonHashContains(fromKey)){
@@ -238,6 +238,16 @@ void cData::A_ReadJson(QString filename) {
                  }
               }
             }
+            if (gpObject.contains("topLinks")) {
+                    if ( gpObject["topLinks"].isArray() )  {
+                 QJsonArray toplinkArray = gpObject["topLinks"].toArray();
+                 for (int i = 0; i < toplinkArray.size(); i++){
+                    QString linkkey = toplinkArray[i].toString();
+                    gperson->GetTopLinks()->append( Key2Link(linkkey) );
+                   }
+                }
+            }
+
             auto effect = new QGraphicsDropShadowEffect();
             effect->setBlurRadius(5);
             effect->setXOffset(15);

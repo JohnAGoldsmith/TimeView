@@ -6,8 +6,7 @@
 #include <QList>
 #include <QFocusEvent>
 #include <QEvent>
-#include "dataperson.h"
-
+#include "data.h"
 class cScene;
 class cLink;
 
@@ -17,7 +16,6 @@ class gPerson : public QGraphicsItem
     friend class dPerson;
 public:
     gPerson();
-    gPerson(dPerson * dPerson);
     gPerson(QStringList   data);
     ~gPerson();
     QRectF boundingRect() const override;

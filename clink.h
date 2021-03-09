@@ -27,6 +27,7 @@ class cLink: public QGraphicsItem
         void write(QJsonObject & json) const;
         void read(QJsonObject & json);
 
+        QString getKey() const;
         QString getFromKey(){return fromPersonKey;}
         QString getToKey(){return toPersonKey;}
         //void attachScene(cScene*);

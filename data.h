@@ -15,6 +15,7 @@ class cData
 {
 public:
     cData();
+
     QString thisDataType;
 
     void read(const QJsonObject & json) ;
@@ -22,6 +23,8 @@ public:
 
     QList<dPerson*>* getDataPersons(){return &dataPersons;};
     QList<cLink*>*    getLinks(){return &Links;};
+    cLink* getLink(QString);
+    cLink* CheckAndCreateNewLink(QString);  // only creates a new link if the key is not already in Links;
 
     void A_ReadCSV(QString filename);
     void A_ReadJson(QString filename);
@@ -29,9 +32,10 @@ public:
     void A_sendPersonsAndLinksToScene(cScene *);
     void A_sendPersonsAndLinksToSceneJson(cScene *);
     //dPerson* getDataPersonFromKey(QString key){return Key2dataPerson[key];}
-    gPerson* getGraphicPersonFromKey(QString key){return Key2graphicalPerson[key];}
-    bool  Key2dataPersonHashContains (QString key ) {return  Key2dataPerson.contains(key);}
-    bool  Key2graphicalPersonHashContains (QString key ) {return  Key2graphicalPerson.contains(key);}
+    gPerson* getPersonFromKey(QString key){return Key2graphicalPerson[key];}
+    //bool  Key2dataPersonHashContains (QString key ) {return  Key2dataPerson.contains(key);}
+    bool  Key2PersonHashContains (QString key ) {return  Key2graphicalPerson.contains(key);}
+    cLink* Key2Link(QString key) {return hashLinks[key];}
     void save() const;
 
     void addDataPerson(dPerson*);
@@ -52,8 +56,10 @@ private:
     QList<gPerson*> graphicalPersons;
     QList<cLink*>   Links;
     QList<gPerson*> Limbo;
-    QHash<QString, dPerson*>  Key2dataPerson;
+    //QHash<QString, dPerson*>  Key2dataPerson;
     QHash<QString, gPerson*>  Key2graphicalPerson;
+
+    QHash<QString, cLink*> hashLinks;
     QStringList     tempLines;
     //int             timeScale;
     int             topPosition;

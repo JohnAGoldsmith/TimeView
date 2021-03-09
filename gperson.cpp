@@ -101,7 +101,7 @@ QRectF gPerson::boundingRect() const  {
 
 void gPerson::focusInEvent(QFocusEvent * event){
 
-    qDebug() << "124 I have focus" << LastName();
+    //qDebug() << "124 I have focus" << LastName();
     QGraphicsItem::focusInEvent(event);
 }
 void gPerson::focusOutEvent(QFocusEvent * event){
@@ -438,6 +438,25 @@ void gPerson::write(QJsonObject & json) const {
         linkArray.append(linkObject);
     }
     json["Links"] = linkArray;
+    QJsonArray JsontopLinks;
+    for  (int i =0; i < topLinks.size();  i++){
+        QString key = topLinks[i]->getKey();
+        QJsonValue json(key);
+        JsontopLinks.append(json);
+    }
+    json["topLinks"] = JsontopLinks;
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
 void gPerson::read(const QJsonObject &json){
@@ -452,6 +471,9 @@ void gPerson::read(const QJsonObject &json){
     profession1 = json["profession1"].toString();
     limbo = json["limbo"].toBool();
     visible = json["visible"].toBool();
+
+
+
 
 
 

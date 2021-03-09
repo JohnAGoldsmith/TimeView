@@ -67,6 +67,11 @@ void cLink::setPersonFrom(gPerson * person){
 void cLink::setPersonTo(gPerson * person){
     gPersonTo = person;
 }
+
+QString cLink::getKey() const {
+    return fromPersonKey + ":" + toPersonKey;
+}
+
 void cLink::BottomOffset(float f){
     bottomOffset = f;
 }
@@ -177,7 +182,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
        //startPoint  = QPointF(GPersonFrom()->scenePos().x() + topOffset,0 );
        //startPoint = QPointF(GPersonFrom()->pos().x() + topOffset,0);
         startPoint = QPointF(topOffset + GPersonFromCenterX,0);
-        if (GPersonFrom()->LastName() == "Sapir"){
+        if (false && GPersonFrom()->LastName() == "Sapir"){
                    qDebug() << "link painting 178" <<
                                "StartPoint x"<< startPoint.x() <<
                                "GPersonFrom()->Pos" << GPersonFrom()->pos().x() <<
@@ -302,7 +307,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 }
 
 void cLink::write(QJsonObject & json) const{
-    json["Key"] = fromPersonKey + ":" + toPersonKey;
+ json["Key"] = getKey();
  json["FromPersonKey"] = fromPersonKey;
  json["ToPersonKey"] = toPersonKey;
  json["NatureOfLink"] = natureOfLink;
@@ -322,5 +327,5 @@ void cLink::read(QJsonObject & json)  {
  visible = json["Visible"].toBool();
  BottomOffset ( json["bottomOffset"].toDouble() );
  TopOffset ( json["topOffset"].toDouble() );
- qDebug() << "reading topoffset from json"<< topOffset;
+
 }
