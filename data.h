@@ -31,11 +31,9 @@ public:
     void A_analyzeData();
     void A_sendPersonsAndLinksToScene(cScene *);
     void A_sendPersonsAndLinksToSceneJson(cScene *);
-    //dPerson* getDataPersonFromKey(QString key){return Key2dataPerson[key];}
-    gPerson* getPersonFromKey(QString key){return Key2graphicalPerson[key];}
-    //bool  Key2dataPersonHashContains (QString key ) {return  Key2dataPerson.contains(key);}
-    bool  Key2PersonHashContains (QString key ) {return  Key2graphicalPerson.contains(key);}
-    cLink* Key2Link(QString key) {return hashLinks[key];}
+    gPerson* Key2Person(QString key){return key2Person[key];} // was getpersonfromkey
+    bool  Key2PersonHashContains (QString key ) {return  key2Person.contains(key);}
+    cLink* Key2Link(QString key) {return key2Link[key];}
     void save() const;
 
     void addDataPerson(dPerson*);
@@ -50,16 +48,17 @@ public:
     void populatePersonTable(QTableWidget*);
     void populateLinkTable(QTableWidget*);
 
-    void MoveInvisibleToLimbo();
+    void GrayedPersons2Invisible();
+    void InvisiblePersons2Grayed();
+    //void MoveInvisiblePersonsToLimbo();
+    //void MoveLimboPersonsToInvisible();
 private:
     QList<dPerson*> dataPersons;
     QList<gPerson*> graphicalPersons;
     QList<cLink*>   Links;
     QList<gPerson*> Limbo;
-    //QHash<QString, dPerson*>  Key2dataPerson;
-    QHash<QString, gPerson*>  Key2graphicalPerson;
-
-    QHash<QString, cLink*> hashLinks;
+    QHash<QString, gPerson*>  key2Person;
+    QHash<QString, cLink*> key2Link;
     QStringList     tempLines;
     //int             timeScale;
     int             topPosition;

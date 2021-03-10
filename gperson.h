@@ -45,12 +45,15 @@ public:
     float GetTextHeight(QPainter* ) const;
     float GetTextWidth (QPainter*, QString) const;
     void AppendLink (cLink * link);
+    void AppendTopLink (cLink*);
+    void AppendBottomLink(cLink*);
+    void AppendLinkKey(QString linkKey);
     QList<cLink*> * GetLinks() {return & myLinks;}
     QList<cLink*> * GetTopLinks() {return & topLinks;}
     QList<cLink*> * GetBottomLinks() {return & bottomLinks;}
-    //void ShowSelectedLinkSet();
     void SetSelectedLink(cLink * link) {selectedLink = link;}
     cLink* SelectedLink() {return selectedLink;}
+
     void UnselectAllLinks();
     void SortLinks();
     void ShiftLink();
@@ -60,9 +63,12 @@ public:
     void setWidth(float w){width = w;}
     float Width(){return width;}
     float X_fromspreadsheet() {return x_fromspreadsheet;}
-    bool Limbo() {return limbo;}
+    //bool Limbo() {return limbo;}
+    //void setLimbo(bool value){limbo = value;}
     bool Visible() {return visible;}
     bool setVisible(bool b) {visible = b;}
+    bool Grayed() {return grayed;}
+    void setGrayed(bool value) {grayed = value;}
 
 
 
@@ -84,7 +90,6 @@ protected:
 
 private:
     cScene * scene;
-    //dPerson * dataPerson;
     QFont *  myFont;
     QString key;
     float xpos;
@@ -103,10 +108,11 @@ private:
     QList<cLink*> myLinks;
     QList<cLink*> topLinks;
     QList<cLink*> bottomLinks;
+    bool grayed;
     bool visible;
-    bool limbo;
-    //QString selectedLinkSet; // should be an enum: options are top, bottom, left, right.
+    //bool limbo;
     cLink *  selectedLink;
+    QString selectedLinkKey;
 
 
 };

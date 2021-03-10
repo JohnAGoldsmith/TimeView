@@ -94,7 +94,7 @@ QString cLink::display()const {
   out += visible;
   return out;
 }
-void cLink::attachGraphicalPersons(gPerson * person1, gPerson * person2){
+void cLink::attachPersons(gPerson * person1, gPerson * person2){
  gPersonFrom = person1;
  gPersonTo = person2;
  person1->AppendLink(this);
@@ -102,19 +102,7 @@ void cLink::attachGraphicalPersons(gPerson * person1, gPerson * person2){
 }
 
 QRectF cLink::boundingRect() const {
-/*
-    float  willbe_tophook = 50.0;
-    float willbe_bottomhook = 50.0;
-    float y_distance = GPersonTo()->scenePos().y() - GPersonFrom()->scenePos().y() + GPersonTo()->Height();
-    float x_distance = GPersonTo()->scenePos().x() - GPersonFrom()->scenePos().x();
-    QPointF point_start (willbe_tophook,0 );
-    QPointF point_end   (x_distance + willbe_bottomhook ,y_distance);
-
-    return QRectF( point_start, point_end );
-*/
-
   return QRectF(startPoint, endPoint);
-
 }
 
 
@@ -178,21 +166,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 
     /*   startpoint   */
     if (PositionOnFromPerson == "Top") {
-       //startPoint  = QPointF(GPersonFromCenterX + topOffset,0 );
-       //startPoint  = QPointF(GPersonFrom()->scenePos().x() + topOffset,0 );
-       //startPoint = QPointF(GPersonFrom()->pos().x() + topOffset,0);
         startPoint = QPointF(topOffset + GPersonFromCenterX,0);
-        if (false && GPersonFrom()->LastName() == "Sapir"){
-                   qDebug() << "link painting 178" <<
-                               "StartPoint x"<< startPoint.x() <<
-                               "GPersonFrom()->Pos" << GPersonFrom()->pos().x() <<
-                               "fixed amount " << GPersonFromCenterX <<
-                               GPersonFrom()->LastName() <<
-                               GPersonTo()->LastName() <<
-                               "Starting point" ;
-         }
-
-
     }
     else if (PositionOnFromPerson == "Right") {
         startPoint = QPoint(GPersonFrom()->Width(), GPersonFrom()->Height() * 0.5 );
@@ -217,10 +191,6 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     else {
         endPoint = QPointF(-1.0 * x_distance , -1.0 * y_distance2);
     }
-
-
-
-
     /*   point1 and point2    */
 
     if (PositionOnFromPerson=="Top"){

@@ -36,5 +36,7 @@ private:
     void StartAfresh();
     void keyPressEvent(QKeyEvent *);
 
+
+
 };
 #endif // MAINWINDOW_H

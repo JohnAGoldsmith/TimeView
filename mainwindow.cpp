@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle(tr("Genealogy"));
     setUnifiedTitleAndToolBarOnMac(true);
 
-    bool Json(true);
+    bool Json(false);
     if (Json){
         QString jsonfilename = "./timeview.json";
         getData()->A_ReadJson(jsonfilename);
@@ -56,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
         getData()->A_sendPersonsAndLinksToScene(scene);
     }
     //QJsonObject dataObject;
+
 }
 
 void MainWindow::StartAfresh(){
@@ -77,10 +78,18 @@ MainWindow::~MainWindow()
 void MainWindow::keyPressEvent(QKeyEvent * event){
 
     myLineEdit->setText(myLineEdit->text() + event->text());
+    qDebug() << myLineEdit->text() << myLineEdit->text().length();
+    if (event->key() == Qt::Key_H && event->modifiers()==Qt::CTRL){
+         getData()->GrayedPersons2Invisible();
+    }
+    if (event->key() == Qt::Key_I && event->modifiers()==Qt::CTRL){
+         getData()->InvisiblePersons2Grayed();
+    }
+
 
     /* Don't forget "focusItem" */
     if (event->key() == Qt::Key_C && event->modifiers()==Qt::CTRL){
-            getData()->MoveInvisibleToLimbo();         
+          //  getData()->MoveInvisiblePersonsToLimbo();
     }
 
   if (event->key() == Qt::Key_D && event->modifiers()==Qt::CTRL){

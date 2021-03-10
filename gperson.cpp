@@ -33,6 +33,7 @@ gPerson::gPerson(){
  personBoundingRect.setCoords(-1.0 * margin, 0, width + 2*margin, height+2*margin );
  xpos = 0;  // it will be set the first time it is add to scene, using the toppoint on the scene.
  selectedLink = NULL;
+ grayed = false;
 }
 
 
@@ -70,6 +71,7 @@ gPerson::gPerson(QStringList  data){
     profession1 = data[6];
     visible=true;
     selectedLink = NULL;
+    grayed = false;
 }
 
 gPerson::~gPerson(){
@@ -77,9 +79,9 @@ gPerson::~gPerson(){
 }
 
 
+
 void gPerson::AppendLink(cLink *link) {
     myLinks.append(link);
-    //qDebug() << "gperson 49" << link->display();
     if (link->GPersonFrom() == this){
         if (link->GetPositionOnFromPerson() == "Top"){
             topLinks.append(link);
@@ -91,6 +93,13 @@ void gPerson::AppendLink(cLink *link) {
         }
     }
     SortLinks();
+}
+
+void gPerson::AppendTopLink(cLink * link){
+    topLinks.append(link);
+}
+void gPerson::AppendBottomLink(cLink * link) {
+    bottomLinks.append(link);
 }
 
 QRectF gPerson::boundingRect() const  {
@@ -111,7 +120,7 @@ void gPerson::focusOutEvent(QFocusEvent * event){
 }
 
 void gPerson::mousePressEvent(QGraphicsSceneMouseEvent * event){
-    qDebug() << "gPerson mousepressevent clicked" << "x" << event->scenePos().x() << "y" << event->scenePos().y();
+    //qDebug() << "gPerson mousepressevent clicked" << "x" << event->scenePos().x() << "y" << event->scenePos().y();
     QGraphicsItem::mousePressEvent(event);
     //update();
 }
@@ -127,7 +136,7 @@ void gPerson::keyPressEvent (QKeyEvent * event){
           }
       }    
    }
-   else if (event->key() == Qt::Key_K){
+   else if (event->key() == Qt::Key_Right){
         if (selectedLink){
           if (myLinks.size() > 1){
               qDebug() << "gperson tab key";
@@ -192,18 +201,20 @@ void gPerson::mouseMoveEvent(QGraphicsSceneMouseEvent * event){ // this doesn't 
 
 void gPerson::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
     if (event->modifiers()==Qt::ShiftModifier){
-        if (visible){
-          visible = false;
+        if (!visible)
+            return;
+        if (!grayed){
+          grayed = true;
           update();
           foreach(cLink* link, myLinks){
-             link->Invisible();
+             link->setGrayed(true);
              link->update();
           }
         } else {
-            visible = true;
+            grayed = false;
             update();
             foreach(cLink * link, myLinks){
-                link->Visible();
+                link->setGrayed(false);
                 link->update();
             }
         }
@@ -250,13 +261,9 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     painter->setFont(*myFont);
 
     cScene * thisScene = dynamic_cast<cScene*>(scene);
-    if (!thisScene){
-        int i ;
-        i = 1;
-    }
+
     QGraphicsScene * j = scene;
     QHash<QString,QPixmap*> * pixmaps = thisScene->Pixmaps();
-    //QHash<QString,QPixmap*> * pixmaps = dynamic_cast<cScene*>(scene)->Pixmaps();
     QPixmap * pixmap(NULL);
 
     QColor Orange;
@@ -265,6 +272,9 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     QPen pen(Qt::black,1);
     painter->setPen(pen);
 
+    if (! visible){
+        return;
+    }
     QString Profession =  Profession1();
     if (Profession ==  "linguist"){
         mycolor = Orange;
@@ -307,7 +317,7 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
         }
     }
 
-    if (!visible){
+    if (grayed){
         //oldcolor = painter->brush().color();
         mycolor =  QColor(255, 255, 255, 1);
         pen.setStyle(Qt::DotLine);
@@ -348,7 +358,7 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
     painter->drawRect(personrect);
 
-    if (visible){
+    if (! grayed){
        painter->drawPixmap(personrect,*pixmap,QRectF(0,0,50,50));
     }
 
@@ -429,7 +439,7 @@ void gPerson::write(QJsonObject & json) const {
     json["deathYear"] = deathYear;
     json["profession1"] = profession1;
     json["visible"] = visible;
-    json["limbo"] = limbo;
+    json["grayed"] = grayed;
 
     QJsonArray linkArray;
     foreach ( cLink * link, myLinks){
@@ -438,6 +448,14 @@ void gPerson::write(QJsonObject & json) const {
         linkArray.append(linkObject);
     }
     json["Links"] = linkArray;
+
+    QJsonArray linkkeyArray;
+    foreach ( cLink * link, myLinks){
+        QJsonValue linkkeyValue(link->getKey());
+        linkkeyArray.append(linkkeyValue);
+    }
+    json["LinkKeys"] = linkkeyArray;
+
     QJsonArray JsontopLinks;
     for  (int i =0; i < topLinks.size();  i++){
         QString key = topLinks[i]->getKey();
@@ -446,7 +464,13 @@ void gPerson::write(QJsonObject & json) const {
     }
     json["topLinks"] = JsontopLinks;
 
-
+    QJsonArray JsonbottomLinks;
+    for  (int i =0; i < bottomLinks.size();  i++){
+        QString key = bottomLinks[i]->getKey();
+        QJsonValue json(key);
+        JsonbottomLinks.append(json);
+    }
+    json["bottomLinks"] = JsonbottomLinks;
 
 
 
@@ -469,7 +493,7 @@ void gPerson::read(const QJsonObject &json){
     birthYear = json["birthYear"].toInt();
     deathYear = json["deathYear"].toInt();
     profession1 = json["profession1"].toString();
-    limbo = json["limbo"].toBool();
+    grayed = json["grayed"].toBool();
     visible = json["visible"].toBool();
 
 

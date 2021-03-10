@@ -27,31 +27,35 @@ class cLink: public QGraphicsItem
         void write(QJsonObject & json) const;
         void read(QJsonObject & json);
 
-        QString getKey() const;
+        QString getKey() const ;
         QString getFromKey(){return fromPersonKey;}
         QString getToKey(){return toPersonKey;}
-        //void attachScene(cScene*);
-        void attachGraphicalPersons(gPerson *, gPerson *);
         gPerson* GPersonFrom()const {return gPersonFrom;}
         gPerson* GPersonTo() const {return gPersonTo;}
+        void setPersonFrom(gPerson*);
+        void setPersonTo(gPerson*);
+
+        void attachPersons(gPerson *, gPerson *);
+
         void BottomOffset(float f) ;
         void TopOffset(float f) ;
         double TopOffset() {return topOffset;}
         double BottomOffset() {return bottomOffset;}
+
         QString GetPositionOnFromPerson(){return PositionOnFromPerson;}
         QString GetPositionOnToPerson(){return PositionOnToPerson;}
+
         QString NatureOfLink() {return natureOfLink;}
+
         void Invisible() {visible = false;}
         void Visible() {visible = true;}
+        void setGrayed(bool value) {grayed = value;}
         bool Chosen() {return chosen;}
         void setChosen(){chosen = true;}
         void setUnChosen() {chosen = false;}
-        void setPersonFrom(gPerson*);
-        void setPersonTo(gPerson*);
     private:
         QString fromPersonKey;
         QString toPersonKey;
-       // cPath  * path;
         QString natureOfLink;
         gPerson* gPersonFrom;
         gPerson* gPersonTo;
@@ -59,6 +63,7 @@ class cLink: public QGraphicsItem
         QString PositionOnToPerson;
         float bottomOffset;
         float topOffset;
+        bool grayed;
         bool visible;
         bool chosen;
         float proportion1;

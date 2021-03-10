@@ -21,22 +21,22 @@ void cData::Clear(){
     graphicalPersons.clear();
     Links.clear();
     Limbo.clear();
-    Key2graphicalPerson.clear();
+    key2Person.clear();
     tempLines.clear();
 
 }
 cLink* cData::getLink(QString key){
-    if (hashLinks.contains(key)){
-        return hashLinks[key];
+    if (key2Link.contains(key)){
+        return key2Link[key];
     }
     return NULL;
 }
 cLink* cData::CheckAndCreateNewLink(QString key){
-    if (hashLinks.contains(key)){
+    if (key2Link.contains(key)){
         return NULL;
     }
     cLink * link = new cLink();
-    hashLinks[key] = link;
+    key2Link[key] = link;
     Links.append(link);
     return link;
 
@@ -103,7 +103,7 @@ gPerson* cData::B_CreateGraphicalPerson(QStringList line){
        return NULL;
     };
     gPerson* gperson = new gPerson(line);
-    Key2graphicalPerson[key]= gperson;
+    key2Person[key]= gperson;
     graphicalPersons.append(gperson);
 }
 
@@ -121,9 +121,9 @@ void cData::B_AddGPersonPtrsToLinks(){
             qDebug() << "Link containing "<<fromKey << "and" << toKey << "cannot be made;"<<toKey << "is missing.";
             continue;
         }
-        fromgperson = getPersonFromKey(fromKey);
-        togperson = getPersonFromKey(toKey);
-        link->attachGraphicalPersons(fromgperson,togperson);
+        fromgperson = Key2Person(fromKey);
+        togperson = Key2Person(toKey);
+        link->attachPersons(fromgperson,togperson);
     }
 }
 
@@ -137,7 +137,7 @@ void cData::A_sendPersonsAndLinksToScene(cScene* scene){
         float new_x = gperson->X_fromspreadsheet() * scene->ScaleFactor();
         float new_y = scene->TimeScale() * ( scene->TopPosition() - gperson->BirthYear());
         gperson->setPos(new_x, new_y  );
-        qDebug() << new_x << new_y <<  "line 140 data";
+        //qDebug() << new_x << new_y <<  "line 140 data";
         gperson->rememberPos(QPointF(new_x,new_y));
 
     }
@@ -209,8 +209,12 @@ void cData::A_ReadJson(QString filename) {
             QString key1 = gpObject["key"].toString();
             gPerson* gperson = new gPerson();
             gperson->read(gpObject);               /*  this ignores links   */
-            Key2graphicalPerson[key1] = gperson;
+            key2Person[key1] = gperson;
             graphicalPersons.append(gperson);
+
+
+
+            /*   This will be eliminated           */
             /* The next lines should go into Json-read function, *except* that they call a cData function which creates a new cLink */
             if (gpObject.contains("Links") && gpObject["Links"].isArray() ){
               QJsonArray linkArray = gpObject["Links"].toArray();
@@ -227,13 +231,13 @@ void cData::A_ReadJson(QString filename) {
                  if (! link->GPersonFrom()){
                     QString fromKey = link->getFromKey();
                     if (Key2PersonHashContains(fromKey)){
-                        link->setPersonFrom(Key2graphicalPerson[fromKey]);
+                        link->setPersonFrom(key2Person[fromKey]);
                     }
                  }
                  if (! link->GPersonTo() ) {
                     QString toKey = link->getToKey();
                     if (Key2PersonHashContains(toKey)){
-                        link->setPersonTo(Key2graphicalPerson[toKey]);
+                        link->setPersonTo(key2Person[toKey]);
                     }
                  }
               }
@@ -247,6 +251,9 @@ void cData::A_ReadJson(QString filename) {
                    }
                 }
             }
+            /*  What is above here will be eliminated       */
+
+
 
             auto effect = new QGraphicsDropShadowEffect();
             effect->setBlurRadius(5);
@@ -264,21 +271,51 @@ void cData::A_ReadJson(QString filename) {
            cLink * link = CheckAndCreateNewLink(linkObject["Key"].toString());
            if (link){
                link->read(linkObject);
-               gPerson* gpersonFrom = Key2graphicalPerson[link->getFromKey()];
-               gPerson* gpersonTo   = Key2graphicalPerson[link->getToKey()];
-               link->attachGraphicalPersons(gpersonFrom, gpersonTo);
+               gPerson* gpersonFrom = key2Person[link->getFromKey()];
+               gPerson* gpersonTo   = key2Person[link->getToKey()];
+               link->attachPersons(gpersonFrom, gpersonTo);
                Links.append(link);
-              if (! Key2PersonHashContains(link->getFromKey())){
-                 qDebug() << "Link has From keyword that does not exist.";
+               if (! Key2PersonHashContains(link->getFromKey())){
+                  qDebug() << "Link has From keyword that does not exist.";
+                  continue;
+               }
+               if (! Key2PersonHashContains(link->getToKey())){
+                 qDebug() << "Link has To keyword that does not exist.";
                  continue;
-              }
-              if (! Key2PersonHashContains(link->getToKey())){
-               qDebug() << "Link has To keyword that does not exist.";
-               continue;
               }
           }
        }
     }
+
+    /*   Now we re-read the Json Persons, so that we can give them pointers to the Links  */
+    /*
+    if (rootItem.contains("GraphicalPersons") && rootItem["GraphicalPersons"].isArray() ){
+        QJsonArray gPersonArray = rootItem["GraphicalPersons"].toArray();
+        for (int index = 0; index < gPersonArray.size(); ++index){
+            QJsonObject gpObject = gPersonArray[index].toObject();
+            QString key = gpObject["key"].toString();
+            gPerson * person = Key2Person(key);
+            if (gpObject.contains("Links") and gpObject["Links"].isArray()){
+                QJsonArray linkArray = gpObject["Links"].toArray();
+                for (int index = 0; index < linkArray.size(); index++){
+                    QString linkkey = linkArray[index].toString();
+                    cLink * link = Key2Link(linkkey);
+                    person->AppendLink(link);
+                }
+            }
+            if (gpObject.contains("TopLinks") and gpObject["TopLinks"].isArray()){
+                QJsonArray toplinkArray = gpObject["TopLinks"].toArray();
+                for (int index = 0; index < toplinkArray.size(); index++){
+                    QString linkkey = toplinkArray[index].toString();
+                    cLink * link = Key2Link(linkkey);
+                    person->AppendTopLink(link);
+                }
+            }
+
+        }
+    }
+    */
+
     return ;
 }
 
@@ -352,15 +389,23 @@ void cData::populateLinkTable(QTableWidget * table){
    }
    table->setSortingEnabled(true);
 }
-void cData::MoveInvisibleToLimbo(){
 
+void cData::GrayedPersons2Invisible(){
     // move all gpersons marked invisible to Limbo container, and then update.
-    QMutableListIterator<gPerson*> iter(graphicalPersons);
-    while (iter.hasNext()){
-        if (! iter.next()->Visible()){
-           //Limbo.append(iter);
-           iter.remove();
+    foreach(gPerson* person, graphicalPersons){
+        if (person->Grayed()){
+            person->setGrayed(false);
+            person->setVisible(false);
+            person->update();
         }
     }
-
+}
+void cData::InvisiblePersons2Grayed(){
+    foreach(gPerson* person, graphicalPersons){
+        if (! person->Visible()){
+            person->setGrayed(true);
+            person->setVisible(true);
+            person->update();
+        }
+    }
 }
