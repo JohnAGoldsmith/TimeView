@@ -328,7 +328,7 @@ void cData::AttachLinks(gPerson *){
 
 
 void cData::save() const{
-    QFile saveFile("save.json");
+    QFile saveFile("timeview.json");
     if (!saveFile.open(QIODevice::WriteOnly)) {
            qWarning("Couldn't open save file.");
            return;

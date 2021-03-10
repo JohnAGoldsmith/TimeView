@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle(tr("Genealogy"));
     setUnifiedTitleAndToolBarOnMac(true);
 
-    bool Json(false);
+    bool Json(true);
     if (Json){
         QString jsonfilename = "./timeview.json";
         getData()->A_ReadJson(jsonfilename);
@@ -77,21 +77,26 @@ MainWindow::~MainWindow()
 }
 void MainWindow::keyPressEvent(QKeyEvent * event){
 
+
+    /*            Add text to line-edit                */
     myLineEdit->setText(myLineEdit->text() + event->text());
-    qDebug() << myLineEdit->text() << myLineEdit->text().length();
+
+    /*          Make grayed boxes invisible            */
     if (event->key() == Qt::Key_H && event->modifiers()==Qt::CTRL){
          getData()->GrayedPersons2Invisible();
     }
+
+    /*             Make invisible boxes visible but grayed  */
     if (event->key() == Qt::Key_I && event->modifiers()==Qt::CTRL){
          getData()->InvisiblePersons2Grayed();
     }
-
 
     /* Don't forget "focusItem" */
     if (event->key() == Qt::Key_C && event->modifiers()==Qt::CTRL){
           //  getData()->MoveInvisiblePersonsToLimbo();
     }
 
+  /*                Load table of persons for user              */
   if (event->key() == Qt::Key_D && event->modifiers()==Qt::CTRL){
       if (! personTable){
           personTable  = new QTableWidget;
@@ -101,6 +106,7 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
       }
   }
 
+  /*           Load table of links for user                      */
   if (event->key() == Qt::Key_L&& event->modifiers()==Qt::CTRL){
       if (! linkTable){
           linkTable  = new QTableWidget;
@@ -110,7 +116,7 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
       }
   }
 
-  /*         Open                                    */
+  /*         Open  file                                */
   if (event->key() == Qt::Key_O && event->modifiers()==Qt::CTRL){
        QString fileName = QFileDialog::getOpenFileName(this,"Open document",QDir::currentPath(), "*.csv *.json");
        if (!fileName.isEmpty()){
@@ -146,7 +152,6 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
   QMainWindow::keyPressEvent(event);
 
 }
-
 
 
 

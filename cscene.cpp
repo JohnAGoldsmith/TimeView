@@ -58,12 +58,14 @@ QGraphicsItem * cScene::itemAt(const QPointF   pos, const QTransform & transform
 }
 
 void cScene::mousePressEvent(QGraphicsSceneMouseEvent * event){
+    qDebug() << "In scene, mouse event";
    QGraphicsScene::mousePressEvent(event);
    update();
 }
 void cScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event){
+    qDebug() << "In scene, mouse move";
     QGraphicsScene::mouseMoveEvent(event);
-    update(); // this updates links -- although with json, not always...
+    update();
 }
 void cScene::mouseReleaseEvent(QGraphicsSceneMouseEvent * event){
     QGraphicsScene::mouseReleaseEvent(event);

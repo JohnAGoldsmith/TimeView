@@ -126,7 +126,7 @@ void gPerson::mousePressEvent(QGraphicsSceneMouseEvent * event){
 }
 
 void gPerson::keyPressEvent (QKeyEvent * event){
-    qDebug() << "person 143" << event->text();
+    //qDebug() << "person 143" << event->text();
    if (event->key() == Qt::Key_L ){
       if (!selectedLink){
           if (myLinks.size()){
@@ -136,10 +136,10 @@ void gPerson::keyPressEvent (QKeyEvent * event){
           }
       }    
    }
-   else if (event->key() == Qt::Key_Right){
+   else if (event->key() == Qt::Key_K){
         if (selectedLink){
           if (myLinks.size() > 1){
-              qDebug() << "gperson tab key";
+              qDebug() << "gperson k key";
               selectedLink->setUnChosen();
               int index = myLinks.indexOf(selectedLink);
               if (index == myLinks.size()-1 ){
@@ -153,7 +153,7 @@ void gPerson::keyPressEvent (QKeyEvent * event){
           }
       }
    }
-   else if (event->key() == Qt::Key_J){
+   else if (event->key() == Qt::Key_0){
       if (selectedLink){
           if (myLinks.size() > 1){
               qDebug() << "gperson 170 moving selected link to right ";
@@ -168,7 +168,7 @@ void gPerson::keyPressEvent (QKeyEvent * event){
           }
       }
    }
-   else if (event->key() == Qt::Key_H){
+   else if (event->key() == Qt::Key_9){
       if (selectedLink){
           if (myLinks.size() > 1){
               qDebug() << "gperson 185 moving selected link to LEFT ";
@@ -371,7 +371,7 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     QRectF boundingRect2 (boundingRect1);
     rect.moveTo(0,lineHeight);
     painter->drawText(rect, Qt::AlignHCenter,years, &boundingRect2);
-    personBoundingRect.setCoords(personrect.left(), personrect.top(), personrect.right(), personrect.bottom());
+    personBoundingRect.setCoords(personrect.left() - 1, personrect.top() -1, personrect.right()+1, personrect.bottom() + 1);
     height = personBoundingRect.height();
 
 

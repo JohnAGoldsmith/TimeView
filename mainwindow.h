@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QWidget>
 #include <QTableWidget>
+#include <QGraphicsView>
 #include "cscene.h"
 #include "data.h"
 #include "clineedit.h"
@@ -33,8 +34,11 @@ private:
     QTableWidget *linkTable;
     cData Data;
 
+
+
     void StartAfresh();
     void keyPressEvent(QKeyEvent *);
+
 
 
 
