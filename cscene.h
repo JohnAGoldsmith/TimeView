@@ -38,6 +38,8 @@ public:
     void AddLink(cLink * );
     void AddGPerson (gPerson *);
     QHash<QString, QPixmap*> * Pixmaps() {return pixmaps;}
+
+    float ConvertYearToYcoor(float year);
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent * event) override;

@@ -8,6 +8,10 @@
 #include <QTableWidget>
 #include <QFileDialog>
 #include <QLineEdit>
+#include <QLabel>
+#include <QVBoxLayout>
+
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "cscene.h"
@@ -27,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
     linkTable = NULL;
 
     QVBoxLayout *layout = new QVBoxLayout;
-    helpwidget = new HelpWidget(12,2,this);
+    helpwidget = new cHelpWidget(12,2,this);
     helpwidget->show();
 
     scene = new cScene();
@@ -57,7 +61,6 @@ MainWindow::MainWindow(QWidget *parent)
         getData()->A_analyzeData();
         getData()->A_sendPersonsAndLinksToScene(scene);
     }
-    //QJsonObject dataObject;
 
 }
 
@@ -89,7 +92,7 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
     }
 
     /*             Make invisible boxes visible but grayed  */
-    if (event->key() == Qt::Key_I && event->modifiers()==Qt::CTRL){
+    else if (event->key() == Qt::Key_I && event->modifiers()==Qt::CTRL){
          getData()->InvisiblePersons2Grayed();
     }
 
@@ -147,8 +150,19 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
     getData()->Clear();
     scene->clear();
       myLineEdit->setText("Clear all data.");
+  }
+  /*          Open widget to add new person                 */
+  else if (event->key() == Qt::Key_N && event->modifiers()==Qt::CTRL){
+    if (newpersonwidget){
+        delete newpersonwidget;}
+        newpersonwidget = new cPersonWidget();
+        myLineEdit->setText("Create new person.");
+
 
   }
+
+
+
 
     qDebug() << "Main window "<<event->text();
   QMainWindow::keyPressEvent(event);

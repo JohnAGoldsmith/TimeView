@@ -135,9 +135,8 @@ void cData::A_sendPersonsAndLinksToScene(cScene* scene){
         scene->addItem(gperson);
         gperson->Scene(scene); // why is this necessary? Why can't I get this from the gperson?
         float new_x = gperson->X_fromspreadsheet() * scene->ScaleFactor();
-        float new_y = scene->TimeScale() * ( scene->TopPosition() - gperson->BirthYear());
+        float new_y = scene->ConvertYearToYcoor(gperson->BirthYear());
         gperson->setPos(new_x, new_y  );
-        //qDebug() << new_x << new_y <<  "line 140 data";
         gperson->rememberPos(QPointF(new_x,new_y));
 
     }

@@ -9,6 +9,7 @@
 #include "data.h"
 #include "clineedit.h"
 #include "helpwidget.h"
+#include "cpersonwidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -34,7 +35,8 @@ private:
     QTableWidget *personTable;
     QTableWidget *linkTable;
     cData Data;
-    HelpWidget * helpwidget;
+    cHelpWidget * helpwidget;
+    cPersonWidget * newpersonwidget;
 
 
     void StartAfresh();

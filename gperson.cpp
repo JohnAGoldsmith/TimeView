@@ -127,6 +127,8 @@ void gPerson::mousePressEvent(QGraphicsSceneMouseEvent * event){
 
 void gPerson::keyPressEvent (QKeyEvent * event){
     //qDebug() << "person 143" << event->text();
+
+
    if (event->key() == Qt::Key_L ){
       if (!selectedLink){
           if (myLinks.size()){
@@ -212,10 +214,19 @@ void gPerson::keyPressEvent (QKeyEvent * event){
               }
           }
       }
-   }
-  QGraphicsItem::keyPressEvent(event);
-}
 
+   QGraphicsItem::keyPressEvent(event);
+}
+/*           Replace person on correct y-coor for their birthyear         */
+   else if (event->key() == Qt::Key_B){
+       int old_x = x();
+       int new_y = Scene()->ConvertYearToYcoor(birthYear);
+       setPos(old_x, new_y  );
+       rememberPos(QPointF(old_x,new_y));
+       Scene()->update();
+       QGraphicsItem::keyPressEvent(event);
+   }
+}
 void gPerson::mouseMoveEvent(QGraphicsSceneMouseEvent * event){ // this doesn't get called with json, but it does with csv!!
     foreach (cLink* link, * GetLinks()){
         if (link->GPersonFrom() == this){

@@ -4,11 +4,11 @@
 #include <QWidget>
 #include <QTableWidget>
 
-class HelpWidget : public QWidget
+class cHelpWidget : public QWidget
 {  Q_OBJECT
 public:
-    explicit HelpWidget(int rows, int cols, QObject * parent = nullptr);
-    ~HelpWidget();
+    explicit cHelpWidget(int rows, int cols, QObject * parent = nullptr);
+    ~cHelpWidget();
 
     // QPaintDevice interface
 public:

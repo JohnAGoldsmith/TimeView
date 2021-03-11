@@ -3,9 +3,10 @@
 #include <QHeaderView>
 #include "helpwidget.h"
 
-HelpWidget::HelpWidget(int rows, int cols, QObject * object)
+cHelpWidget::cHelpWidget(int rows, int cols, QObject * object)
 {
-    setMinimumSize(500,200);
+    setMinimumSize(500,400);
+    setWindowTitle("Shortcuts");
     QVBoxLayout * layout = new QVBoxLayout(this);
     helptable = new QTableWidget(rows, cols);
     layout->addWidget(helptable);
@@ -36,8 +37,31 @@ HelpWidget::HelpWidget(int rows, int cols, QObject * object)
     helptable->setItem(3,0, newItem);
     newItem = new QTableWidgetItem("Make invisible persons visible but grayed" );
     helptable->setItem(3,1, newItem);
+
+    newItem = new QTableWidgetItem("CTRL Z" );
+    helptable->setItem(4,0, newItem);
+    newItem = new QTableWidgetItem("Clear all data." );
+    helptable->setItem(4,1, newItem);
+
+
+    newItem = new QTableWidgetItem("CTRL N" );
+    helptable->setItem(5,0, newItem);
+    newItem = new QTableWidgetItem("Create new person." );
+    helptable->setItem(5,1, newItem);
+
+    newItem = new QTableWidgetItem(" " );
+    helptable->setItem(6,0, newItem);
+    newItem = new QTableWidgetItem("Selected person:" );
+    helptable->setItem(6,1, newItem);
+
+    newItem = new QTableWidgetItem("CTRL B" );
+    helptable->setItem(7,0, newItem);
+    newItem = new QTableWidgetItem("Move selected person to correct height, given birth" );
+    helptable->setItem(7,1, newItem);
+
+
 }
-HelpWidget::~HelpWidget(){
+cHelpWidget::~cHelpWidget(){
 
 
 

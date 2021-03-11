@@ -49,9 +49,11 @@ cScene::~cScene(){
            delete pixmap;
     }
     delete pixmaps;
-
 }
 
+float cScene::ConvertYearToYcoor(float year){
+    return timeScale * (topPosition - year);
+}
 
 QGraphicsItem * cScene::itemAt(const QPointF   pos, const QTransform & transform ){
     return QGraphicsScene::itemAt(pos, transform);
