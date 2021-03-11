@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle(tr("Genealogy"));
     setUnifiedTitleAndToolBarOnMac(true);
 
-    bool Json(true);
+    bool Json(false);
     if (Json){
         QString jsonfilename = "./timeview.json";
         getData()->A_ReadJson(jsonfilename);

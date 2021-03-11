@@ -183,7 +183,36 @@ void gPerson::keyPressEvent (QKeyEvent * event){
           }
       }
    }
-
+   /*    shorten the first leg of the link       */
+   else if (event->key() == Qt::Key_1){
+      if (selectedLink){
+          if (myLinks.size() > 1){
+              qDebug() << "found leg";
+              qDebug() << "Shorten the first leg of this link";
+              int index(topLinks.indexOf(selectedLink));
+              qDebug() << "index: " <<index;
+              if (index >= 0){
+                  qDebug() << "going to function to shorten";
+                  selectedLink->shortenProportion1();
+                  qDebug() << "proportion" << selectedLink->GetProportion1();
+                  Scene()->update();
+              }
+          }
+      }
+   }
+   /*    lengthen the first leg of the link       */
+   else if (event->key() == Qt::Key_2){
+      if (selectedLink){
+          if (myLinks.size() > 1){
+              int index(topLinks.indexOf(selectedLink));
+              if (index >= 0){
+                  selectedLink->lengthenProportion1();
+                  qDebug() << selectedLink->GetProportion1();
+                  Scene()->update();
+              }
+          }
+      }
+   }
   QGraphicsItem::keyPressEvent(event);
 }
 

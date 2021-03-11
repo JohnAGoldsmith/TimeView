@@ -286,6 +286,7 @@ void cLink::write(QJsonObject & json) const{
  json["Visible"] = visible;
  json["bottomOffset"] = bottomOffset;
  json["topOffset"] = topOffset;
+ json["proportion1"] = proportion1;
 }
 
 void cLink::read(QJsonObject & json)  {
@@ -297,5 +298,5 @@ void cLink::read(QJsonObject & json)  {
  visible = json["Visible"].toBool();
  BottomOffset ( json["bottomOffset"].toDouble() );
  TopOffset ( json["topOffset"].toDouble() );
-
+ proportion1 = json["proportion1"].toDouble();
 }

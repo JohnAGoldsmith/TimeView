@@ -53,6 +53,10 @@ class cLink: public QGraphicsItem
         bool Chosen() {return chosen;}
         void setChosen(){chosen = true;}
         void setUnChosen() {chosen = false;}
+
+        void shortenProportion1() {proportion1 *= 0.90;};
+        void lengthenProportion1() {proportion1 *= 1.10;};
+        float GetProportion1() {return proportion1;}
     private:
         QString fromPersonKey;
         QString toPersonKey;
