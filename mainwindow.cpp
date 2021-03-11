@@ -27,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent)
     linkTable = NULL;
 
     QVBoxLayout *layout = new QVBoxLayout;
+    helpwidget = new HelpWidget(12,2,this);
+    helpwidget->show();
 
     scene = new cScene();
     view = new cView(scene);

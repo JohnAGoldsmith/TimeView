@@ -16,6 +16,7 @@ SOURCES += \
     data.cpp \
     dataperson.cpp \
     gperson.cpp \
+    helpwidget.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -27,6 +28,7 @@ HEADERS += \
     data.h \
     dataperson.h \
     gperson.h \
+    helpwidget.h \
     mainwindow.h
 
 FORMS += \
