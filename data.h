@@ -20,15 +20,21 @@ public:
 
     void read(const QJsonObject & json) ;
     void write(QJsonObject &json) const;
+    void write2csv();
 
-    QList<dPerson*>* getDataPersons(){return &dataPersons;};
     QList<cLink*>*    getLinks(){return &Links;};
     cLink* getLink(QString);
     cLink* CheckAndCreateNewLink(QString);  // only creates a new link if the key is not already in Links;
 
+    bool validateNewPerson(gPerson*); // checks for not duplicate, and if OK adds to collection.
+    bool validateNewLink(cLink*);
+
     void A_ReadCSV(QString filename);
     void A_ReadJson(QString filename);
-    void A_analyzeData();
+    void A_analyzeLegacyCSVdata();
+    void A_analyzeCSVdata();
+    QStringList exportPersons2csv() const ;
+    QStringList exportLinks2csv() const;
     void A_sendPersonsAndLinksToScene(cScene *);
     void A_sendPersonsAndLinksToSceneJson(cScene *);
     gPerson* Key2Person(QString key){return key2Person[key];} // was getpersonfromkey
@@ -36,9 +42,9 @@ public:
     cLink* Key2Link(QString key) {return key2Link[key];}
     void save() const;
 
-    void addDataPerson(dPerson*);
+    //void addDataPerson(dPerson*);
     int TopPosition() {return topPosition;}
-    dPerson* CreateDataPerson(QStringList line);
+    //dPerson* CreateDataPerson(QStringList line);
     gPerson* B_CreateGraphicalPerson(QStringList line);
     void B_AddGPersonPtrsToLinks();
 

@@ -26,6 +26,9 @@ class cLink: public QGraphicsItem
         QString display() const;
         void write(QJsonObject & json) const;
         void read(QJsonObject & json);
+        QString export2csv();
+        void importFromCSV(QString line);
+        void importFromCSVlegacy(QString line);
 
         QString getKey() const ;
         QString getFromKey(){return fromPersonKey;}

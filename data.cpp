@@ -7,6 +7,7 @@
 #include <QGraphicsProxyWidget>
 #include <QPushButton>
 #include <QGraphicsDropShadowEffect>
+#include <QStringList>
 #include "data.h"
 #include "clink.h"
 #include "cscene.h"
@@ -63,9 +64,9 @@ void cData::A_ReadCSV(QString filename)
     return;
 }
 
-void cData::A_analyzeData(){
-    gPerson * gperson, * fromgperson, * togperson;
-    cLink * l;
+void cData::A_analyzeLegacyCSVdata(){
+    cLink * link;
+    gPerson * person;
     QString outfileName, fromKey, toKey;
     foreach (QString line1 , tempLines){
        QStringList line = line1.split(",");
@@ -78,11 +79,11 @@ void cData::A_analyzeData(){
                continue;
            } else {
                if (line[0] == "P"){
-                   gperson = B_CreateGraphicalPerson(line);
+                   person = B_CreateGraphicalPerson(line);
                } else {
                    if (line[0] == "L"){
-                        l = new cLink(line);
-                        Links.append(l);
+                        link = new cLink(line);
+                        Links.append(link);
                    }
                }
            }
@@ -91,6 +92,40 @@ void cData::A_analyzeData(){
     B_AddGPersonPtrsToLinks();
 }
 
+
+void cData::A_analyzeCSVdata(){
+    gPerson * gperson;
+    cLink * link;
+    QString name;
+    foreach (QString line1 , tempLines){
+       QStringList line = line1.split(",");
+       if (line.size() < 1)
+           continue;
+       if (line[0][0]== "!") {
+              name = line[1];
+       } else {
+           if (line[0][0] == "#"){
+               continue;
+           } else {
+               if (line[0] == "P"){
+                   gperson = new gPerson(line);
+                   if (! validateNewPerson(gperson)){ //validate should include sending to collections
+                       delete gperson;
+                       /* send message of failure.  */
+                   }
+               } else {
+                   if (line[0] == "L"){
+                        link = new cLink(line);
+                        if (! validateNewLink(link)){ // validate should include sending to collections
+                            delete link;
+                            /* send message of failure. */
+                        }
+                   }
+               }
+           }
+       }
+    }
+}
 gPerson* cData::B_CreateGraphicalPerson(QStringList line){
     QString key;
     if (line.size() >= 8 && line[7].length() > 0){
@@ -156,7 +191,7 @@ void cData::A_sendPersonsAndLinksToSceneJson(cScene* scene){
     foreach (gPerson * gperson, graphicalPersons){
         scene->addItem(gperson);
         gperson->Scene(scene); // why is this necessary? Why can't I get this from the gperson?
-        gperson->setPos(gperson->Xpos(), gperson->Ypos());  // Was this the problem of the links that didn move?´
+        gperson->setPos(gperson->Xpos(), gperson->Ypos());
         gperson->rememberPos(QPointF(gperson->Xpos(),gperson->Ypos()));
     }
     foreach (cLink * link, Links){
@@ -170,6 +205,12 @@ void cData::A_sendPersonsAndLinksToSceneJson(cScene* scene){
     }
 }
 
+bool cData::validateNewPerson(gPerson * person){
+
+}
+bool cData::validateNewLink(cLink* link){
+
+}
 
 void cData::write(QJsonObject &json) const{
     QJsonArray linkArray;
@@ -324,19 +365,48 @@ void cData::AttachLinks(gPerson *){
 
 }
 
-
-
+QStringList cData::exportPersons2csv() const {
+    QStringList output;
+    foreach (gPerson* person, graphicalPersons){
+        output.append(person->export2CSV());
+    }
+    return output;
+}
+QStringList cData::exportLinks2csv() const {
+    QStringList linksList;
+    foreach (cLink * link, Links){
+        linksList << link->export2csv();
+    }
+    return linksList;
+}
 void cData::save() const{
     QFile saveFile("timeview.json");
     if (!saveFile.open(QIODevice::WriteOnly)) {
            qWarning("Couldn't open save file.");
            return;
        }
-
     QJsonObject graphObject;
     write(graphObject);
     QJsonDocument saveDoc(graphObject);
     saveFile.write(saveDoc.toJson());
+
+  QFile saveFileCVS ("test.csv");
+  if (!saveFileCVS.open(QIODevice::WriteOnly)) {
+         qWarning("Couldn't open save file.");
+         return;
+     }
+   QTextStream out(& saveFileCVS);
+   QStringList csvList;
+   csvList = exportPersons2csv();
+   foreach (QString line, csvList){
+       out << line << Qt::endl;
+   }
+   csvList.clear();
+   csvList = exportLinks2csv();
+   foreach (QString line, csvList){
+       out << line << Qt::endl;
+   }
+   saveFileCVS.close();
 
 
 }
@@ -354,13 +424,10 @@ void cData::populatePersonTable(QTableWidget * table){
        table->setItem(row,0,item);
        item = new QTableWidgetItem(QString::number(person->BirthYear()));
        table->setItem(row,3,item);
-       qDebug() << ">>>"<< person->BirthYear();
        item = new QTableWidgetItem(QString::number(person->DeathYear()));
        table->setItem(row,4,item);
        item = new QTableWidgetItem(person->Profession1());
        table->setItem(row,5,item);
-
-
        row++;
    }
    table->setSortingEnabled(true);

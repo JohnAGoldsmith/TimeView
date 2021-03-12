@@ -67,7 +67,6 @@ void cLink::setPersonFrom(gPerson * person){
 void cLink::setPersonTo(gPerson * person){
     gPersonTo = person;
 }
-
 QString cLink::getKey() const {
     return fromPersonKey + ":" + toPersonKey;
 }
@@ -77,6 +76,37 @@ void cLink::BottomOffset(float f){
 }
 void cLink::TopOffset(float f){
     topOffset = f;
+}
+QString cLink::export2csv(){
+    QStringList temp;
+    temp << "L" << fromPersonKey << toPersonKey <<
+            PositionOnFromPerson << PositionOnToPerson <<
+            QString::number(bottomOffset) <<
+            QString::number(topOffset) <<
+            QString::number(proportion1) <<
+            QString::number(startPoint.x()) <<
+            QString::number(startPoint.y()) <<
+            QString::number(endPoint.x()) <<
+            QString::number(endPoint.y()) <<
+            natureOfLink;
+   return temp.join(",");
+}
+void cLink::importFromCSV(QString line){
+  QStringList temp (line.split(","));
+  fromPersonKey = temp[0];
+  toPersonKey = temp[1];
+  PositionOnFromPerson = temp[2];
+  PositionOnToPerson = temp[3];
+  bottomOffset = temp[4].toFloat();
+  topOffset = temp[4].toFloat();
+  proportion1 = temp[5].toFloat();
+  startPoint.setX( temp[6].toFloat() );
+  startPoint.setY( temp[7].toFloat() );
+  endPoint.setX( temp[6].toFloat() );
+  endPoint.setY( temp[7].toFloat() );
+}
+void cLink::importFromCSVlegacy(QString line){
+
 }
 QString cLink::display()const {
   QString out;

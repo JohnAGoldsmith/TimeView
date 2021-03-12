@@ -36,6 +36,7 @@ public:
     float DeathYear() {return deathYear;}
     QString Profession1() {return profession1;}
 
+
     float Height() {return height;}
     //void Height(float h ) {height = h;}
     float GetNameWidth(QPainter * )const;
@@ -76,6 +77,7 @@ public:
     void read(const QJsonObject & json);
     void write(QJsonObject & json) const;
 
+    QString export2CSV();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent * event) override;

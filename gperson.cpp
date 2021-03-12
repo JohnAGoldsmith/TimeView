@@ -50,11 +50,9 @@ gPerson::gPerson(QStringList  data){
     deathYear = 0;
     margin = 5;
     personBoundingRect.setCoords(-1.0 * margin, 0, width + 2*margin, height+ 2*margin);
-    if (data.size() >= 8 && data[7].length() > 0){
-        key = data[7];
-    } else {
-        key = data[2];
-    }
+
+
+
     firstName = data[1];
     lastName = data[2];
     birthYear = data[3].toInt();
@@ -69,6 +67,11 @@ gPerson::gPerson(QStringList  data){
     }
     x_fromspreadsheet = data[5].toFloat();
     profession1 = data[6];
+    if (data.size() >= 8 && data[7].length() > 0){
+        key = data[7];
+    } else {
+        key = data[2];
+    }
     visible=true;
     selectedLink = NULL;
     grayed = false;
@@ -77,7 +80,20 @@ gPerson::gPerson(QStringList  data){
 gPerson::~gPerson(){
 
 }
-
+QString gPerson::export2CSV(){
+  QStringList temp;
+  temp.append("P");
+  temp.append(firstName);
+  temp.append(lastName);
+  temp.append(QString::number(birthYear));
+  temp.append(QString::number(deathYear));
+  temp.append(QString::number(xpos));
+  temp.append(profession1);
+  if ( key != lastName){
+      temp.append(key);
+  }
+  return temp.join(",");
+}
 
 
 void gPerson::AppendLink(cLink *link) {

@@ -56,9 +56,9 @@ MainWindow::MainWindow(QWidget *parent)
         getData()->A_ReadJson(jsonfilename);
         getData()->A_sendPersonsAndLinksToSceneJson(scene);
     }else{
-        QString csvfilename = "./timeview.csv";
+        QString csvfilename = "./timeview_legacy.csv";
         getData()->A_ReadCSV(csvfilename);
-        getData()->A_analyzeData();
+        getData()->A_analyzeLegacyCSVdata();
         getData()->A_sendPersonsAndLinksToScene(scene);
     }
 
@@ -129,27 +129,39 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
               getData()->A_ReadJson(fileName);
               getData()->A_sendPersonsAndLinksToSceneJson(scene);
           } else if (fileName.endsWith(".csv")){
-              getData()->A_ReadCSV(fileName);
-              getData()->A_analyzeData();
-              getData()->A_sendPersonsAndLinksToScene(scene);
+              if (fileName.endsWith("legacy.csv")){
+                  getData()->A_ReadCSV(fileName);
+                  getData()->A_analyzeLegacyCSVdata();
+                  getData()->A_sendPersonsAndLinksToScene(scene);
+              } else{
+                  getData()->A_ReadCSV(fileName);
+                  getData()->A_analyzeCSVdata();
+                  getData()->A_sendPersonsAndLinksToScene(scene);
+
+              }
           }
        }
   }
 
   if (event->key() == Qt::Key_S && event->modifiers()==Qt::CTRL){
       getData()->save( );
-        myLineEdit->setText("Save data to Json file.");
+        myLineEdit->setText("Save data to Json and csv files.");
   }
 
   if (event->key() == Qt::Key_X && event->modifiers()==Qt::CTRL){
       getData()->save( );
+      if (helpwidget)
+          helpwidget->close();
+      if (newpersonwidget)
+          newpersonwidget->close();
       qApp->exit( );
   }
   /*          Clear all data                 */
   if (event->key() == Qt::Key_Z && event->modifiers()==Qt::CTRL){
     getData()->Clear();
     scene->clear();
-      myLineEdit->setText("Clear all data.");
+    scene->update();
+    myLineEdit->setText("Clear all data.");
   }
   /*          Open widget to add new person                 */
   else if (event->key() == Qt::Key_N && event->modifiers()==Qt::CTRL){
