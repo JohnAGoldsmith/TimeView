@@ -185,6 +185,13 @@ void cData::A_sendPersonsAndLinksToScene(cScene* scene){
         scene->AddLink(link);
     }
 }
+void cData::sendPersonsToColumnarScene(columnarScene * colscene){
+    foreach (gPerson* person, graphicalPersons){
+       colscene->addToColumnar(person);
+    }
+    colscene->sortColumnar();
+    colscene->displayColumnar();
+}
 void cData::A_sendPersonsAndLinksToSceneJson(cScene* scene){
     gPerson * gPerson1, * gPerson2;
 
@@ -256,6 +263,7 @@ void cData::A_ReadJson(QString filename) {
 
             /*   This will be eliminated           */
             /* The next lines should go into Json-read function, *except* that they call a cData function which creates a new cLink */
+            /*
             if (gpObject.contains("Links") && gpObject["Links"].isArray() ){
               QJsonArray linkArray = gpObject["Links"].toArray();
               for (int index = 0; index < linkArray.size(); index++){
@@ -267,7 +275,7 @@ void cData::A_ReadJson(QString filename) {
                  }
                  link = getLink(key);
                  gperson->AppendLink(link);
-                 /*   What follows should be impossible    */
+
                  if (! link->GPersonFrom()){
                     QString fromKey = link->getFromKey();
                     if (Key2PersonHashContains(fromKey)){
@@ -290,7 +298,7 @@ void cData::A_ReadJson(QString filename) {
                     gperson->GetTopLinks()->append( Key2Link(linkkey) );
                    }
                 }
-            }
+            }*/
             /*  What is above here will be eliminated       */
 
 
@@ -328,7 +336,7 @@ void cData::A_ReadJson(QString filename) {
     }
 
     /*   Now we re-read the Json Persons, so that we can give them pointers to the Links  */
-    /*
+    /*   Hmm. This does not appear to be necessary at all.
     if (rootItem.contains("GraphicalPersons") && rootItem["GraphicalPersons"].isArray() ){
         QJsonArray gPersonArray = rootItem["GraphicalPersons"].toArray();
         for (int index = 0; index < gPersonArray.size(); ++index){

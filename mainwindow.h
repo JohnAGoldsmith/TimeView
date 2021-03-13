@@ -30,6 +30,7 @@ public:
 private:
     Ui::MainWindow *ui;
     cScene *scene;
+    columnarScene * colScene;
     QGraphicsView *view;
     cLineEdit * myLineEdit;
     QTableWidget *personTable;
@@ -40,6 +41,7 @@ private:
 
 
     void StartAfresh();
+    void makeColumnarScene();
     void keyPressEvent(QKeyEvent *);
 
 

@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent)
     view->scale(1,1);
     view->centerOn(-100,1900);
     layout->addWidget(view);
+    colScene  = nullptr;
 
     QWidget *widget = new QWidget;
     widget->setLayout(layout);
@@ -50,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle(tr("Genealogy"));
     setUnifiedTitleAndToolBarOnMac(true);
 
-    bool Json(false);
+    bool Json(true);
     if (Json){
         QString jsonfilename = "./timeview.json";
         getData()->A_ReadJson(jsonfilename);
@@ -62,6 +63,13 @@ MainWindow::MainWindow(QWidget *parent)
         getData()->A_sendPersonsAndLinksToScene(scene);
     }
 
+}
+void MainWindow::makeColumnarScene(){
+    if (! colScene){
+        colScene = new columnarScene();
+    }
+    getData()->sendPersonsToColumnarScene(colScene);
+    view->setScene(colScene);
 }
 
 void MainWindow::StartAfresh(){
@@ -96,9 +104,9 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
          getData()->InvisiblePersons2Grayed();
     }
 
-    /* Don't forget "focusItem" */
+    /* Create a columnar scene */
     if (event->key() == Qt::Key_C && event->modifiers()==Qt::CTRL){
-          //  getData()->MoveInvisiblePersonsToLimbo();
+        makeColumnarScene();
     }
 
   /*                Load table of persons for user              */
@@ -164,19 +172,13 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
     myLineEdit->setText("Clear all data.");
   }
   /*          Open widget to add new person                 */
-  else if (event->key() == Qt::Key_N && event->modifiers()==Qt::CTRL){
+  else if (event->key() == Qt::Key_P && event->modifiers()==Qt::CTRL){
     if (newpersonwidget){
         delete newpersonwidget;}
         newpersonwidget = new cPersonWidget();
         myLineEdit->setText("Create new person.");
-
-
   }
-
-
-
-
-    qDebug() << "Main window "<<event->text();
+  qDebug() << "Main window "<<event->text();
   QMainWindow::keyPressEvent(event);
 
 }

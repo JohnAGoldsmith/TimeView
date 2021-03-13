@@ -8,6 +8,7 @@
 #include "gperson.h"
 #include "dataperson.h"
 #include "clink.h"
+#include "columnarscene.h"
 
 // There should be an enum for DataType (Person, Link) but enum in Qt is complicated.
 
@@ -37,6 +38,7 @@ public:
     QStringList exportLinks2csv() const;
     void A_sendPersonsAndLinksToScene(cScene *);
     void A_sendPersonsAndLinksToSceneJson(cScene *);
+    void sendPersonsToColumnarScene(columnarScene * );
     gPerson* Key2Person(QString key){return key2Person[key];} // was getpersonfromkey
     bool  Key2PersonHashContains (QString key ) {return  key2Person.contains(key);}
     cLink* Key2Link(QString key) {return key2Link[key];}
