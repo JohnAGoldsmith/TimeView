@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QFile>
+#include <QFileDialog>
 #include <QGraphicsWidget>
 #include <QGraphicsProxyWidget>
 #include <QPushButton>
@@ -387,22 +388,21 @@ QStringList cData::exportLinks2csv() const {
     }
     return linksList;
 }
-void cData::save() const{
-    QFile saveFile("timeview.json");
-    if (!saveFile.open(QIODevice::WriteOnly)) {
+void cData::save(QString filename) const{
+  QFile saveFile(filename + ".json");
+  if (!saveFile.open(QIODevice::WriteOnly)) {
            qWarning("Couldn't open save file.");
            return;
-       }
-    QJsonObject graphObject;
-    write(graphObject);
-    QJsonDocument saveDoc(graphObject);
-    saveFile.write(saveDoc.toJson());
-
-  QFile saveFileCVS ("test.csv");
+    }
+  QJsonObject graphObject;
+  write(graphObject);
+  QJsonDocument saveDoc(graphObject);
+  saveFile.write(saveDoc.toJson());
+  QFile saveFileCVS (filename + ".csv");
   if (!saveFileCVS.open(QIODevice::WriteOnly)) {
          qWarning("Couldn't open save file.");
          return;
-     }
+   }
    QTextStream out(& saveFileCVS);
    QStringList csvList;
    csvList = exportPersons2csv();
@@ -415,8 +415,6 @@ void cData::save() const{
        out << line << Qt::endl;
    }
    saveFileCVS.close();
-
-
 }
 void cData::populatePersonTable(QTableWidget * table){
    table->setRowCount(graphicalPersons.size());

@@ -42,7 +42,7 @@ public:
     gPerson* Key2Person(QString key){return key2Person[key];} // was getpersonfromkey
     bool  Key2PersonHashContains (QString key ) {return  key2Person.contains(key);}
     cLink* Key2Link(QString key) {return key2Link[key];}
-    void save() const;
+    void save(QString filename) const;
 
     //void addDataPerson(dPerson*);
     int TopPosition() {return topPosition;}

@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle(tr("Genealogy"));
     setUnifiedTitleAndToolBarOnMac(true);
 
-    bool Json(true);
+    bool Json(false);
     if (Json){
         QString jsonfilename = "./timeview.json";
         getData()->A_ReadJson(jsonfilename);
@@ -62,8 +62,9 @@ MainWindow::MainWindow(QWidget *parent)
         getData()->A_analyzeLegacyCSVdata();
         getData()->A_sendPersonsAndLinksToScene(scene);
     }
-
 }
+
+
 void MainWindow::makeColumnarScene(){
     if (! colScene){
         colScene = new columnarScene();
@@ -150,14 +151,17 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
           }
        }
   }
-
+  /*                 Save                       */
   if (event->key() == Qt::Key_S && event->modifiers()==Qt::CTRL){
-      getData()->save( );
-        myLineEdit->setText("Save data to Json and csv files.");
+      QFileDialog *  filedialog = new QFileDialog();
+      filedialog->setViewMode(QFileDialog::Detail);
+      QString fileName = filedialog->getSaveFileName(this,"Save data",QDir::currentPath(), "*.csv *.json");
+      getData()->save(fileName);
+      myLineEdit->setText("Save data to Json and csv files.");
   }
 
   if (event->key() == Qt::Key_X && event->modifiers()==Qt::CTRL){
-      getData()->save( );
+      //getData()->save( );
       if (helpwidget)
           helpwidget->close();
       if (newpersonwidget)
@@ -181,6 +185,11 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
   qDebug() << "Main window "<<event->text();
   QMainWindow::keyPressEvent(event);
 
+}
+
+QSize MainWindow::sizeHint() const
+{
+    return QSize (1800,2000);
 }
 
 

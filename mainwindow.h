@@ -24,7 +24,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
+    QSize sizeHint() const;
     cData* getData(){return &Data;}
 
 private:
@@ -43,7 +43,7 @@ private:
     void StartAfresh();
     void makeColumnarScene();
     void keyPressEvent(QKeyEvent *);
-
+    QSize sizeHint();
 
 
 
