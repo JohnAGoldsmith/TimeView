@@ -26,6 +26,8 @@ public:
     ~MainWindow();
     QSize sizeHint() const;
     cData* getData(){return &Data;}
+    cScene* Scene() {return scene;}
+    columnarScene * ColScene() {return colScene;}
 
 private:
     Ui::MainWindow *ui;
@@ -40,6 +42,7 @@ private:
     cPersonWidget * newpersonwidget;
 
 
+    void createActions();
     void StartAfresh();
     void makeColumnarScene();
     void keyPressEvent(QKeyEvent *);

@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     personTable = NULL;
     linkTable = NULL;
+    newpersonwidget = NULL;
 
     QVBoxLayout *layout = new QVBoxLayout;
     helpwidget = new cHelpWidget(12,2,this);
@@ -62,12 +63,25 @@ MainWindow::MainWindow(QWidget *parent)
         getData()->A_analyzeLegacyCSVdata();
         getData()->A_sendPersonsAndLinksToScene(scene);
     }
-}
 
+   //createActions();
+
+}
+void MainWindow::createActions(){
+    QAction * saveAction = new QAction(tr("&Save"),this);
+    saveAction->setShortcut(QKeySequence::Save);
+    QFileDialog *  filedialog = new QFileDialog();
+    filedialog->setViewMode(QFileDialog::Detail);
+    //QString fileName = filedialog->getSaveFileName(this,"Save data",QDir::currentPath(), "*.csv *.json");
+    //getData()->save(fileName);
+    //connect(saveAction,&QAction::triggered,&Data,cData::save(fileName));
+}
 
 void MainWindow::makeColumnarScene(){
     if (! colScene){
         colScene = new columnarScene();
+        delete scene;
+        scene = NULL;
     }
     getData()->sendPersonsToColumnarScene(colScene);
     view->setScene(colScene);
@@ -111,14 +125,14 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
     }
 
   /*                Load table of persons for user              */
-  if (event->key() == Qt::Key_D && event->modifiers()==Qt::CTRL){
-      if (! personTable){
-          personTable  = new QTableWidget;
-          getData()->populatePersonTable(personTable);
-          personTable->show();
-          myLineEdit->setText("Load persons table.");
-      }
-  }
+    if (event->key() == Qt::Key_D && event->modifiers()==Qt::CTRL){
+        if (! personTable){
+            personTable  = new QTableWidget;
+            getData()->populatePersonTable(personTable);
+            personTable->show();
+            myLineEdit->setText("Load persons table.");
+        }
+    }
 
   /*           Load table of links for user                      */
   if (event->key() == Qt::Key_L&& event->modifiers()==Qt::CTRL){
@@ -126,7 +140,7 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
           linkTable  = new QTableWidget;
           getData()->populateLinkTable(linkTable);
           linkTable->show();
-            myLineEdit->setText("Load link table.");
+          myLineEdit->setText("Load link table.");
       }
   }
 
@@ -146,12 +160,12 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
                   getData()->A_ReadCSV(fileName);
                   getData()->A_analyzeCSVdata();
                   getData()->A_sendPersonsAndLinksToScene(scene);
-
               }
           }
        }
   }
   /*                 Save                       */
+
   if (event->key() == Qt::Key_S && event->modifiers()==Qt::CTRL){
       QFileDialog *  filedialog = new QFileDialog();
       filedialog->setViewMode(QFileDialog::Detail);
@@ -159,29 +173,34 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
       getData()->save(fileName);
       myLineEdit->setText("Save data to Json and csv files.");
   }
-
+  /*        exit program          */
   if (event->key() == Qt::Key_X && event->modifiers()==Qt::CTRL){
-      //getData()->save( );
       if (helpwidget)
           helpwidget->close();
       if (newpersonwidget)
           newpersonwidget->close();
       qApp->exit( );
   }
+
   /*          Clear all data                 */
   if (event->key() == Qt::Key_Z && event->modifiers()==Qt::CTRL){
-    getData()->Clear();
-    scene->clear();
-    scene->update();
-    myLineEdit->setText("Clear all data.");
+      getData()->Clear();
+      scene->clear();
+      scene->update();
+      myLineEdit->setText("Clear all data.");
   }
+
   /*          Open widget to add new person                 */
   else if (event->key() == Qt::Key_P && event->modifiers()==Qt::CTRL){
-    if (newpersonwidget){
-        delete newpersonwidget;}
-        newpersonwidget = new cPersonWidget();
-        myLineEdit->setText("Create new person.");
+      if (newpersonwidget){
+          delete newpersonwidget;}
+      newpersonwidget = new cPersonWidget(this);
+      newpersonwidget->show();
+      myLineEdit->setText("Create new person.");
   }
+
+
+
   qDebug() << "Main window "<<event->text();
   QMainWindow::keyPressEvent(event);
 

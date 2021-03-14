@@ -36,8 +36,7 @@ gPerson::gPerson(){
  grayed = false;
 }
 
-
-// constructor used with .csv  file.
+// constructor used with .csv  file and Widget for adding person by hand
 gPerson::gPerson(QStringList  data){
     setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
 
@@ -50,8 +49,6 @@ gPerson::gPerson(QStringList  data){
     deathYear = 0;
     margin = 5;
     personBoundingRect.setCoords(-1.0 * margin, 0, width + 2*margin, height+ 2*margin);
-
-
 
     firstName = data[1];
     lastName = data[2];

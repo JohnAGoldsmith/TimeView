@@ -8,6 +8,8 @@
 cView::cView()
 {
    setDragMode(QGraphicsView::ScrollHandDrag);
+
+
 }
 
 cView::cView(cScene* scene):QGraphicsView(scene){
@@ -35,10 +37,15 @@ void cView::wheelEvent(QWheelEvent *event)
 
   }
   else{
+    const ViewportAnchor anchor = transformationAnchor();
+    //setResizeAnchor( QGraphicsView::AnchorUnderMouse );
+    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
     if(event->delta() > 0)
        scale(1.25, 1.25);
     else
        scale(0.8, 0.8);
+    //setResizeAnchor(anchor);
+    setTransformationAnchor(anchor);
   }
 }
 /*           Move entire scene

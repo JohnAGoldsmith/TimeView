@@ -6,39 +6,43 @@
 #include <QHBoxLayout>
 #include "cpersonwidget.h"
 #include "cscene.h"
+#include "mainwindow.h"
+#include "columnarscene.h"
 
-cPersonWidget::cPersonWidget()
+cPersonWidget::cPersonWidget(MainWindow * window)
 {
+    mainwindow = window;
+
     setMinimumSize(500,400);
     setWindowTitle("New person");
     QVBoxLayout * layout = new QVBoxLayout(this);
 
     QHBoxLayout * hlayout = new QHBoxLayout();
     QLabel * label = new QLabel(QObject::tr("First name:"));
-    QLineEdit * firstName = new QLineEdit();
+    firstNameEdit = new QLineEdit();
     hlayout->addWidget(label);
-    hlayout->addWidget(firstName);
+    hlayout->addWidget(firstNameEdit);
     layout->addLayout(hlayout);
 
     hlayout = new QHBoxLayout();
     label = new QLabel(QObject::tr("Last name:"));
-    QLineEdit * lastName = new QLineEdit();
+    lastNameEdit = new QLineEdit();
     hlayout->addWidget(label);
-    hlayout->addWidget(lastName);
+    hlayout->addWidget(lastNameEdit);
     layout->addLayout(hlayout);
 
     hlayout = new QHBoxLayout();
     label = new QLabel(QObject::tr("Born"));
-    QLineEdit * born = new QLineEdit();
+    birthEdit = new QLineEdit();
     hlayout->addWidget(label);
-    hlayout->addWidget(born);
+    hlayout->addWidget(birthEdit);
     layout->addLayout(hlayout);
 
     hlayout = new QHBoxLayout();
     label = new QLabel(QObject::tr("Died:"));
-    QLineEdit * died = new QLineEdit();
+    deathEdit = new QLineEdit();
     hlayout->addWidget(label);
-    hlayout->addWidget(died);
+    hlayout->addWidget(deathEdit);
     layout->addLayout(hlayout);
 
     QPushButton * button = new QPushButton();
@@ -46,13 +50,41 @@ cPersonWidget::cPersonWidget()
     layout->addWidget(button);
 
     setLayout(layout);
+
+
+
     show();
 
-    //connect(button, QPushButton::clicked(),createPerson(scene));
+    connect(button, &QPushButton::clicked,[=](){createPerson(window);} );
 }
 
-gPerson* cPersonWidget::createPerson(cScene *  scene){
+void  cPersonWidget::createPerson(MainWindow *  mainwindow){
+
     gPerson * person;
-    person = new gPerson();
-    scene->addItem(person);
+    QStringList info;
+    info.append(QString());
+    info.append(firstNameEdit->text());
+    info.append(lastNameEdit->text());
+    info.append(birthEdit->text());
+    info.append(deathEdit->text());
+    info.append(""); // x from spreadsheet
+    info.append(""); //  profession
+    person = new gPerson(info);
+    if (mainwindow->Scene() ) {
+        mainwindow->Scene()->addItem(person);
+        person->Scene(mainwindow->Scene() );
+        person->setPos(0.0, 0.0);
+        person->rememberPos(QPointF(0.0, 0.0));
+
+    }else if (mainwindow->ColScene() ) {
+        mainwindow->ColScene()->addItem(person);
+        person->Scene(mainwindow->ColScene() );
+        person->setPos(0.0,0.0);
+        person->rememberPos(QPointF(0.0, 0.0));
+    }
+    mainwindow->Scene()->update();
+
+
+
+
 }
