@@ -18,14 +18,17 @@ cData::cData()
    topPosition = 1950;
 }
 void cData::Clear(){
-
-    dataPersons.clear();
+    foreach (gPerson* person, graphicalPersons){
+        delete person;
+    }
     graphicalPersons.clear();
+    foreach (cLink* link, Links){
+        delete link;
+    }
     Links.clear();
     Limbo.clear();
     key2Person.clear();
     tempLines.clear();
-
 }
 cLink* cData::getLink(QString key){
     if (key2Link.contains(key)){
@@ -214,7 +217,13 @@ void cData::A_sendPersonsAndLinksToSceneJson(cScene* scene){
 }
 
 bool cData::validateNewPerson(gPerson * person){
-
+    if (key2Person.contains(person->Key())){
+      /*  send message of collision */
+            return false;
+    }
+     key2Person[person->Key()] = person;
+     graphicalPersons.append(person);
+     return true;
 }
 bool cData::validateNewLink(cLink* link){
 

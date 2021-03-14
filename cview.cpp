@@ -18,35 +18,27 @@ cView::cView(cScene* scene):QGraphicsView(scene){
 
 void cView::wheelEvent(QWheelEvent *event)
 {
-  if (event->modifiers() & Qt::ShiftModifier){
-    if(event->delta() > 0)
-       //scale(1.25, 1.25);
-      QAbstractScrollArea::horizontalScrollBar()->setValue(horizontalScrollBar()->value() + 100);
-    else
-       //scale(0.8, 0.8);
-       QAbstractScrollArea::horizontalScrollBar()->setValue(horizontalScrollBar()->value() - 100);
-
-  }
-  else if (event->modifiers() & Qt::AltModifier){
-    if(event->delta() > 0)
-       //scale(1.25, 1.25);
-      QAbstractScrollArea::verticalScrollBar()->setValue(verticalScrollBar()->value() + 100);
-    else
-       //scale(0.8, 0.8);
-       QAbstractScrollArea::verticalScrollBar()->setValue(verticalScrollBar()->value() - 100);
-
-  }
-  else{
-    const ViewportAnchor anchor = transformationAnchor();
-    //setResizeAnchor( QGraphicsView::AnchorUnderMouse );
-    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-    if(event->delta() > 0)
-       scale(1.25, 1.25);
-    else
-       scale(0.8, 0.8);
-    //setResizeAnchor(anchor);
-    setTransformationAnchor(anchor);
-  }
+    if (event->modifiers() & Qt::ShiftModifier){
+        if(event->delta() > 0)
+            QAbstractScrollArea::horizontalScrollBar()->setValue(horizontalScrollBar()->value() + 100);
+        else
+            QAbstractScrollArea::horizontalScrollBar()->setValue(horizontalScrollBar()->value() - 100);
+    }
+    else if (event->modifiers() & Qt::AltModifier){
+        if(event->delta() > 0)
+            QAbstractScrollArea::verticalScrollBar()->setValue(verticalScrollBar()->value() + 100);
+        else
+            QAbstractScrollArea::verticalScrollBar()->setValue(verticalScrollBar()->value() - 100);
+    }
+    else{
+        const ViewportAnchor anchor = transformationAnchor();
+        setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+        if(event->delta() > 0)
+            scale(1.25, 1.25);
+        else
+            scale(0.8, 0.8);
+        setTransformationAnchor(anchor);
+    }
 }
 /*           Move entire scene
 void cView::mousePressEvent(QMouseEvent* event)

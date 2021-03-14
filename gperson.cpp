@@ -323,6 +323,7 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     Orange.setRgb(255,153,51);
 
     QPen pen(Qt::black,1);
+    pen.setWidth(9);
     painter->setPen(pen);
 
     if (! visible){
