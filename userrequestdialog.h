@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QFont>
+#include <QFontDialog>
 #include "data.h"
 
 
@@ -39,7 +40,11 @@ private:
     QPushButton * addPersonbutton;
     QSpinBox * lineWidthSpin;
     QFont * currentFont;
+    QFontDialog * fontDialog;
 
+
+public slots:
+    void openFontDialog();
 };
 
 #endif // USERREQUESTDIALOG_H

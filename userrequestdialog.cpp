@@ -3,6 +3,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QSpacerItem>
+#include <QFontDialog>
 
 userRequestDialog::userRequestDialog(cData *, cScene *, QWidget *parent) :
     QDialog(parent),
@@ -44,11 +45,11 @@ userRequestDialog::userRequestDialog(cData *, cScene *, QWidget *parent) :
 
     QPushButton * changeFontButton = new QPushButton("Change font",page1);
     vlayout1->addWidget(changeFontButton);
+    connect(changeFontButton,SIGNAL(clicked(bool)),this,SLOT(openFontDialog()));
+
 
     QPushButton * addPersonbutton = new QPushButton("Add new person",page1);
     vlayout1->addWidget(addPersonbutton);
-
-    //vlayout1->addSpacerItem (new QSpacerItem(100,100));
 
     page1->setLayout(vlayout1);
     mytabWidget->addTab(page1, "Add person");
@@ -92,4 +93,10 @@ userRequestDialog::userRequestDialog(cData *, cScene *, QWidget *parent) :
 userRequestDialog::~userRequestDialog()
 {
     delete ui;
+}
+
+void userRequestDialog::openFontDialog()
+{
+    fontDialog = new QFontDialog(this);
+    fontDialog->show();
 }
