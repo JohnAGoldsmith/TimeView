@@ -37,6 +37,7 @@ public:
     QGraphicsItem *  itemAt(const QPointF, const QTransform &);
     void AddLink(cLink * );
     void AddGPerson (gPerson *);
+    //void AddGroup( cGroup*);
     QHash<QString, QPixmap*> * Pixmaps() {return pixmaps;}
 
     float ConvertYearToYcoor(float year);

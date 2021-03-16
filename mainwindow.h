@@ -10,6 +10,7 @@
 #include "clineedit.h"
 #include "helpwidget.h"
 #include "cpersonwidget.h"
+#include "userrequestdialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -40,6 +41,7 @@ private:
     cData Data;
     cHelpWidget * helpwidget;
     cPersonWidget * newpersonwidget;
+    userRequestDialog * userrequestdialog;
 
 
     void createActions();

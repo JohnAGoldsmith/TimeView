@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
     personTable = NULL;
     linkTable = NULL;
     newpersonwidget = NULL;
+    userrequestdialog = NULL;
 
     QVBoxLayout *layout = new QVBoxLayout;
     helpwidget = new cHelpWidget(12,2,this);
@@ -191,12 +192,19 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
   }
 
   /*          Open widget to add new person                 */
-  else if (event->key() == Qt::Key_P && event->modifiers()==Qt::CTRL){
+  else if (event->key() == Qt::Key_N && event->modifiers()==Qt::CTRL){
+      /*
       if (newpersonwidget){
           delete newpersonwidget;}
       newpersonwidget = new cPersonWidget(this);
       newpersonwidget->show();
       myLineEdit->setText("Create new person.");
+      */
+      if (!userrequestdialog){
+          qDebug() << "Mainwindow making new dialg";
+          userrequestdialog = new userRequestDialog(getData(), Scene(),this);
+          userrequestdialog->exec();
+      }
   }
 
 

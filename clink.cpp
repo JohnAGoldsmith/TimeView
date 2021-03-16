@@ -171,7 +171,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     }
     else if (natureOfLink == "teacher" || natureOfLink == "student"){
         pen.setColor(Qt::blue);
-        pen.setWidth(3);
+        pen.setWidth(1);
         painter->setPen(pen);
     }
     else if (natureOfLink == "postDoc" || natureOfLink == "Semi-teacher" || natureOfLink == "influence"){

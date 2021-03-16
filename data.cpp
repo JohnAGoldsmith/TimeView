@@ -12,6 +12,7 @@
 #include "data.h"
 #include "clink.h"
 #include "cscene.h"
+#include "group.h"
 
 cData::cData()
 {
@@ -72,26 +73,27 @@ void cData::A_analyzeLegacyCSVdata(){
     cLink * link;
     gPerson * person;
     QString outfileName, fromKey, toKey;
+    cGroup * group;
     foreach (QString line1 , tempLines){
-       QStringList line = line1.split(",");
-       if (line.size() < 1)
+          QStringList line = line1.split(",");
+          if (line.size() < 1)
            continue;
-       if (line[0][0]== "!") {
-              outfileName = line[1];
-       } else {
-           if (line[0][0] == "#"){
-               continue;
-           } else {
-               if (line[0] == "P"){
-                   person = B_CreateGraphicalPerson(line);
-               } else {
-                   if (line[0] == "L"){
-                        link = new cLink(line);
-                        Links.append(link);
-                   }
-               }
-           }
-       }
+          if (line[0][0]== "!") {
+            outfileName = line[1];
+          } else if (line[0][0] == "#"){
+            continue;
+          } else if (line[0] == "P"){
+            person = B_CreateGraphicalPerson(line);
+          } else if (line[0] == "L"){
+            link = new cLink(line);
+            Links.append(link);
+          } else if (line[0] == "G"){              
+            group = new cGroup(line);
+            if (!validateNewGroup(group)){
+               delete group;
+               /*  send message of failure */
+            }
+          }
     }
     B_AddGPersonPtrsToLinks();
 }
@@ -101,33 +103,36 @@ void cData::A_analyzeCSVdata(){
     gPerson * gperson;
     cLink * link;
     QString name;
+    cGroup *  group;
     foreach (QString line1 , tempLines){
-       QStringList line = line1.split(",");
-       if (line.size() < 1)
-           continue;
-       if (line[0][0]== "!") {
-              name = line[1];
-       } else {
-           if (line[0][0] == "#"){
-               continue;
-           } else {
-               if (line[0] == "P"){
-                   gperson = new gPerson(line);
-                   if (! validateNewPerson(gperson)){ //validate should include sending to collections
-                       delete gperson;
-                       /* send message of failure.  */
-                   }
-               } else {
-                   if (line[0] == "L"){
-                        link = new cLink(line);
-                        if (! validateNewLink(link)){ // validate should include sending to collections
-                            delete link;
-                            /* send message of failure. */
-                        }
-                   }
-               }
-           }
-       }
+        QStringList line = line1.split(",");
+        if (line.size() < 1)
+            continue;
+        if (line[0][0]== "!") {
+            name = line[1];
+        } else {
+            if (line[0][0] == "#"){
+                continue;
+            } else if (line[0] == "P"){
+                gperson = new gPerson(line);
+                if (! validateNewPerson(gperson)){ //validate should include sending to collections
+                    delete gperson;
+                    /* send message of failure.  */
+                }
+            } else if (line[0] == "L"){
+                link = new cLink(line);
+                if (! validateNewLink(link)){ // validate should include sending to collections
+                    delete link;
+                    /* send message of failure. */
+                }
+            } else if (line[0] == "G"){
+                group = new cGroup(line);
+                if (!validateNewGroup(group)){
+                    delete group;
+                    /*  send message of failure */
+                }
+            }
+        }
     }
 }
 gPerson* cData::B_CreateGraphicalPerson(QStringList line){
@@ -188,6 +193,9 @@ void cData::A_sendPersonsAndLinksToScene(cScene* scene){
         }
         scene->AddLink(link);
     }
+    foreach (cGroup * group, Groups){
+        scene->addItem(group);
+    }
 }
 void cData::sendPersonsToColumnarScene(columnarScene * colscene){
     foreach (gPerson* person, graphicalPersons){
@@ -228,6 +236,16 @@ bool cData::validateNewPerson(gPerson * person){
 bool cData::validateNewLink(cLink* link){
 
 }
+bool cData::validateNewGroup(cGroup * group){
+    if (key2Group.contains(group->Key())){
+      /*  send message of collision */
+            return false;
+    }
+     key2Group[group->Key()] = group;
+     Groups.append(group);
+     return true;
+}
+
 
 void cData::write(QJsonObject &json) const{
     QJsonArray linkArray;

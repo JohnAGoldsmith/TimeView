@@ -9,6 +9,8 @@
 #include "dataperson.h"
 #include "clink.h"
 #include "columnarscene.h"
+#include "group.h"
+
 
 // There should be an enum for DataType (Person, Link) but enum in Qt is complicated.
 
@@ -29,6 +31,7 @@ public:
 
     bool validateNewPerson(gPerson*); // checks for not duplicate, and if OK adds to collection.
     bool validateNewLink(cLink*);
+    bool validateNewGroup (cGroup*);
 
     void A_ReadCSV(QString filename);
     void A_ReadJson(QString filename);
@@ -64,12 +67,14 @@ private:
     QList<dPerson*> dataPersons;
     QList<gPerson*> graphicalPersons;
     QList<cLink*>   Links;
+    QList<cGroup*>  Groups;
     QList<gPerson*> Limbo;
-    QHash<QString, gPerson*>  key2Person;
-    QHash<QString, cLink*> key2Link;
+    QHash<QString, gPerson*>key2Person;
+    QHash<QString, cLink*>  key2Link;
+    QHash<QString, cGroup* > key2Group;
     QStringList     tempLines;
-    //int             timeScale;
     int             topPosition;
+
 };
 
 #endif // DATA_H

@@ -9,39 +9,14 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    clineedit.cpp \
-    clink.cpp \
-    columnarscene.cpp \
-    cpersonwidget.cpp \
-    cscene.cpp \
-    cview.cpp \
-    data.cpp \
-    dataperson.cpp \
-    gperson.cpp \
-    group.cpp \
-    helpwidget.cpp \
     main.cpp \
-    mainwindow.cpp \
-    userrequestdialog.cpp
+    dialog.cpp
 
 HEADERS += \
-    clineedit.h \
-    clink.h \
-    columnarscene.h \
-    cpersonwidget.h \
-    cscene.h \
-    cview.h \
-    data.h \
-    dataperson.h \
-    gperson.h \
-    group.h \
-    helpwidget.h \
-    mainwindow.h \
-    userrequestdialog.h
+    dialog.h
 
 FORMS += \
-    mainwindow.ui \
-    userrequestdialog.ui
+    dialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
