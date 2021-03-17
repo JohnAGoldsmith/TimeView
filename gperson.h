@@ -13,7 +13,7 @@ class cLink;
 class gPerson : public QGraphicsItem
 {
 
-    friend class dPerson;
+
 public:
     gPerson();
     gPerson(QStringList   data);

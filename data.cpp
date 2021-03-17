@@ -174,7 +174,12 @@ void cData::B_AddGPersonPtrsToLinks(){
 
 void cData::A_sendPersonsAndLinksToScene(cScene* scene){
     gPerson * gPerson1, * gPerson2;
-
+    foreach (cGroup * group, Groups){
+       group->setY ( scene->ConvertYearToYcoor( group->Y() ) );
+       scene->addItem(group);
+       group->setPos(group->X(), group->Y());
+       qDebug() << "data group line 200" << group->X() << group->Y();
+    }
     foreach (gPerson * gperson, graphicalPersons){
         scene->addItem(gperson);
         gperson->Scene(scene); // why is this necessary? Why can't I get this from the gperson?
@@ -193,9 +198,7 @@ void cData::A_sendPersonsAndLinksToScene(cScene* scene){
         }
         scene->AddLink(link);
     }
-    foreach (cGroup * group, Groups){
-        scene->addItem(group);
-    }
+
 }
 void cData::sendPersonsToColumnarScene(columnarScene * colscene){
     foreach (gPerson* person, graphicalPersons){
@@ -241,6 +244,7 @@ bool cData::validateNewGroup(cGroup * group){
       /*  send message of collision */
             return false;
     }
+    qDebug() << "data 247" << group->Key();
      key2Group[group->Key()] = group;
      Groups.append(group);
      return true;
