@@ -1,6 +1,7 @@
 #include "columnarscene.h"
 #include <algorithm>
 #include <vector>
+#include <QDebug>
 #include "gperson.h"
 #include "cview.h"
 
@@ -35,7 +36,7 @@ void columnarScene::displayColumnar(){
         addItem(person);
         person->Scene(this); // why is this necessary? Why can't I get this from the gperson?
         person->setPos(0.0, currentY );
-        person->rememberPos(QPoint( person->Xpos(), person->Ypos()) );
+        person->rememberPos( person->pos() );
         currentY += person->Height();
     }
 }

@@ -6,7 +6,7 @@
 #include <QList>
 #include <QFocusEvent>
 #include <QEvent>
-#include "data.h"
+//#include "data.h"
 class cScene;
 class cLink;
 
@@ -17,6 +17,7 @@ class gPerson : public QGraphicsItem
 public:
     gPerson();
     gPerson(QStringList   data);
+    gPerson(bool dummy, QStringList data);  // only for legacy CSV input
     ~gPerson();
     QRectF boundingRect() const override;
 
@@ -27,28 +28,31 @@ public:
     cScene * Scene() {return scene;}  /* This really shouldn't be necessary; it should inherit this from QGraphicsItem */
     void Scene(cScene * iscene) {scene = iscene;}
     void rememberPos(QPointF);
-    void SetY(int y) {ypos = y;}
-    float Xpos(){return xpos;}
-    float Ypos(){return ypos;}
-    QString LastName() {return lastName;}
-    QString FirstName() {return firstName;}
+    //void SetY(int y) {ypos = y;}
+
+    //float Xpos(){return xpos;}
+    //float Ypos(){return ypos;}
+    QPointF GetMemoryOfScreenPosition();
     float BirthYear() {return birthYear;}
     float DeathYear() {return deathYear;}
+
+    QString LastName() {return lastName;}
+    QString FirstName() {return firstName;}
     QString Profession1() {return profession1;}
 
-
     float Height() {return height;}
-    //void Height(float h ) {height = h;}
     float GetNameWidth(QPainter * )const;
     float GetNameHeight(QPainter *) const;
     float GetDatesWidth(QPainter * ) const ;
     float GetDatesHeight(QPainter * ) const ;
     float GetTextHeight(QPainter* ) const;
     float GetTextWidth (QPainter*, QString) const;
+
     void AppendLink (cLink * link);
     void AppendTopLink (cLink*);
     void AppendBottomLink(cLink*);
     void AppendLinkKey(QString linkKey);
+
     QList<cLink*> * GetLinks() {return & myLinks;}
     QList<cLink*> * GetTopLinks() {return & topLinks;}
     QList<cLink*> * GetBottomLinks() {return & bottomLinks;}
@@ -64,10 +68,7 @@ public:
     void setWidth(float w){width = w;}
     float Width(){return width;}
     float X_fromspreadsheet() {return x_fromspreadsheet;}
-    //bool Limbo() {return limbo;}
-    //void setLimbo(bool value){limbo = value;}
-    bool Visible() {return visible;}
-    bool setVisible(bool b) {visible = b;}
+
     bool Grayed() {return grayed;}
     void setGrayed(bool value) {grayed = value;}
 
@@ -93,17 +94,20 @@ protected:
 private:
     cScene * scene;
     QFont *  myFont;
-    QString key;
-    float xpos;
-    float ypos;
-    float x_fromspreadsheet;
-    float height;
-    float width;
-    float margin;
     QString firstName;
     QString lastName;
     int birthYear;
     int deathYear;
+    QString key;
+    float xpos;              // used only for input  not during the program
+    float ypos;              // used only for input  not during the program
+    float x_fromspreadsheet; // used only for legacy operations
+    float y_fromspreadsheet;
+    float height;
+    float width;
+    float margin;
+
+
     QString profession1;
     QString profession2;
     QRectF personBoundingRect;
@@ -111,7 +115,7 @@ private:
     QList<cLink*> topLinks;
     QList<cLink*> bottomLinks;
     bool grayed;
-    bool visible;
+    //bool visible;
     //bool limbo;
     cLink *  selectedLink;
     QString selectedLinkKey;

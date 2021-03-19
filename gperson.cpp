@@ -10,6 +10,8 @@
 #include <QColor>
 #include <QPixmap>
 #include <QImage>
+#include <QJsonArray>
+#include <QJsonObject>
 #include <QGraphicsDropShadowEffect>
 #include <QFontMetrics>
 #include <QPushButton>
@@ -29,9 +31,9 @@ gPerson::gPerson(){
  width = 250; // this isn't right, it should be dynamic and based on relevant data; but that's not available till after Paint();
  height = 70;
  margin = 5;
- visible=true;
+ //visible=true;
  personBoundingRect.setCoords(-1.0 * margin, 0, width + 2*margin, height+2*margin );
- xpos = 0;  // it will be set the first time it is add to scene, using the toppoint on the scene.
+ xpos = 0;  // used only in input to program
  selectedLink = NULL;
  grayed = false;
 }
@@ -63,19 +65,63 @@ gPerson::gPerson(QStringList  data){
         qDebug() << lastName << "Zero death year" ;
     }
     x_fromspreadsheet = data[5].toFloat();
+    y_fromspreadsheet = data[6].toFloat();
+    xpos = x_fromspreadsheet;
+    ypos = y_fromspreadsheet;
+    key = data[7];
+    profession1 = data[6];
+    //visible=true;
+    selectedLink = NULL;
+    grayed = false;
+}
+// constructor used with legacy .csv  file only
+gPerson::gPerson(bool dummy, QStringList  data){
+    setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
+    float topPosition = 2000.0;
+    float Xscale = 8.0;
+    float Yscale = 20.0;
+    key = "no_key";
+    width = 250; // this isn't right, it should be dynamic and based on relevant data; but that's not available till after Paint();
+    height = 70;
+    myFont = new  QFont("Times", 12);
+    xpos = 0;               // it will be set the first time it is add to scene, using the toppoint on the scene.
+    birthYear = 0;
+    deathYear = 0;
+    margin = 5;
+    personBoundingRect.setCoords(-1.0 * margin, 0, width + 2*margin, height+ 2*margin);
+
+    firstName = data[1];
+    lastName = data[2];
+    birthYear = data[3].toInt();
+    if (birthYear == 0){
+        qDebug() << lastName << "zero birth year a";
+    }
+    if (data[4].length() > 0){
+        deathYear = data[4].toInt();
+    } else {
+        deathYear = 0;
+        qDebug() << lastName << "Zero death year" ;
+    }
+    x_fromspreadsheet = data[5].toFloat() * Xscale;
+    xpos =x_fromspreadsheet * Xscale;
+    ypos = Yscale * (topPosition - birthYear);
+
     profession1 = data[6];
     if (data.size() >= 8 && data[7].length() > 0){
         key = data[7];
     } else {
         key = data[2];
     }
-    visible=true;
+    //visible=true;
     selectedLink = NULL;
     grayed = false;
+    qDebug() << "person constructor" << LastName() << "birth" << birthYear << "xpos" << xpos << "ypos" << ypos;
 }
-
 gPerson::~gPerson(){
 
+}
+QPointF gPerson::GetMemoryOfScreenPosition(){
+    return QPointF(xpos,ypos);
 }
 QString gPerson::export2CSV(){
   QStringList temp;
@@ -84,11 +130,16 @@ QString gPerson::export2CSV(){
   temp.append(lastName);
   temp.append(QString::number(birthYear));
   temp.append(QString::number(deathYear));
-  temp.append(QString::number(xpos));
-  temp.append(profession1);
+  temp.append(QString::number(pos().x()));
+  temp.append(QString::number(pos().y()));
   if ( key != lastName){
       temp.append(key);
+  } else {
+      temp.append(lastName);
   }
+  temp.append(QString::number(height));
+  temp.append(QString::number(width));
+  temp.append(profession1);
   return temp.join(",");
 }
 
@@ -122,26 +173,18 @@ QRectF gPerson::boundingRect() const  {
 
 
 void gPerson::focusInEvent(QFocusEvent * event){
-
-    //qDebug() << "124 I have focus" << LastName();
     QGraphicsItem::focusInEvent(event);
 }
-void gPerson::focusOutEvent(QFocusEvent * event){
-    qDebug() << "gperson line 124 leaving focus"<< LastName();
+void gPerson::focusOutEvent(QFocusEvent * event){LastName();
     UnselectAllLinks();
     QGraphicsItem::focusOutEvent(event);
 }
 
 void gPerson::mousePressEvent(QGraphicsSceneMouseEvent * event){
-    //qDebug() << "gPerson mousepressevent clicked" << "x" << event->scenePos().x() << "y" << event->scenePos().y();
     QGraphicsItem::mousePressEvent(event);
-    //update();
 }
 
 void gPerson::keyPressEvent (QKeyEvent * event){
-    //qDebug() << "person 143" << event->text();
-
-
    if (event->key() == Qt::Key_L ){
       if (!selectedLink){
           if (myLinks.size()){
@@ -254,8 +297,8 @@ void gPerson::mouseMoveEvent(QGraphicsSceneMouseEvent * event){ // this doesn't 
 
 void gPerson::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
     if (event->modifiers()==Qt::ShiftModifier){
-        if (!visible)
-            return;
+        //if (!visible)
+        //    return;
         if (!grayed){
           grayed = true;
           update();
@@ -326,9 +369,9 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     pen.setWidth(9);
     painter->setPen(pen);
 
-    if (! visible){
-        return;
-    }
+    //if (! visible){
+    //    return;
+    //}
     QString Profession =  Profession1();
     if (Profession ==  "linguist"){
         mycolor = Orange;
@@ -485,14 +528,14 @@ void gPerson::write(QJsonObject & json) const {
     json["type"] = "person";
     json["firstName"] = firstName;
     json["lastName"] = lastName;
-    json["xpos"] = x();
-    json["ypos"] = y();
+    json["xpos"] = pos().x();
+    json["ypos"] = pos().y();
     json["height"] = height;
 
     json["birthYear"] = birthYear;
     json["deathYear"] = deathYear;
     json["profession1"] = profession1;
-    json["visible"] = visible;
+    json["visible"] = isVisible();
     json["grayed"] = grayed;
 
     QJsonArray linkArray;
@@ -548,7 +591,7 @@ void gPerson::read(const QJsonObject &json){
     deathYear = json["deathYear"].toInt();
     profession1 = json["profession1"].toString();
     grayed = json["grayed"].toBool();
-    visible = json["visible"].toBool();
+    //visible = json["visible"].toBool();
 
 
 

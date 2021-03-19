@@ -20,6 +20,7 @@ class cLink: public QGraphicsItem
     public:
         cLink();
         cLink(QStringList & );
+        cLink(bool, QStringList &); // used for legacy spreadsheets
         ~cLink();
         QRectF boundingRect() const;
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);

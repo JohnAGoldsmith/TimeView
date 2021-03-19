@@ -11,6 +11,7 @@
 #include "columnarscene.h"
 #include "group.h"
 
+//class cGroup;
 
 // There should be an enum for DataType (Person, Link) but enum in Qt is complicated.
 
@@ -37,12 +38,16 @@ public:
     void A_ReadJson(QString filename);
     void A_analyzeLegacyCSVdata();
     void A_analyzeCSVdata();
+
     QStringList exportPersons2csv() const ;
     QStringList exportLinks2csv() const;
+    QStringList exportGroups2csv() const;
+
     void A_sendPersonsAndLinksToScene(cScene *);
     void A_sendPersonsAndLinksToSceneJson(cScene *);
     void sendPersonsToColumnarScene(columnarScene * );
     gPerson* Key2Person(QString key){return key2Person[key];} // was getpersonfromkey
+    cGroup* Key2Group(QString key) {return key2Group[key];}
     bool  Key2PersonHashContains (QString key ) {return  key2Person.contains(key);}
     cLink* Key2Link(QString key) {return key2Link[key];}
     void save(QString filename) const;
@@ -50,7 +55,7 @@ public:
     //void addDataPerson(dPerson*);
     int TopPosition() {return topPosition;}
     //dPerson* CreateDataPerson(QStringList line);
-    gPerson* B_CreateGraphicalPerson(QStringList line);
+    gPerson* B_Legacy_CreateGraphicalPerson(QStringList line);
     void B_AddGPersonPtrsToLinks();
 
     void Clear();
@@ -71,7 +76,7 @@ private:
     QList<gPerson*> Limbo;
     QHash<QString, gPerson*>key2Person;
     QHash<QString, cLink*>  key2Link;
-    QHash<QString, cGroup* > key2Group;
+    QHash<QString, cGroup* >key2Group;
     QStringList     tempLines;
     int             topPosition;
 

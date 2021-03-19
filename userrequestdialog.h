@@ -25,6 +25,8 @@ public:
     ~userRequestDialog();
 
 private:
+    cData* Data;
+    cScene * Scene;
     QTabWidget * mytabWidget;
     Ui::userRequestDialog *ui;
     QLabel * firstNamelabel;
@@ -41,6 +43,14 @@ private:
     QSpinBox * lineWidthSpin;
     QFont * currentFont;
     QFontDialog * fontDialog;
+    QSpinBox  * groupheightSpin;
+    QSpinBox * groupwidthSpin;
+    QLineEdit * groupNameLE;
+    QPushButton * addGroupbutton;
+
+    void addNewGroup();
+    void keyPressEvent(QKeyEvent *);
+
 
 
 public slots:

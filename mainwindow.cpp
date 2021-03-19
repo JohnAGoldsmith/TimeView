@@ -22,6 +22,8 @@
 #include "cview.h"
 
 
+
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -48,24 +50,43 @@ MainWindow::MainWindow(QWidget *parent)
     myLineEdit = new cLineEdit();
     layout->addWidget(myLineEdit);
 
-
     setCentralWidget(widget);
     setWindowTitle(tr("Genealogy"));
     setUnifiedTitleAndToolBarOnMac(true);
 
+    QString fileName = QFileDialog::getOpenFileName(this,"Open document",QDir::currentPath(), "*.csv *.json");
+
+    if (!fileName.isEmpty()){
+       if (fileName.endsWith(".json")){
+           getData()->A_ReadJson(fileName);
+           getData()->A_sendPersonsAndLinksToSceneJson(scene);
+       } else if (fileName.endsWith(".csv")){
+           if (fileName.endsWith("legacy.csv")){
+               getData()->A_ReadCSV(fileName);
+               getData()->A_analyzeLegacyCSVdata();
+               getData()->A_sendPersonsAndLinksToScene(scene);
+           } else{
+               getData()->A_ReadCSV(fileName);
+               getData()->A_analyzeCSVdata();
+               getData()->A_sendPersonsAndLinksToScene(scene);
+           }
+       }
+    }
+
+    /*
     bool Json(false);
     if (Json){
         QString jsonfilename = "./timeview.json";
         getData()->A_ReadJson(jsonfilename);
         getData()->A_sendPersonsAndLinksToSceneJson(scene);
     }else{
-        QString csvfilename = "./timeview_legacy.csv";
+        QString csvfilename = "./veryshort-legacy.csv";
         getData()->A_ReadCSV(csvfilename);
         getData()->A_analyzeLegacyCSVdata();
         getData()->A_sendPersonsAndLinksToScene(scene);
     }
+    */
 
-   //createActions();
 
 }
 void MainWindow::createActions(){
@@ -180,6 +201,12 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
           helpwidget->close();
       if (newpersonwidget)
           newpersonwidget->close();
+      if (userrequestdialog)
+          userrequestdialog->close();
+      if (linkTable)
+          linkTable->close();
+      if (personTable)
+          personTable->close();
       qApp->exit( );
   }
 
@@ -200,11 +227,12 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
       newpersonwidget->show();
       myLineEdit->setText("Create new person.");
       */
-      if (!userrequestdialog){
-          qDebug() << "Mainwindow making new dialg";
-          userrequestdialog = new userRequestDialog(getData(), Scene(),this);
-          userrequestdialog->exec();
+      if (userrequestdialog){
+          delete userrequestdialog;
       }
+      qDebug() << "Mainwindow making new dialg";
+      userrequestdialog = new userRequestDialog(getData(), Scene(),this);
+      userrequestdialog->exec();
   }
 
 

@@ -27,8 +27,14 @@ void cData::Clear(){
         delete link;
     }
     Links.clear();
+    foreach (cGroup* group, Groups){
+        delete group;
+    }
+    Groups.clear();
     Limbo.clear();
     key2Person.clear();
+    key2Link.clear();
+    key2Group.clear();
     tempLines.clear();
 }
 cLink* cData::getLink(QString key){
@@ -83,9 +89,10 @@ void cData::A_analyzeLegacyCSVdata(){
           } else if (line[0][0] == "#"){
             continue;
           } else if (line[0] == "P"){
-            person = B_CreateGraphicalPerson(line);
+            person = B_Legacy_CreateGraphicalPerson(line);
           } else if (line[0] == "L"){
-            link = new cLink(line);
+            bool dummy;
+            link = new cLink(dummy, line);
             Links.append(link);
           } else if (line[0] == "G"){              
             group = new cGroup(line);
@@ -134,9 +141,11 @@ void cData::A_analyzeCSVdata(){
             }
         }
     }
+    B_AddGPersonPtrsToLinks();
 }
-gPerson* cData::B_CreateGraphicalPerson(QStringList line){
+gPerson* cData::B_Legacy_CreateGraphicalPerson(QStringList line){
     QString key;
+    float legacyTimeScale = 20.0;             // remove this from Scene.
     if (line.size() >= 8 && line[7].length() > 0){
         key = line[7];
     } else {
@@ -146,8 +155,11 @@ gPerson* cData::B_CreateGraphicalPerson(QStringList line){
        qDebug() << "cData:  collision of graphicalPerson keys" << key << "No graphical unit created.";
        return NULL;
     };
-    gPerson* gperson = new gPerson(line);
+    bool dummy = false;
+    gPerson* gperson = new gPerson(dummy, line);
     key2Person[key]= gperson;
+    qDebug() << "Data 160" << gperson->LastName();
+    qDebug() << "Data 161" << graphicalPersons.size();
     graphicalPersons.append(gperson);
 }
 
@@ -183,17 +195,13 @@ void cData::A_sendPersonsAndLinksToScene(cScene* scene){
     foreach (gPerson * gperson, graphicalPersons){
         scene->addItem(gperson);
         gperson->Scene(scene); // why is this necessary? Why can't I get this from the gperson?
-        float new_x = gperson->X_fromspreadsheet() * scene->ScaleFactor();
-        float new_y = scene->ConvertYearToYcoor(gperson->BirthYear());
-        gperson->setPos(new_x, new_y  );
-        gperson->rememberPos(QPointF(new_x,new_y));
-
+        gperson->setPos( gperson->GetMemoryOfScreenPosition());
     }
     foreach (cLink * link, Links){
         gPerson1 = link->GPersonFrom();
         gPerson2 = link->GPersonTo();
         if ( ! gPerson1 || ! gPerson2 ){
-            qDebug() << "Cannot send link to Scene 124 "<<link->display() << "Missing gperson." ;
+            //qDebug() << "Cannot send link to Scene 124 "<<link->display() << "Missing gperson." ;
             continue;
         }
         scene->AddLink(link);
@@ -213,8 +221,9 @@ void cData::A_sendPersonsAndLinksToSceneJson(cScene* scene){
     foreach (gPerson * gperson, graphicalPersons){
         scene->addItem(gperson);
         gperson->Scene(scene); // why is this necessary? Why can't I get this from the gperson?
-        gperson->setPos(gperson->Xpos(), gperson->Ypos());
-        gperson->rememberPos(QPointF(gperson->Xpos(),gperson->Ypos()));
+        //gperson->setPos(gperson->Xpos(), gperson->Ypos());
+        gperson->setPos( gperson->GetMemoryOfScreenPosition() );
+        //gperson->rememberPos(QPointF(gperson->Xpos(),gperson->Ypos()));
     }
     foreach (cLink * link, Links){
         gPerson1 = link->GPersonFrom();
@@ -229,25 +238,35 @@ void cData::A_sendPersonsAndLinksToSceneJson(cScene* scene){
 
 bool cData::validateNewPerson(gPerson * person){
     if (key2Person.contains(person->Key())){
+        qDebug() << "data 240" << person->Key();
       /*  send message of collision */
             return false;
     }
+    qDebug() <<"data 244 making new person" << person->Key();
      key2Person[person->Key()] = person;
      graphicalPersons.append(person);
      return true;
 }
 bool cData::validateNewLink(cLink* link){
-
+    if (key2Link.contains(link->getKey())){
+        /*  send message of collision   */
+        return false;
+    }
+    key2Link[link->getKey()] = link;
+    Links.append(link);
+    return true;
 }
 bool cData::validateNewGroup(cGroup * group){
-    if (key2Group.contains(group->Key())){
-      /*  send message of collision */
-            return false;
-    }
+    qDebug() << group->Key();
+    //int x = key2Group.size();
+    //if (key2Group.contains(group->Key())){
+    //  /*  send message of collision */
+    //        return false;
+   // }
     qDebug() << "data 247" << group->Key();
-     key2Group[group->Key()] = group;
-     Groups.append(group);
-     return true;
+    key2Group[group->Key()] = group;
+    Groups.append(group);
+    return true;
 }
 
 
@@ -419,6 +438,13 @@ QStringList cData::exportLinks2csv() const {
     }
     return linksList;
 }
+QStringList cData::exportGroups2csv() const{
+    QStringList groupsList;
+    foreach (cGroup * group, Groups){
+        groupsList << group->export2csv();
+    }
+    return groupsList;
+}
 void cData::save(QString filename) const{
   QFile saveFile(filename + ".json");
   if (!saveFile.open(QIODevice::WriteOnly)) {
@@ -445,26 +471,40 @@ void cData::save(QString filename) const{
    foreach (QString line, csvList){
        out << line << Qt::endl;
    }
+   csvList.clear();
+   csvList = exportGroups2csv();
+   foreach (QString line, csvList){
+       out << line << Qt::endl;
+   }
    saveFileCVS.close();
 }
 void cData::populatePersonTable(QTableWidget * table){
    table->setRowCount(graphicalPersons.size());
-   table->setColumnCount(6);
+   table->setColumnCount(9);
    int row = 0;
    foreach (gPerson * person, graphicalPersons){
-       QTableWidgetItem *item = new QTableWidgetItem(person->LastName());
+       QTableWidgetItem *item;
+       item = new QTableWidgetItem(person->Key());
+       table->setItem(row,0,item);
+       item = new QTableWidgetItem(person->LastName());
        table->setItem(row,1,item);
        item = new QTableWidgetItem(person->FirstName());
        table->setItem(row,2,item);
-       item = new QTableWidgetItem(person->Key());
-       item->setTextColor(Qt::red);
-       table->setItem(row,0,item);
        item = new QTableWidgetItem(QString::number(person->BirthYear()));
        table->setItem(row,3,item);
        item = new QTableWidgetItem(QString::number(person->DeathYear()));
        table->setItem(row,4,item);
        item = new QTableWidgetItem(person->Profession1());
        table->setItem(row,5,item);
+       item = new QTableWidgetItem(QString::number(person->GetMemoryOfScreenPosition().x()));
+       table->setItem(row,6,item);
+       item = new QTableWidgetItem(QString::number(person->GetMemoryOfScreenPosition().y()));
+       table->setItem(row,7,item);
+
+       item = new QTableWidgetItem(person->Profession1());
+       table->setItem(row,8,item);
+
+
        row++;
    }
    table->setSortingEnabled(true);
@@ -505,7 +545,7 @@ void cData::GrayedPersons2Invisible(){
 }
 void cData::InvisiblePersons2Grayed(){
     foreach(gPerson* person, graphicalPersons){
-        if (! person->Visible()){
+        if (! person->isVisible()){
             person->setGrayed(true);
             person->setVisible(true);
             person->update();

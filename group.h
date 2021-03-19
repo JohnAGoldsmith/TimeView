@@ -6,6 +6,7 @@ class cGroup: public QGraphicsItem// QGraphicsRectItem
 {
 public:
     cGroup(QStringList);
+    cGroup(QString key, QString name, float x, float y, float h, float w );
     ~cGroup();
     QRectF boundingRect() const override;
 
@@ -16,14 +17,19 @@ public:
     float X() {return scene_x;}
     float Y() {return scene_y;}
     void setY(float val){scene_y = val;}
+    QString export2csv();
+
+
+    void mousePressEvent(QGraphicsSceneMouseEvent * event);
 
 private:
     QString key;
     QString name;
     float scene_x;
     float scene_y;
-    float width;
     float height;
+    float width;
+
     QRectF  myBoundingRect;
 
 };

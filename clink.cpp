@@ -3,6 +3,7 @@
 #include <QStringList>
 #include <QColor>
 #include <QPen>
+#include <QJsonObject>
 #include "clink.h"
 #include "gperson.h"
 #include "cscene.h"
@@ -25,7 +26,7 @@ cLink::cLink()
     update();
 }
 
-/*  Used when reading csv file */
+/*  Used when reading current csv file */
 cLink::cLink(QStringList & data){
     gPersonFrom = NULL;
     gPersonTo = NULL;
@@ -43,14 +44,72 @@ cLink::cLink(QStringList & data){
     if (data.size() >= 11 && data[10].length() > 0){
         natureOfLink = data[10];
     }
-    if (data[3] == "0"){ PositionOnFromPerson = "Right";}
+    if (data[3] == "Top"){ PositionOnFromPerson = "Top";}
+    else if (data[3] == "Right"){ PositionOnFromPerson = "Right";}
+    else if (data[3] == "Bottom"){ PositionOnFromPerson = "Bottom";}
+    else if (data[3] == "Left"){ PositionOnFromPerson = "Left";}
+    else if (data[3] == "0"){ PositionOnFromPerson = "Right";}
+    else if (data[3] == "90"){ PositionOnFromPerson="Top";}
+    else if (data[3] == "180"){PositionOnFromPerson = "Left";}
+    else if (data[3] == "-180"){PositionOnFromPerson = "Left";}
+    else if (data[3] == "270") {PositionOnFromPerson = "Bottom";}
+    else if (data[3] == "-90") {PositionOnFromPerson = "Bottom";}   
+    else {PositionOnFromPerson = "Not defined";}
+
+    if (data[4] == "Top"){ PositionOnToPerson = "Top";}
+    else if (data[4] == "Right"){ PositionOnToPerson = "Right";}
+    else if (data[4] == "Bottom"){ PositionOnToPerson = "Bottom";}
+    else if (data[4] == "Left"){ PositionOnToPerson = "Left";}
+    else if (data[4] == "0"){ PositionOnToPerson =  "Right";}
+    else if (data[4] == "90"){ PositionOnToPerson="Top";}
+    else if (data[4] == "180"){PositionOnToPerson = "Left";}
+    else if (data[4] == "-180"){PositionOnToPerson = "Left";}
+    else if (data[4] == "270") {PositionOnToPerson = "Bottom";}
+    else if (data[4] == "-90") {PositionOnToPerson = "Bottom";}
+    else {PositionOnToPerson = "Not defined";}
+
+    if (data.size() >= 13 && data[12].length() > 0){
+        natureOfLink = data[12];
+    }
+
+    update();
+}
+
+/*  Used when reading legacy csv file */
+cLink::cLink(bool dummy, QStringList & data){
+    gPersonFrom = NULL;
+    gPersonTo = NULL;
+    setAcceptedMouseButtons(0);
+    fromPersonKey = data[1];
+    toPersonKey = data[2];
+    bottomOffset = 0.0;
+    topOffset = 0.0;
+    visible = true;
+    chosen = false;
+    proportion1 = 0.6;
+    startPoint =QPoint(0.0, 0.0);
+    endPoint = QPoint(0.0, 0.0);
+
+    if (data.size() >= 11 && data[10].length() > 0){
+        natureOfLink = data[10];
+    }
+    if (data[3] == "Top"){ PositionOnFromPerson = "Top";}
+    else if (data[3] == "Right"){ PositionOnFromPerson = "Right";}
+    else if (data[3] == "Bottom"){ PositionOnFromPerson = "Bottom";}
+    else if (data[3] == "Left"){ PositionOnFromPerson = "Left";}
+    else if (data[3] == "0"){ PositionOnFromPerson = "Right";}
     else if (data[3] == "90"){ PositionOnFromPerson="Top";}
     else if (data[3] == "180"){PositionOnFromPerson = "Left";}
     else if (data[3] == "-180"){PositionOnFromPerson = "Left";}
     else if (data[3] == "270") {PositionOnFromPerson = "Bottom";}
     else if (data[3] == "-90") {PositionOnFromPerson = "Bottom";}
     else {PositionOnFromPerson = "Not defined";}
-    if (data[6] == "0"){ PositionOnToPerson =  "Right";}
+
+    if (data[6] == "Top"){ PositionOnToPerson = "Top";}
+    else if (data[6] == "Right"){ PositionOnToPerson = "Right";}
+    else if (data[6] == "Bottom"){ PositionOnToPerson = "Bottom";}
+    else if (data[6] == "Left"){ PositionOnToPerson = "Left";}
+    else if (data[6] == "0"){ PositionOnToPerson =  "Right";}
     else if (data[6] == "90"){ PositionOnToPerson="Top";}
     else if (data[6] == "180"){PositionOnToPerson = "Left";}
     else if (data[6] == "-180"){PositionOnToPerson = "Left";}
@@ -59,6 +118,7 @@ cLink::cLink(QStringList & data){
     else {PositionOnToPerson = "Not defined";}
     update();
 }
+
 cLink::~cLink(){
 }
 void cLink::setPersonFrom(gPerson * person){
@@ -93,17 +153,18 @@ QString cLink::export2csv(){
 }
 void cLink::importFromCSV(QString line){
   QStringList temp (line.split(","));
-  fromPersonKey = temp[0];
-  toPersonKey = temp[1];
-  PositionOnFromPerson = temp[2];
-  PositionOnToPerson = temp[3];
-  bottomOffset = temp[4].toFloat();
-  topOffset = temp[4].toFloat();
-  proportion1 = temp[5].toFloat();
-  startPoint.setX( temp[6].toFloat() );
-  startPoint.setY( temp[7].toFloat() );
-  endPoint.setX( temp[6].toFloat() );
-  endPoint.setY( temp[7].toFloat() );
+  fromPersonKey = temp[1];
+  toPersonKey = temp[2];
+  PositionOnFromPerson = temp[3];
+  PositionOnToPerson = temp[4];
+  bottomOffset = temp[5].toFloat();
+  topOffset = temp[6].toFloat();
+  proportion1 = temp[7].toFloat();
+  startPoint.setX( temp[8].toFloat() );
+  startPoint.setY( temp[9].toFloat() );
+  endPoint.setX( temp[10].toFloat() );
+  endPoint.setY( temp[11].toFloat() );
+  natureOfLink = temp[12];
 }
 void cLink::importFromCSVlegacy(QString line){
 
@@ -158,12 +219,14 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 
     if (false)
         qDebug() << 108 << "just painting" << fromPersonKey << toPersonKey << chosen;
+    /*
     if (! GPersonFrom()->Visible()){
         pen.setStyle(Qt::DotLine);
         painter->setPen(pen);
         qDebug() << "clink 111" << "invisible link...";
     }
-    else if (chosen){
+    */
+    if (chosen){
         qDebug() << "clink selected line 115"<< display();
         pen.setColor(Qt::red);
         pen.setWidth(6);

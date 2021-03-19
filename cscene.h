@@ -40,7 +40,7 @@ public:
     //void AddGroup( cGroup*);
     QHash<QString, QPixmap*> * Pixmaps() {return pixmaps;}
 
-    float ConvertYearToYcoor(float year);
+    float ConvertYearToYcoor(float year); // this is used, but it should be eliminated
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent * event) override;
