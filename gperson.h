@@ -27,15 +27,12 @@ public:
 
     cScene * Scene() {return scene;}  /* This really shouldn't be necessary; it should inherit this from QGraphicsItem */
     void Scene(cScene * iscene) {scene = iscene;}
-    void rememberPos(QPointF);
-    //void SetY(int y) {ypos = y;}
 
-    //float Xpos(){return xpos;}
-    //float Ypos(){return ypos;}
+    void rememberPos(QPointF);
     QPointF GetMemoryOfScreenPosition();
+
     float BirthYear() {return birthYear;}
     float DeathYear() {return deathYear;}
-
     QString LastName() {return lastName;}
     QString FirstName() {return firstName;}
     QString Profession1() {return profession1;}

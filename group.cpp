@@ -62,8 +62,8 @@ void cGroup::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     brush.setColor(Qt::yellow);
     brush.setStyle(Qt::SolidPattern);
     painter->setBrush(brush);
-    //painter->drawRoundedRect(0,0,width,height,5,5);
-    painter->drawEllipse(0,0,height,width);
+    painter->drawRoundedRect(scene_x,scene_y,width,height,100,100);
+    //painter->drawEllipse(0,0,height,width);
 }
 
 void cGroup::mousePressEvent(QGraphicsSceneMouseEvent * event){

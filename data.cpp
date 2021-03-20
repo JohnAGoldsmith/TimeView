@@ -107,7 +107,7 @@ void cData::A_analyzeLegacyCSVdata(){
 
 
 void cData::A_analyzeCSVdata(){
-    gPerson * gperson;
+    gPerson * person;
     cLink * link;
     QString name;
     cGroup *  group;
@@ -121,9 +121,9 @@ void cData::A_analyzeCSVdata(){
             if (line[0][0] == "#"){
                 continue;
             } else if (line[0] == "P"){
-                gperson = new gPerson(line);
-                if (! validateNewPerson(gperson)){ //validate should include sending to collections
-                    delete gperson;
+                person = new gPerson(line);
+                if (! validateNewPerson(person)){ //validate should include sending to collections
+                    delete person;
                     /* send message of failure.  */
                 }
             } else if (line[0] == "L"){
@@ -156,11 +156,11 @@ gPerson* cData::B_Legacy_CreateGraphicalPerson(QStringList line){
        return NULL;
     };
     bool dummy = false;
-    gPerson* gperson = new gPerson(dummy, line);
-    key2Person[key]= gperson;
-    qDebug() << "Data 160" << gperson->LastName();
+    gPerson* person = new gPerson(dummy, line);
+    key2Person[key]= person;
+    qDebug() << "Data 160" << person->LastName();
     qDebug() << "Data 161" << graphicalPersons.size();
-    graphicalPersons.append(gperson);
+    graphicalPersons.append(person);
 }
 
 void cData::B_AddGPersonPtrsToLinks(){
@@ -185,23 +185,22 @@ void cData::B_AddGPersonPtrsToLinks(){
 
 
 void cData::A_sendPersonsAndLinksToScene(cScene* scene){
-    gPerson * gPerson1, * gPerson2;
+    gPerson * person1, * person2;
     foreach (cGroup * group, Groups){
        group->setY ( scene->ConvertYearToYcoor( group->Y() ) );
        scene->addItem(group);
        group->setPos(group->X(), group->Y());
        qDebug() << "data group line 200" << group->X() << group->Y();
     }
-    foreach (gPerson * gperson, graphicalPersons){
-        scene->addItem(gperson);
-        gperson->Scene(scene); // why is this necessary? Why can't I get this from the gperson?
-        gperson->setPos( gperson->GetMemoryOfScreenPosition());
+    foreach (gPerson * person, graphicalPersons){
+        scene->addItem(person);
+        person->Scene(scene); // why is this necessary?
+        person->setPos( person->GetMemoryOfScreenPosition());
     }
     foreach (cLink * link, Links){
-        gPerson1 = link->GPersonFrom();
-        gPerson2 = link->GPersonTo();
-        if ( ! gPerson1 || ! gPerson2 ){
-            //qDebug() << "Cannot send link to Scene 124 "<<link->display() << "Missing gperson." ;
+        person1 = link->GPersonFrom();
+        person2 = link->GPersonTo();
+        if ( ! person1 || ! person2 ){
             continue;
         }
         scene->AddLink(link);
@@ -221,9 +220,7 @@ void cData::A_sendPersonsAndLinksToSceneJson(cScene* scene){
     foreach (gPerson * gperson, graphicalPersons){
         scene->addItem(gperson);
         gperson->Scene(scene); // why is this necessary? Why can't I get this from the gperson?
-        //gperson->setPos(gperson->Xpos(), gperson->Ypos());
         gperson->setPos( gperson->GetMemoryOfScreenPosition() );
-        //gperson->rememberPos(QPointF(gperson->Xpos(),gperson->Ypos()));
     }
     foreach (cLink * link, Links){
         gPerson1 = link->GPersonFrom();
@@ -500,7 +497,6 @@ void cData::populatePersonTable(QTableWidget * table){
        table->setItem(row,6,item);
        item = new QTableWidgetItem(QString::number(person->GetMemoryOfScreenPosition().y()));
        table->setItem(row,7,item);
-
        item = new QTableWidgetItem(person->Profession1());
        table->setItem(row,8,item);
 

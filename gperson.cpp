@@ -41,8 +41,10 @@ gPerson::gPerson(){
 // constructor used with .csv  file and Widget for adding person by hand
 gPerson::gPerson(QStringList  data){
     setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
-
+    float Xscale = 8.0;
+    float Yscale = 20.0;
     key = "no_key";
+    float topPosition = 2000.0;
     width = 250; // this isn't right, it should be dynamic and based on relevant data; but that's not available till after Paint();
     height = 70;
     myFont = new  QFont("Times", 12);
@@ -67,8 +69,20 @@ gPerson::gPerson(QStringList  data){
     x_fromspreadsheet = data[5].toFloat();
     y_fromspreadsheet = data[6].toFloat();
     xpos = x_fromspreadsheet;
-    ypos = y_fromspreadsheet;
-    key = data[7];
+    if (data[6].length() > 0){
+       ypos = y_fromspreadsheet;
+       qDebug() << 1 << lastName << data[6];
+    } else{
+       ypos = Yscale * (topPosition - birthYear);
+       qDebug() << "2" << lastName << ypos;
+    }
+
+    if (data[7].length() > 0){
+      key = data[7];
+    } else {
+        key = lastName;
+    }
+
     profession1 = data[6];
     //visible=true;
     selectedLink = NULL;

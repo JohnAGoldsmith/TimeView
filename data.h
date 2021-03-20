@@ -6,7 +6,6 @@
 #include <QHash>
 #include <QTableWidget>
 #include "gperson.h"
-#include "dataperson.h"
 #include "clink.h"
 #include "columnarscene.h"
 #include "group.h"
@@ -52,9 +51,9 @@ public:
     cLink* Key2Link(QString key) {return key2Link[key];}
     void save(QString filename) const;
 
-    //void addDataPerson(dPerson*);
+
     int TopPosition() {return topPosition;}
-    //dPerson* CreateDataPerson(QStringList line);
+
     gPerson* B_Legacy_CreateGraphicalPerson(QStringList line);
     void B_AddGPersonPtrsToLinks();
 
@@ -69,7 +68,7 @@ public:
     //void MoveInvisiblePersonsToLimbo();
     //void MoveLimboPersonsToInvisible();
 private:
-    QList<dPerson*> dataPersons;
+
     QList<gPerson*> graphicalPersons;
     QList<cLink*>   Links;
     QList<cGroup*>  Groups;

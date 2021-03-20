@@ -14,7 +14,6 @@ class QColor;
 
 class cLink;
 class gPerson;
-class dPerson;
 
 class cScene: public QGraphicsScene
 {

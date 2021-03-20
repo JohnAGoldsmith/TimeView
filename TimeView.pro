@@ -16,7 +16,6 @@ SOURCES += \
     cscene.cpp \
     cview.cpp \
     data.cpp \
-    dataperson.cpp \
     gperson.cpp \
     group.cpp \
     helpwidget.cpp \
@@ -32,7 +31,6 @@ HEADERS += \
     cscene.h \
     cview.h \
     data.h \
-    dataperson.h \
     gperson.h \
     group.h \
     helpwidget.h \

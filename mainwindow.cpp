@@ -15,7 +15,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "cscene.h"
-#include "dataperson.h"
 #include "gperson.h"
 #include "clink.h"
 #include "data.h"
