@@ -11,7 +11,7 @@ public:
     QRectF boundingRect() const override;
 
    void paint( QPainter * painter, const QStyleOptionGraphicsItem * option,
-                QWidget * widget);
+                QWidget * widget) override;
 
     QString Key() {return key;}
     float X() {return scene_x;}
@@ -19,8 +19,10 @@ public:
     void setY(float val){scene_y = val;}
     QString export2csv();
 
+protected:
 
-    void mousePressEvent(QGraphicsSceneMouseEvent * event);
+    //void mouseMoveEvent(QGraphicsSceneMouseEvent * event) override;
+    //void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
 
 private:
     QString key;

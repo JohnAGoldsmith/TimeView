@@ -66,7 +66,7 @@ QGraphicsItem * cScene::itemAt(const QPointF   pos, const QTransform & transform
 }
 
 void cScene::mousePressEvent(QGraphicsSceneMouseEvent * event){
-   // qDebug() << "In scene, mouse event";
+   //qDebug() << "In scene, mouse event";
    QGraphicsScene::mousePressEvent(event);
    update();
 }

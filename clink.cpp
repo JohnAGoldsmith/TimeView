@@ -206,7 +206,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     QPen pen;
     QPointF point1, point2;
 
-    if (true)
+    if (false)
         qDebug() << 108 << "just painting" << fromPerson->LastName() << toPerson->LastName();
     /*
     if (! fromPerson()->Visible()){

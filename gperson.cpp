@@ -338,6 +338,7 @@ void gPerson::mouseMoveEvent(QGraphicsSceneMouseEvent * event){ // this doesn't 
            link->update();
         }
     }
+    qDebug() << "person: mouse move detected";
     QGraphicsItem::mouseMoveEvent(event);
 }
 
