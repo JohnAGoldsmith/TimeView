@@ -36,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QVBoxLayout *layout = new QVBoxLayout;
     helpwidget = new cHelpWidget(12,2,this);
+    helpwidget->setAttribute(Qt::WA_DeleteOnClose);
     helpwidget->show();
 
     scene = new cScene();
@@ -57,6 +58,8 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(widget);
     setWindowTitle(tr("Genealogy"));
     setUnifiedTitleAndToolBarOnMac(true);
+
+    createActions();
 
     QString LocationOfData = QDir::homePath() + "/Dropbox/TimeView/data";
     QString fileName = QFileDialog::getOpenFileName(this,"Open document",LocationOfData, "*.csv *.json");
@@ -83,15 +86,29 @@ MainWindow::MainWindow(QWidget *parent)
 
 }
 void MainWindow::createActions(){
+/*
     QAction * saveAction = new QAction(tr("&Save"),this);
-    saveAction->setShortcut(QKeySequence::Save);
+    saveAction->setShortcut(Qt::CTRL + Qt::Key_S);
     QFileDialog *  filedialog = new QFileDialog();
     filedialog->setViewMode(QFileDialog::Detail);
-    //QString fileName = filedialog->getSaveFileName(this,"Save data",QDir::currentPath(), "*.csv *.json");
-    //getData()->save(fileName);
-    //connect(saveAction,&QAction::triggered,&Data,cData::save(fileName));
+    QString fileName = filedialog->getSaveFileName(this,"Save data",QDir::currentPath(), "*.csv *.json");
+    getData()->save(fileName);
+    connect(saveAction,&QAction::triggered,&Data,cData::save(fileName));
+
+    QAction * showPersonsTable = new QAction(tr("&Persons"),this);
+    showPersonsTable->setShortcut(Qt::CTRL + Qt::Key_D);
+    connect(showPersonsTable, &QAction::triggered, this,&MainWindow::openPersonsTable);
+*/
 }
 
+void MainWindow::openPersonsTable(){
+    if (! personTable){
+        personTable  = new QTableWidget;
+        getData()->populatePersonTable(personTable);
+        personTable->show();
+        myLineEdit->setText("Load persons table.");
+    }
+}
 void MainWindow::makeColumnarScene(){
     if (! colScene){
         colScene = new columnarScene();
@@ -140,6 +157,7 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
     }
 
   /*                Load table of persons for user              */
+    /*
     if (event->key() == Qt::Key_D && event->modifiers()==Qt::CTRL){
         if (! personTable){
             personTable  = new QTableWidget;
@@ -148,6 +166,7 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
             myLineEdit->setText("Load persons table.");
         }
     }
+    */
 
   /*           Load table of links for user                      */
   if (event->key() == Qt::Key_L&& event->modifiers()==Qt::CTRL){
@@ -182,6 +201,7 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
   }
 
   /*                 Save                       */
+
   if (event->key() == Qt::Key_S && event->modifiers()==Qt::CTRL){
       QFileDialog *  filedialog = new QFileDialog();
       filedialog->setViewMode(QFileDialog::Detail);

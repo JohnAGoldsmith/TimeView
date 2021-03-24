@@ -231,7 +231,7 @@ void gPerson::mousePressEvent(QGraphicsSceneMouseEvent * event){
 }
 
 void gPerson::keyPressEvent (QKeyEvent * event){
-    qDebug() << "Person mouse event" << event->text();
+    qDebug() << "Person key event" << event->text();
    if (event->key() == Qt::Key_L ){
       if (!selectedLink){
           if (myLinks.size()){

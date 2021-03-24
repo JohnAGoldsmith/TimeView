@@ -95,6 +95,7 @@ userRequestDialog::userRequestDialog(cData * data,  cScene * scene, QWidget *par
     groupheightSpin = new QSpinBox();
     groupheightSpin->setRange(100,2000);
     groupheightSpin->setSingleStep(100);
+    groupheightSpin->setValue(1000);
 
     hlayout->addWidget(groupheightSpin);
     vlayout1->addLayout(hlayout);
@@ -104,6 +105,7 @@ userRequestDialog::userRequestDialog(cData * data,  cScene * scene, QWidget *par
     groupwidthSpin = new QSpinBox();
     groupwidthSpin->setRange(100,2000);
     groupwidthSpin->setSingleStep(100);
+    groupwidthSpin->setValue(1000);
     hlayout->addWidget(groupwidthSpin);
     vlayout1->addLayout(hlayout);
 
@@ -133,13 +135,12 @@ void userRequestDialog::addNewGroup(){
     int height = groupheightSpin->value();
     int width = groupwidthSpin->value();
 
-
-
     QString name = groupNameLE->text();
     QString key = name;
     cGroup * group = new cGroup (key, name, x,y,height,width);
     if (! Data->validateNewGroup(group)){ //validate should include sending to collections
         delete group;
+        return;
         /* send message of failure.  */
     }
     group->setY ( Scene->ConvertYearToYcoor( group->Y() ) );

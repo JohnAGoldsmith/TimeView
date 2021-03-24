@@ -49,7 +49,7 @@ private:
     void makeColumnarScene();
     void keyPressEvent(QKeyEvent *);
     QSize sizeHint();
-
+    void openPersonsTable();
 
 
 };
