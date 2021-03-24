@@ -10,6 +10,7 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QSlider>
 
 
 #include "mainwindow.h"
@@ -48,14 +49,20 @@ MainWindow::MainWindow(QWidget *parent)
     widget->setLayout(layout);
     myLineEdit = new cLineEdit();
     layout->addWidget(myLineEdit);
+    QSlider * myHorizontalSlider = new QSlider(Qt::Horizontal, this);
+    myHorizontalSlider->setRange(-100,100);
+    myHorizontalSlider->setValue(0);
+    layout->addWidget(myHorizontalSlider);
 
     setCentralWidget(widget);
     setWindowTitle(tr("Genealogy"));
     setUnifiedTitleAndToolBarOnMac(true);
 
-    QString fileName = QFileDialog::getOpenFileName(this,"Open document",QDir::currentPath(), "*.csv *.json");
+    QString LocationOfData = QDir::homePath() + "/Dropbox/TimeView/data";
+    QString fileName = QFileDialog::getOpenFileName(this,"Open document",LocationOfData, "*.csv *.json");
 
     if (!fileName.isEmpty()){
+       setWindowTitle(fileName);
        if (fileName.endsWith(".json")){
            getData()->A_ReadJson(fileName);
            getData()->A_sendPersonsAndLinksToSceneJson(scene);
@@ -72,20 +79,7 @@ MainWindow::MainWindow(QWidget *parent)
        }
     }
 
-    /*
-    bool Json(false);
-    if (Json){
-        QString jsonfilename = "./timeview.json";
-        getData()->A_ReadJson(jsonfilename);
-        getData()->A_sendPersonsAndLinksToSceneJson(scene);
-    }else{
-        QString csvfilename = "./veryshort-legacy.csv";
-        getData()->A_ReadCSV(csvfilename);
-        getData()->A_analyzeLegacyCSVdata();
-        getData()->A_sendPersonsAndLinksToScene(scene);
-    }
-    */
-
+    connect(myHorizontalSlider, SIGNAL(valueChanged(int)), scene, SLOT(changeHorizontalScale(int)));
 
 }
 void MainWindow::createActions(){
@@ -167,7 +161,8 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
 
   /*         Open  file                                */
   if (event->key() == Qt::Key_O && event->modifiers()==Qt::CTRL){
-       QString fileName = QFileDialog::getOpenFileName(this,"Open document",QDir::currentPath(), "*.csv *.json");
+       QString LocationOfData = QDir::homePath() + "/Dropbox/TimeView/data";
+       QString fileName = QFileDialog::getOpenFileName(this,"Open document",LocationOfData, "*.csv *.json");
        if (!fileName.isEmpty()){
           if (fileName.endsWith(".json")){
               getData()->A_ReadJson(fileName);
@@ -185,8 +180,8 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
           }
        }
   }
-  /*                 Save                       */
 
+  /*                 Save                       */
   if (event->key() == Qt::Key_S && event->modifiers()==Qt::CTRL){
       QFileDialog *  filedialog = new QFileDialog();
       filedialog->setViewMode(QFileDialog::Detail);
@@ -194,6 +189,7 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
       getData()->save(fileName);
       myLineEdit->setText("Save data to Json and csv files.");
   }
+
   /*        exit program          */
   if (event->key() == Qt::Key_X && event->modifiers()==Qt::CTRL){
       if (helpwidget)

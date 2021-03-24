@@ -8,6 +8,7 @@
 #include <QHash>
 #include <QPixmap>
 #include <QTableWidget>
+#include "math.h"
 #include "cscene.h"
 #include "gperson.h"
 #include "clink.h"
@@ -23,22 +24,22 @@ cScene::cScene(QObject* parent): QGraphicsScene(parent)
     topPosition = 2000;
     pixmaps = new QHash<QString, QPixmap*>();
     QPixmap * pixmap;
-    pixmap = new QPixmap("./blue.jpg");
+    pixmap = new QPixmap("./colors/blue.jpg");
     pixmaps->insert("blue", pixmap);
-    pixmap = new QPixmap("./yellow.jpg");
+    pixmap = new QPixmap("./colors/yellow.jpg");
     pixmaps->insert("yellow", pixmap);
 
-    pixmap = new QPixmap("./lightbrown.jpg");
+    pixmap = new QPixmap("./colors/lightbrown.jpg");
     pixmaps->insert("lightbrown", pixmap);
-    pixmap = new QPixmap("./apricot.webp");
+    pixmap = new QPixmap("./colors/apricot.webp");
     pixmaps->insert("apricot", pixmap);
-    pixmap = new QPixmap("./darkredwood.webp");
+    pixmap = new QPixmap("./colors/darkredwood.webp");
     pixmaps->insert("darkredwood", pixmap);
-    pixmap = new QPixmap("./blueslate.jpg");
+    pixmap = new QPixmap("./colors/blueslate.jpg");
     pixmaps->insert("blueslate", pixmap);
-    pixmap = new QPixmap("./dark_light_wood.webp");
+    pixmap = new QPixmap("./colors/dark_light_wood.webp");
     pixmaps->insert("darklightwood", pixmap);
-    pixmap = new QPixmap("./red.png");
+    pixmap = new QPixmap("./colors/red.png");
     pixmaps->insert("red", pixmap);
 
     QObject::connect (this, SIGNAL(sendToLineEdit(QString)), parent, SLOT(cLineEdit.setText(QString)));
@@ -49,6 +50,11 @@ cScene::~cScene(){
            delete pixmap;
     }
     delete pixmaps;
+}
+
+void cScene::changeHorizontalScale(int logFactor){
+    float factor = exp (logFactor/100.0);
+    qDebug() << " factor " << factor;
 }
 
 float cScene::ConvertYearToYcoor(float year){
@@ -71,13 +77,15 @@ void cScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event){
 }
 void cScene::mouseReleaseEvent(QGraphicsSceneMouseEvent * event){
     QGraphicsScene::mouseReleaseEvent(event);
+    update();
 }
 void cScene::focusInEvent(QFocusEvent * event){
 
 }
+/*
 void cScene::AddLink(cLink * link){
     addItem(link);
     //link->setPos(link->GPersonFrom()->scenePos());
     link->setPos(link->GPersonFrom()->pos());
 }
-
+*/

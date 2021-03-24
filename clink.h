@@ -11,16 +11,16 @@
 class cPath;
 class gPerson;
 class cScene;
-
+class cData;
 // There should be an ENUM for LinkPosition, but enum in Qt is complicated.
 
 class cLink: public QGraphicsItem
 {
 
     public:
-        cLink();
-        cLink(QStringList & );
-        cLink(bool, QStringList &); // used for legacy spreadsheets
+        cLink(cData*);
+        cLink(QStringList &, cData*  );
+        cLink(bool, QStringList &, cData* ); // used for legacy spreadsheets
         ~cLink();
         QRectF boundingRect() const;
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -62,11 +62,12 @@ class cLink: public QGraphicsItem
         void lengthenProportion1() {proportion1 *= 1.10;};
         float GetProportion1() {return proportion1;}
     private:
+        cData* data;
         QString fromPersonKey;
         QString toPersonKey;
         QString natureOfLink;
-        gPerson* gPersonFrom;
-        gPerson* gPersonTo;
+        gPerson* gPersonFrom; // remove
+        gPerson* gPersonTo; //remove
         QString PositionOnFromPerson;
         QString PositionOnToPerson;
         float bottomOffset;

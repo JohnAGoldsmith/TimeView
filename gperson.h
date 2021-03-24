@@ -6,6 +6,7 @@
 #include <QList>
 #include <QFocusEvent>
 #include <QEvent>
+#include <QStringList>
 //#include "data.h"
 class cScene;
 class cLink;
@@ -22,7 +23,7 @@ public:
     QRectF boundingRect() const override;
 
     void paint( QPainter * painter, const QStyleOptionGraphicsItem * option,
-                QWidget * widget);
+                QWidget * widget)override;
     bool Pressed;
 
     cScene * Scene() {return scene;}  /* This really shouldn't be necessary; it should inherit this from QGraphicsItem */
@@ -45,6 +46,7 @@ public:
     float GetTextHeight(QPainter* ) const;
     float GetTextWidth (QPainter*, QString) const;
 
+    void AppendLinkAndResortEdges (cLink * link); // not used with data from Json file, which remembers.
     void AppendLink (cLink * link);
     void AppendTopLink (cLink*);
     void AppendBottomLink(cLink*);
@@ -57,7 +59,7 @@ public:
     cLink* SelectedLink() {return selectedLink;}
 
     void UnselectAllLinks();
-    void SortLinks();
+    void SortLinksOnEachEdge();
     void ShiftLink();
 
     QString Key(){return key;}
@@ -108,9 +110,16 @@ private:
     QString profession1;
     QString profession2;
     QRectF personBoundingRect;
-    QList<cLink*> myLinks;
-    QList<cLink*> topLinks;
-    QList<cLink*> bottomLinks;
+    QList<cLink*> myLinks; // I will remove this and replace it by myKeys2Links, a key2ptr hash;
+    QHash<QString, cLink*> myKeys2Links;
+    QList<cLink*> topLinks; //remove
+    QList<cLink*> bottomLinks;//remove
+    QList<cLink*> leftLinks;//remove
+    QList<cLink*> rightLinks;//remove
+    QStringList topLinkKeys;
+    QStringList bottomLinkKeys;
+    QStringList leftLinkKeys;
+    QStringList rightLinkKeys;
     bool grayed;
     //bool visible;
     //bool limbo;

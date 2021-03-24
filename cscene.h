@@ -34,10 +34,11 @@ public:
     int ScaleFactor() {return scaleFactor;}
     int TopPosition() {return topPosition;}
     QGraphicsItem *  itemAt(const QPointF, const QTransform &);
-    void AddLink(cLink * );
+    //void AddLink(cLink * );
     void AddGPerson (gPerson *);
     //void AddGroup( cGroup*);
     QHash<QString, QPixmap*> * Pixmaps() {return pixmaps;}
+    void changeHorizontalScale(int);
 
     float ConvertYearToYcoor(float year); // this is used, but it should be eliminated
 protected:

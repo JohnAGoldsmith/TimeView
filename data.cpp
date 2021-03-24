@@ -47,7 +47,7 @@ cLink* cData::CheckAndCreateNewLink(QString key){
     if (key2Link.contains(key)){
         return NULL;
     }
-    cLink * link = new cLink();
+    cLink * link = new cLink(this);
     key2Link[key] = link;
     Links.append(link);
     return link;
@@ -92,7 +92,7 @@ void cData::A_analyzeLegacyCSVdata(){
             person = B_Legacy_CreateGraphicalPerson(line);
           } else if (line[0] == "L"){
             bool dummy;
-            link = new cLink(dummy, line);
+            link = new cLink(dummy, line, this);
             Links.append(link);
           } else if (line[0] == "G"){              
             group = new cGroup(line);
@@ -127,7 +127,7 @@ void cData::A_analyzeCSVdata(){
                     /* send message of failure.  */
                 }
             } else if (line[0] == "L"){
-                link = new cLink(line);
+                link = new cLink(line, this);
                 if (! validateNewLink(link)){ // validate should include sending to collections
                     delete link;
                     /* send message of failure. */
@@ -185,7 +185,7 @@ void cData::B_AddGPersonPtrsToLinks(){
 
 
 void cData::A_sendPersonsAndLinksToScene(cScene* scene){
-    gPerson * person1, * person2;
+    gPerson * fromPerson, * toPerson;
     foreach (cGroup * group, Groups){
        group->setY ( scene->ConvertYearToYcoor( group->Y() ) );
        scene->addItem(group);
@@ -198,12 +198,19 @@ void cData::A_sendPersonsAndLinksToScene(cScene* scene){
         person->setPos( person->GetMemoryOfScreenPosition());
     }
     foreach (cLink * link, Links){
-        person1 = link->GPersonFrom();
-        person2 = link->GPersonTo();
-        if ( ! person1 || ! person2 ){
+        if (! Key2PersonHashContains(link->getFromKey())){
+            qDebug() << "From Key has no person " << link->getFromKey();
             continue;
         }
-        scene->AddLink(link);
+        if (! Key2PersonHashContains(link->getToKey())){
+            qDebug() << "To Key has no person " << link->getToKey();
+            continue;
+        }
+        fromPerson = Key2Person(link->getFromKey());
+        toPerson = Key2Person(link->getToKey());
+        scene->addItem(link);
+        qDebug() << "data 210"<< link->getFromKey() << link->getToKey();
+        link->setPos(fromPerson->pos());
     }
 
 }
@@ -223,13 +230,22 @@ void cData::A_sendPersonsAndLinksToSceneJson(cScene* scene){
         gperson->setPos( gperson->GetMemoryOfScreenPosition() );
     }
     foreach (cLink * link, Links){
-        gPerson1 = link->GPersonFrom();
-        gPerson2 = link->GPersonTo();
-        if ( ! gPerson1 || ! gPerson2 ){
-            qDebug() << "Cannot send link to Scene 124 "<<link->display() << "Missing gperson." ;
+        //gPerson1 = link->GPersonFrom();
+        //gPerson2 = link->GPersonTo();
+        gPerson * fromPerson , * toPerson;
+        fromPerson=Key2Person(link->getFromKey());
+        if ( ! fromPerson   ){
+            qDebug() << " DATA: Cannot send link to Scene   "<<link->getFromKey() << "missing " ;
             continue;
         }
-        scene->AddLink(link);
+        toPerson = Key2Person(link->getToKey());
+        if ( ! toPerson ){
+            qDebug() << "Cannot send link to Scene 124 "<<link->getToKey() << "Missing To gperson." ;
+            continue;
+        }
+        //scene->AddLink(link);
+        scene->addItem(link);
+        link->setPos(fromPerson->pos());
     }
 }
 
@@ -270,11 +286,9 @@ bool cData::validateNewGroup(cGroup * group){
 void cData::write(QJsonObject &json) const{
     QJsonArray linkArray;
     foreach (const cLink * link, Links){
-       if (link->GPersonTo()){
          QJsonObject linkObject;
          link->write(linkObject);
          linkArray.append(linkObject);
-       }
     }
     json["Links"]=linkArray;
 
@@ -367,10 +381,22 @@ void cData::A_ReadJson(QString filename) {
            cLink * link = CheckAndCreateNewLink(linkObject["Key"].toString());
            if (link){
                link->read(linkObject);
-               gPerson* gpersonFrom = key2Person[link->getFromKey()];
-               gPerson* gpersonTo   = key2Person[link->getToKey()];
-               link->attachPersons(gpersonFrom, gpersonTo);
-               Links.append(link);
+               gPerson* gpersonFrom = key2Person[link->getFromKey()]; //remove
+               gPerson* gpersonTo   = key2Person[link->getToKey()]; //remove
+               // Add ptr to Link to FromPerson and to ToPerson
+               // Add ptr to FromPerson and to ToPerson inside Link;
+
+               // following line should be commented out:
+               //link->attachPersons(gpersonFrom, gpersonTo);
+               qDebug() << "data 373"<< gpersonFrom->LastName() << gpersonTo->LastName();
+               gpersonFrom->AppendLink(link); //remove
+               gpersonTo->AppendLink(link);//remove
+
+               if (Links.contains(link)){
+                   qDebug() << "Data: second attempt to enter link is ignored" << link->getKey();
+               } else{
+                   Links.append(link);
+               }
                if (! Key2PersonHashContains(link->getFromKey())){
                   qDebug() << "Link has From keyword that does not exist.";
                   continue;
@@ -509,6 +535,20 @@ void cData::populateLinkTable(QTableWidget * table){
    table->setRowCount(Links.size());
    table->setColumnCount(20);
    int row = 0;
+   QTableWidgetItem *headerItem = new QTableWidgetItem("From key");
+   table->setHorizontalHeaderItem(0, headerItem);
+   headerItem = new QTableWidgetItem("To key");
+   table->setHorizontalHeaderItem(1, headerItem);
+   headerItem = new QTableWidgetItem("Nature of link");
+   table->setHorizontalHeaderItem(2, headerItem);
+   headerItem = new QTableWidgetItem("From Pos");
+   table->setHorizontalHeaderItem(3, headerItem);
+   headerItem = new QTableWidgetItem("To Pos");
+   table->setHorizontalHeaderItem(4, headerItem);
+   headerItem = new QTableWidgetItem("Top offset");
+   table->setHorizontalHeaderItem(5, headerItem);
+   headerItem = new QTableWidgetItem("Bottom offset");
+   table->setHorizontalHeaderItem(6, headerItem);
    foreach (cLink * link, Links){
        QTableWidgetItem *item = new QTableWidgetItem(link->getFromKey());
        table->setItem(row,0,item);
@@ -520,9 +560,9 @@ void cData::populateLinkTable(QTableWidget * table){
        table->setItem(row,3,item);
        item = new QTableWidgetItem(link->GetPositionOnToPerson());
        table->setItem(row,4,item);
-       item = new QTableWidgetItem(link->TopOffset());
+       item = new QTableWidgetItem(QString::number(int(link->TopOffset())) );
        table->setItem(row,5,item);
-       item = new QTableWidgetItem(link->BottomOffset());
+       item = new QTableWidgetItem(QString::number(int(link->BottomOffset())));
        table->setItem(row,6,item);
        row++;
    }

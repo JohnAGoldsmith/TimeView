@@ -7,9 +7,12 @@
 #include "clink.h"
 #include "gperson.h"
 #include "cscene.h"
+#include "data.h"
+
+
 
 /* Used when reading json file */
-cLink::cLink()
+cLink::cLink(cData* myData)
 {
     fromPersonKey = "";
     toPersonKey="";
@@ -23,65 +26,46 @@ cLink::cLink()
     proportion1 = 0.6;
     startPoint = QPoint(0.0, 0.0);
     endPoint = QPoint(0.0, 0.0);
+    data = myData;
     update();
 }
 
 /*  Used when reading current csv file */
-cLink::cLink(QStringList & data){
-    gPersonFrom = NULL;
-    gPersonTo = NULL;
+cLink::cLink(QStringList & temp, cData * myData){
+    qDebug() << temp.length();
+    fromPersonKey = temp[1];
+    toPersonKey = temp[2];
+    PositionOnFromPerson = temp[3];
+    PositionOnToPerson = temp[4];
+    bottomOffset = temp[5].toFloat();
+    topOffset = temp[6].toFloat();
+    proportion1 = temp[7].toFloat();
+    startPoint.setX( temp[8].toFloat() );
+    startPoint.setY( temp[9].toFloat() );
+    endPoint.setX( temp[10].toFloat() );
+    endPoint.setY( temp[11].toFloat() );
+    qDebug() << "data length in link"<< temp.length();
+    if (temp.length() > 12){
+        natureOfLink = temp[12];
+    } else{
+        natureOfLink = "";
+    }
+    data = myData;
+
     setAcceptedMouseButtons(0);
-    fromPersonKey = data[1];
-    toPersonKey = data[2];
-    bottomOffset = 0.0;
-    topOffset = 0.0;
     visible = true;
     chosen = false;
-    proportion1 = 0.6;
-    startPoint =QPoint(0.0, 0.0);
-    endPoint = QPoint(0.0, 0.0);
-
-    if (data.size() >= 11 && data[10].length() > 0){
-        natureOfLink = data[10];
-    }
-    if (data[3] == "Top"){ PositionOnFromPerson = "Top";}
-    else if (data[3] == "Right"){ PositionOnFromPerson = "Right";}
-    else if (data[3] == "Bottom"){ PositionOnFromPerson = "Bottom";}
-    else if (data[3] == "Left"){ PositionOnFromPerson = "Left";}
-    else if (data[3] == "0"){ PositionOnFromPerson = "Right";}
-    else if (data[3] == "90"){ PositionOnFromPerson="Top";}
-    else if (data[3] == "180"){PositionOnFromPerson = "Left";}
-    else if (data[3] == "-180"){PositionOnFromPerson = "Left";}
-    else if (data[3] == "270") {PositionOnFromPerson = "Bottom";}
-    else if (data[3] == "-90") {PositionOnFromPerson = "Bottom";}   
-    else {PositionOnFromPerson = "Not defined";}
-
-    if (data[4] == "Top"){ PositionOnToPerson = "Top";}
-    else if (data[4] == "Right"){ PositionOnToPerson = "Right";}
-    else if (data[4] == "Bottom"){ PositionOnToPerson = "Bottom";}
-    else if (data[4] == "Left"){ PositionOnToPerson = "Left";}
-    else if (data[4] == "0"){ PositionOnToPerson =  "Right";}
-    else if (data[4] == "90"){ PositionOnToPerson="Top";}
-    else if (data[4] == "180"){PositionOnToPerson = "Left";}
-    else if (data[4] == "-180"){PositionOnToPerson = "Left";}
-    else if (data[4] == "270") {PositionOnToPerson = "Bottom";}
-    else if (data[4] == "-90") {PositionOnToPerson = "Bottom";}
-    else {PositionOnToPerson = "Not defined";}
-
-    if (data.size() >= 13 && data[12].length() > 0){
-        natureOfLink = data[12];
-    }
 
     update();
 }
 
 /*  Used when reading legacy csv file */
-cLink::cLink(bool dummy, QStringList & data){
+cLink::cLink(bool dummy, QStringList & dataList, cData* myData){
     gPersonFrom = NULL;
     gPersonTo = NULL;
     setAcceptedMouseButtons(0);
-    fromPersonKey = data[1];
-    toPersonKey = data[2];
+    fromPersonKey = dataList[1];
+    toPersonKey = dataList[2];
     bottomOffset = 0.0;
     topOffset = 0.0;
     visible = true;
@@ -90,31 +74,33 @@ cLink::cLink(bool dummy, QStringList & data){
     startPoint =QPoint(0.0, 0.0);
     endPoint = QPoint(0.0, 0.0);
 
-    if (data.size() >= 11 && data[10].length() > 0){
-        natureOfLink = data[10];
+    data = myData;
+
+    if (dataList.size() >= 11 && dataList[10].length() > 0){
+        natureOfLink = dataList[10];
     }
-    if (data[3] == "Top"){ PositionOnFromPerson = "Top";}
-    else if (data[3] == "Right"){ PositionOnFromPerson = "Right";}
-    else if (data[3] == "Bottom"){ PositionOnFromPerson = "Bottom";}
-    else if (data[3] == "Left"){ PositionOnFromPerson = "Left";}
-    else if (data[3] == "0"){ PositionOnFromPerson = "Right";}
-    else if (data[3] == "90"){ PositionOnFromPerson="Top";}
-    else if (data[3] == "180"){PositionOnFromPerson = "Left";}
-    else if (data[3] == "-180"){PositionOnFromPerson = "Left";}
-    else if (data[3] == "270") {PositionOnFromPerson = "Bottom";}
-    else if (data[3] == "-90") {PositionOnFromPerson = "Bottom";}
+    if (dataList[3] == "Top"){ PositionOnFromPerson = "Top";}
+    else if (dataList[3] == "Right"){ PositionOnFromPerson = "Right";}
+    else if (dataList[3] == "Bottom"){ PositionOnFromPerson = "Bottom";}
+    else if (dataList[3] == "Left"){ PositionOnFromPerson = "Left";}
+    else if (dataList[3] == "0"){ PositionOnFromPerson = "Right";}
+    else if (dataList[3] == "90"){ PositionOnFromPerson="Top";}
+    else if (dataList[3] == "180"){PositionOnFromPerson = "Left";}
+    else if (dataList[3] == "-180"){PositionOnFromPerson = "Left";}
+    else if (dataList[3] == "270") {PositionOnFromPerson = "Bottom";}
+    else if (dataList[3] == "-90") {PositionOnFromPerson = "Bottom";}
     else {PositionOnFromPerson = "Not defined";}
 
-    if (data[6] == "Top"){ PositionOnToPerson = "Top";}
-    else if (data[6] == "Right"){ PositionOnToPerson = "Right";}
-    else if (data[6] == "Bottom"){ PositionOnToPerson = "Bottom";}
-    else if (data[6] == "Left"){ PositionOnToPerson = "Left";}
-    else if (data[6] == "0"){ PositionOnToPerson =  "Right";}
-    else if (data[6] == "90"){ PositionOnToPerson="Top";}
-    else if (data[6] == "180"){PositionOnToPerson = "Left";}
-    else if (data[6] == "-180"){PositionOnToPerson = "Left";}
-    else if (data[6] == "270") {PositionOnToPerson = "Bottom";}
-    else if (data[6] == "-90") {PositionOnToPerson = "Bottom";}
+    if (dataList[6] == "Top"){ PositionOnToPerson = "Top";}
+    else if (dataList[6] == "Right"){ PositionOnToPerson = "Right";}
+    else if (dataList[6] == "Bottom"){ PositionOnToPerson = "Bottom";}
+    else if (dataList[6] == "Left"){ PositionOnToPerson = "Left";}
+    else if (dataList[6] == "0"){ PositionOnToPerson =  "Right";}
+    else if (dataList[6] == "90"){ PositionOnToPerson="Top";}
+    else if (dataList[6] == "180"){PositionOnToPerson = "Left";}
+    else if (dataList[6] == "-180"){PositionOnToPerson = "Left";}
+    else if (dataList[6] == "270") {PositionOnToPerson = "Bottom";}
+    else if (dataList[6] == "-90") {PositionOnToPerson = "Bottom";}
     else {PositionOnToPerson = "Not defined";}
     update();
 }
@@ -188,8 +174,8 @@ QString cLink::display()const {
 void cLink::attachPersons(gPerson * person1, gPerson * person2){
  gPersonFrom = person1;
  gPersonTo = person2;
- person1->AppendLink(this);
- person2->AppendLink(this);
+ person1->AppendLinkAndResortEdges(this);
+ person2->AppendLinkAndResortEdges(this);
 }
 
 QRectF cLink::boundingRect() const {
@@ -199,9 +185,12 @@ QRectF cLink::boundingRect() const {
 
 void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
 
-    if (! GPersonFrom())
+
+    gPerson * fromPerson = data->Key2Person(fromPersonKey);
+    gPerson * toPerson = data->Key2Person(toPersonKey);
+    if (! fromPerson)
        qDebug() << "link painting but no link from.";
-    if (! GPersonTo())
+    if (! toPerson)
        qDebug() << "link painting but no link to.";
 
 
@@ -211,16 +200,16 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     float willbewidth = 120;
     float willbeheight = 80;
 
-    float y_distance1 = GPersonFrom()->scenePos().y() - GPersonTo()->scenePos().y();
-    float y_distance2 = y_distance1 - GPersonTo()->Height();
-    float x_distance = GPersonFrom()->scenePos().x() - GPersonTo()->scenePos().x() + (GPersonFromCenterX - GPersonToCenterX);
+    float y_distance1 = fromPerson->scenePos().y() - toPerson->scenePos().y();
+    float y_distance2 = y_distance1 - toPerson->Height();
+    float x_distance = fromPerson->scenePos().x() - toPerson->scenePos().x() + (GPersonFromCenterX - GPersonToCenterX);
     QPen pen;
     QPointF point1, point2;
 
-    if (false)
-        qDebug() << 108 << "just painting" << fromPersonKey << toPersonKey << chosen;
+    if (true)
+        qDebug() << 108 << "just painting" << fromPerson->LastName() << toPerson->LastName();
     /*
-    if (! GPersonFrom()->Visible()){
+    if (! fromPerson()->Visible()){
         pen.setStyle(Qt::DotLine);
         painter->setPen(pen);
         qDebug() << "clink 111" << "invisible link...";
@@ -262,7 +251,7 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
         startPoint = QPointF(topOffset + GPersonFromCenterX,0);
     }
     else if (PositionOnFromPerson == "Right") {
-        startPoint = QPoint(GPersonFrom()->Width(), GPersonFrom()->Height() * 0.5 );
+        startPoint = QPoint(fromPerson->Width(), fromPerson->Height() * 0.5 );
     }
     else if (PositionOnFromPerson == "Left") {
         startPoint = QPoint(0, willbeheight * 0.5 );
@@ -276,10 +265,10 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
        endPoint = QPointF(-1.0 * x_distance - bottomOffset + GPersonToCenterX, -1.0 * y_distance2);
     }
     else if (PositionOnToPerson == "Right") {
-        endPoint = QPoint(-1.0 * x_distance + GPersonTo()->Width() ,  -1.0 * y_distance2  - 0.5 *  GPersonTo()->Height()  );
+        endPoint = QPoint(-1.0 * x_distance + toPerson->Width() ,  -1.0 * y_distance2  - 0.5 *  toPerson->Height()  );
     }
     else if (PositionOnToPerson == "Left") {
-         endPoint = QPoint(-1.0 * x_distance ,  -1.0 * y_distance2 - 0.5 * GPersonTo()->Height() );
+         endPoint = QPoint(-1.0 * x_distance ,  -1.0 * y_distance2 - 0.5 * toPerson->Height() );
     }
     else {
         endPoint = QPointF(-1.0 * x_distance , -1.0 * y_distance2);

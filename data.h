@@ -23,7 +23,7 @@ public:
 
     void read(const QJsonObject & json) ;
     void write(QJsonObject &json) const;
-    void write2csv();
+    //void write2csv();
 
     QList<cLink*>*    getLinks(){return &Links;};
     cLink* getLink(QString);

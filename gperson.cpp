@@ -41,7 +41,7 @@ gPerson::gPerson(){
 // constructor used with .csv  file and Widget for adding person by hand
 gPerson::gPerson(QStringList  data){
     setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
-    float Xscale = 8.0;
+    float Xscale = 2.0;
     float Yscale = 20.0;
     key = "no_key";
     float topPosition = 2000.0;
@@ -56,20 +56,19 @@ gPerson::gPerson(QStringList  data){
 
     firstName = data[1];
     lastName = data[2];
+
     birthYear = data[3].toInt();
-    if (birthYear == 0){
-        qDebug() << lastName << "zero birth year a";
-    }
     if (data[4].length() > 0){
         deathYear = data[4].toInt();
     } else {
         deathYear = 0;
         qDebug() << lastName << "Zero death year" ;
     }
+
     x_fromspreadsheet = data[5].toFloat();
     y_fromspreadsheet = data[6].toFloat();
-    xpos = x_fromspreadsheet;
-    if (data[6].length() > 0){
+    xpos = Xscale *  x_fromspreadsheet;
+    if (y_fromspreadsheet > 0){
        ypos = y_fromspreadsheet;
        qDebug() << 1 << lastName << data[6];
     } else{
@@ -77,14 +76,18 @@ gPerson::gPerson(QStringList  data){
        qDebug() << "2" << lastName << ypos;
     }
 
+
     if (data[7].length() > 0){
       key = data[7];
     } else {
         key = lastName;
     }
 
-    profession1 = data[6];
-    //visible=true;
+    height = data[8].toFloat();
+    width = data[9].toFloat();
+
+    profession1 = data[10];
+
     selectedLink = NULL;
     grayed = false;
 }
@@ -158,21 +161,50 @@ QString gPerson::export2CSV(){
 }
 
 
+void gPerson::AppendLinkAndResortEdges(cLink *link) {
+    AppendLink(link);
+    myLinks.append(link);
+    SortLinksOnEachEdge();
+}
 void gPerson::AppendLink(cLink *link) {
     myLinks.append(link);
     if (link->GPersonFrom() == this){
         if (link->GetPositionOnFromPerson() == "Top"){
+            topLinkKeys.append(link->getKey());
             topLinks.append(link);
         }
-    }
-    else if (link->GPersonTo()==this){
-        if (link->GetPositionOnToPerson() == "Bottom"){
+        else if (link->GetPositionOnFromPerson() == "Bottom"){
+            bottomLinkKeys.append(link->getKey());
             bottomLinks.append(link);
         }
+        else if (link->GetPositionOnFromPerson() == "Left"){
+            leftLinkKeys.append(link->getKey());
+            leftLinks.append(link);
+        }
+        else if (link->GetPositionOnFromPerson() == "Right"){
+            rightLinkKeys.append(link->getKey());
+            rightLinks.append(link);
+        }
     }
-    SortLinks();
+    if (link->GPersonTo()==this){
+        if (link->GetPositionOnToPerson() == "Top"){
+            topLinks.append(link);
+            topLinkKeys.append(link->getKey());
+        }
+        else if (link->GetPositionOnToPerson() == "Bottom"){
+            bottomLinks.append(link);
+            bottomLinkKeys.append(link->getKey());
+        }
+        else if (link->GetPositionOnToPerson() == "Left"){
+            leftLinks.append(link);
+            leftLinkKeys.append(link->getKey());
+        }
+        else if (link->GetPositionOnToPerson() == "Right"){
+            rightLinks.append(link);
+            rightLinkKeys.append(link->getKey());
+        }
+    }
 }
-
 void gPerson::AppendTopLink(cLink * link){
     topLinks.append(link);
 }
@@ -199,6 +231,7 @@ void gPerson::mousePressEvent(QGraphicsSceneMouseEvent * event){
 }
 
 void gPerson::keyPressEvent (QKeyEvent * event){
+    qDebug() << "Person mouse event" << event->text();
    if (event->key() == Qt::Key_L ){
       if (!selectedLink){
           if (myLinks.size()){
@@ -234,7 +267,7 @@ void gPerson::keyPressEvent (QKeyEvent * event){
                   qDebug() << 173 << index;
                   topLinks.swapItemsAt(index,index+1);
                   qDebug() << 175;
-                  SortLinks();
+                  SortLinksOnEachEdge();
                   Scene()->update();
               }
           }
@@ -249,7 +282,7 @@ void gPerson::keyPressEvent (QKeyEvent * event){
                   qDebug() << 188 << index;
                   topLinks.swapItemsAt(index,index-1);
                   qDebug() << 190;
-                  SortLinks();
+                  SortLinksOnEachEdge();
                   Scene()->update();
               }
           }
@@ -299,7 +332,8 @@ void gPerson::keyPressEvent (QKeyEvent * event){
 }
 void gPerson::mouseMoveEvent(QGraphicsSceneMouseEvent * event){ // this doesn't get called with json, but it does with csv!!
     foreach (cLink* link, * GetLinks()){
-        if (link->GPersonFrom() == this){
+        //if (link->GPersonFrom() == this){
+        if (link->getFromKey() == Key()){
            link->setPos(scenePos());
            link->update();
         }
@@ -337,9 +371,6 @@ void gPerson::mouseDoubleClickEvent (QGraphicsSceneMouseEvent * event) {
     QGraphicsItem::mouseDoubleClickEvent(event);
 }
 
-
-
-
 float gPerson::GetTextWidth(QPainter * painter, QString string) const{
     QFontMetrics fm=painter->fontMetrics();
     return fm.horizontalAdvance(string);
@@ -366,13 +397,11 @@ float gPerson::GetDatesWidth(QPainter * painter) const {
 }
 void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
 
-    double lineHeight = 15.0;
+    double lineHeight = 25.0;
     QColor mycolor;
     painter->setFont(*myFont);
 
     cScene * thisScene = dynamic_cast<cScene*>(scene);
-
-    QGraphicsScene * j = scene;
     QHash<QString,QPixmap*> * pixmaps = thisScene->Pixmaps();
     QPixmap * pixmap(NULL);
 
@@ -383,9 +412,6 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     pen.setWidth(9);
     painter->setPen(pen);
 
-    //if (! visible){
-    //    return;
-    //}
     QString Profession =  Profession1();
     if (Profession ==  "linguist"){
         mycolor = Orange;
@@ -456,7 +482,6 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     gradient.setColorAt(0.5,Qt::white);
     gradient.setColorAt(1,mycolor);
 
-
     QBrush brush;
 
     painter->fillRect(personrect,mycolor);
@@ -473,9 +498,7 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
        painter->drawPixmap(personrect,*pixmap,QRectF(0,0,50,50));
     }
 
-
-
-    QRectF rect(0,0,namewidth,20);
+    QRectF rect(0,0,namewidth,30);
     QRectF boundingRect1;
     painter->drawText(rect ,Qt::AlignHCenter,  name ,  & boundingRect1);
 
@@ -484,10 +507,6 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     painter->drawText(rect, Qt::AlignHCenter,years, &boundingRect2);
     personBoundingRect.setCoords(personrect.left() - 1, personrect.top() -1, personrect.right()+1, personrect.bottom() + 1);
     height = personBoundingRect.height();
-
-
-
-
 }
 
 void gPerson::ShiftLink(){
@@ -507,7 +526,7 @@ void gPerson::ShiftLink(){
     }
 
 }
-void gPerson::SortLinks(){
+void gPerson::SortLinksOnEachEdge(){
     float boxwidth = 100.0; // should be GetNameWidth();
     float delta = (boxwidth * 0.5) / GetTopLinks()->size();
 
@@ -529,7 +548,7 @@ void gPerson::SortLinks(){
         int i = 0;
         float startingPoint;
         startingPoint =  -1.0 * ( (LS/2.0  ) * delta ) ;
-        qDebug() << "";
+        //qDebug() << "";
         foreach (cLink* thislink, * thisList){
             thislink->BottomOffset(startingPoint + i * delta);
             i++;
@@ -552,13 +571,6 @@ void gPerson::write(QJsonObject & json) const {
     json["visible"] = isVisible();
     json["grayed"] = grayed;
 
-    QJsonArray linkArray;
-    foreach ( cLink * link, myLinks){
-        QJsonObject linkObject;
-        link->write(linkObject);
-        linkArray.append(linkObject);
-    }
-    json["Links"] = linkArray;
 
     QJsonArray linkkeyArray;
     foreach ( cLink * link, myLinks){
@@ -569,7 +581,7 @@ void gPerson::write(QJsonObject & json) const {
 
     QJsonArray JsontopLinks;
     for  (int i =0; i < topLinks.size();  i++){
-        QString key = topLinks[i]->getKey();
+        QString key = topLinkKeys[i];
         QJsonValue json(key);
         JsontopLinks.append(json);
     }
@@ -577,21 +589,27 @@ void gPerson::write(QJsonObject & json) const {
 
     QJsonArray JsonbottomLinks;
     for  (int i =0; i < bottomLinks.size();  i++){
-        QString key = bottomLinks[i]->getKey();
+        QString key = bottomLinkKeys[i];
         QJsonValue json(key);
         JsonbottomLinks.append(json);
     }
     json["bottomLinks"] = JsonbottomLinks;
 
+    QJsonArray JsonleftLinks;
+    for  (int i =0; i < leftLinks.size();  i++){
+        QString key = leftLinkKeys[i];
+        QJsonValue json(key);
+        JsonbottomLinks.append(json);
+    }
+    json["leftLinks"] = JsonleftLinks;
 
-
-
-
-
-
-
-
-
+    QJsonArray JsonrightLinks;
+    for  (int i =0; i < rightLinks.size();  i++){
+        QString key = rightLinkKeys[i];
+        QJsonValue json(key);
+        JsonrightLinks.append(json);
+    }
+    json["rightLinks"] = JsonrightLinks;
 
 }
 void gPerson::read(const QJsonObject &json){
@@ -607,17 +625,26 @@ void gPerson::read(const QJsonObject &json){
     grayed = json["grayed"].toBool();
     //visible = json["visible"].toBool();
 
-
-
-
-
-
+    if (json.contains("Links") && json["Links"].isArray() ){
+        QJsonArray linksArray = json["Links"].toArray();
+        for (int index = 0; index < linksArray.size(); ++index){
+            QJsonObject gpObject = linksArray[index].toObject();
+            QString linkKey = gpObject["key"].toString();
+        }
+    }
+    if (json.contains("topLinks") && json["Links"].isArray() ){
+        QJsonArray linksArray = json["topLinks"].toArray();
+        for (int index = 0; index < linksArray.size(); ++index){
+            //QJsonObject gpObject = linksArray[index].toObject();
+            QString linkKey = linksArray[index].toString();
+        }
+    }
 }
+
 void gPerson::rememberPos(QPointF point){
     xpos = point.x();
     ypos = point.y();
 }
-
 
 void gPerson::UnselectAllLinks(){
     if (selectedLink){
