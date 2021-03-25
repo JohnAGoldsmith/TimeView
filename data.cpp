@@ -224,6 +224,11 @@ void cData::sendPersonsToColumnarScene(columnarScene * colscene){
 void cData::A_sendPersonsAndLinksToSceneJson(cScene* scene){
     gPerson * gPerson1, * gPerson2;
 
+    foreach(cGroup * group, Groups){
+        scene->addItem(group);
+        group->setPos(group->MemoryOfPos());
+    }
+
     foreach (gPerson * gperson, graphicalPersons){
         scene->addItem(gperson);
         gperson->Scene(scene); // why is this necessary? Why can't I get this from the gperson?
@@ -284,6 +289,15 @@ bool cData::validateNewGroup(cGroup * group){
 
 
 void cData::write(QJsonObject &json) const{
+    QJsonArray groupArray;
+    foreach (const cGroup * group, Groups){
+         QJsonObject groupObject;
+         group->write(groupObject);
+         groupArray.append(groupObject);
+    }
+    json["Groups"]=groupArray;
+
+
     QJsonArray linkArray;
     foreach (const cLink * link, Links){
          QJsonObject linkObject;
@@ -300,6 +314,8 @@ void cData::write(QJsonObject &json) const{
     }
     json["GraphicalPersons"]=gPersonArray;
 
+
+
     return ;
 }
 void cData::A_ReadJson(QString filename) {
@@ -311,6 +327,15 @@ void cData::A_ReadJson(QString filename) {
     QJsonDocument loadDoc(QJsonDocument::fromJson(thisData));
     QJsonObject rootItem = loadDoc.object(); // this should be the root item;
 
+    if (rootItem.contains("Groups") && rootItem["Groups"].isArray() ){
+        QJsonArray groupArray = rootItem["Groups"].toArray();
+        for (int index = 0; index < groupArray.size(); ++index){
+            QJsonObject groupObject = groupArray[index].toObject();
+            cGroup * group = new cGroup();
+            group->read(groupObject);
+            Groups.append(group);
+        }
+    }
     if (rootItem.contains("GraphicalPersons") && rootItem["GraphicalPersons"].isArray() ){
         QJsonArray gPersonArray = rootItem["GraphicalPersons"].toArray();
         for (int index = 0; index < gPersonArray.size(); ++index){

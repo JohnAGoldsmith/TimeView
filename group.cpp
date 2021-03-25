@@ -1,6 +1,11 @@
 #include "group.h"
 #include <QDebug>
 #include <QPainter>
+#include <QJsonObject>
+
+cGroup::cGroup(){
+// used in reading from json file;
+}
 cGroup::cGroup(QStringList data)
 {
    setZValue(-1);
@@ -35,18 +40,37 @@ cGroup::~cGroup(){
 
 
 }
-
+QPointF cGroup::MemoryOfPos(){
+    return QPointF(scene_x,scene_y);
+}
 QString cGroup::export2csv(){
    QStringList  temp;
    temp.append("G");
    temp.append(key );
    temp.append(name);
-   temp.append(QString::number(pos().x()) );
-   temp.append(QString::number(pos().y()) );
+   temp.append(QString::number(scenePos().x()) );
+   temp.append(QString::number(scenePos().y()) );
    temp.append(QString::number(height));
    temp.append(QString::number(width));
    return temp.join(",");
 }
+void cGroup::write(QJsonObject & json) const {
+    json["key"] = key;
+    json["name"] = name;
+    json["scenex"] = scenePos().x();
+    json["sceney"] = scenePos().y();
+    json["height"] = height;
+    json["width"] = width;
+}
+void cGroup::read(const QJsonObject & json) {
+    key = json["key"].toString();
+    name = json["name"].toString();
+    scene_x = json["scenex"].toInt();
+    scene_y = json["sceney"].toInt();
+    height = json["height"].toInt();
+    width = json["width"].toInt();
+}
+
 QRectF cGroup::boundingRect() const
 {
   return  myBoundingRect;
@@ -78,5 +102,5 @@ void cGroup::mouseMoveEvent(QGraphicsSceneMouseEvent * event)  {
 */
 
 void cGroup::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event){
-
+  int i  = 1;
 }

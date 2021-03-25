@@ -5,6 +5,7 @@
 class cGroup: public QGraphicsItem// QGraphicsRectItem
 {
 public:
+    cGroup(); // used in creating from json file;
     cGroup(QStringList);
     cGroup(QString key, QString name, float x, float y, float h, float w );
     ~cGroup();
@@ -14,10 +15,13 @@ public:
                 QWidget * widget) override;
 
     QString Key() {return key;}
+    QPointF MemoryOfPos();
     float X() {return scene_x;}
     float Y() {return scene_y;}
     void setY(float val){scene_y = val;}
     QString export2csv();
+    void write(QJsonObject & json) const;
+    void read(const QJsonObject &);
 
 protected:
 

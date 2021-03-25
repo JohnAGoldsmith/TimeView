@@ -395,7 +395,7 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     QFont localFont = *myFont;
     localFont.setCapitalization(QFont::SmallCaps);
     painter->setFont(localFont);
-
+    QPen pen(Qt::black,9);
 
     cScene * thisScene = dynamic_cast<cScene*>(scene);
     QHash<QString,QPixmap*> * pixmaps = thisScene->Pixmaps();
@@ -403,14 +403,8 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
     QHash<QString, QColor> colorHash;
     QHash<QString, QPixmap*> pixmapHash;
-    QColor Orange;
-    Orange.setRgb(255,153,51);
 
-    QPen pen(Qt::black,1);
-    pen.setWidth(9);
-    QString Profession =  Profession1();
-
-    colorHash["linguist"] = Orange;
+    colorHash["linguist"] = QColor(244,153,51);
     colorHash["sociologist"] = Qt::green;
     colorHash["philosopher"] = Qt::yellow;
     colorHash["Phil-psych"] = Qt::yellow;
@@ -443,23 +437,24 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     } else pixmapHash["focus"] = NULL;
 
     if (hasFocus()) { pixmap = NULL; }
-    else if (pixmapHash.contains(Profession)){
-        pixmap = pixmapHash[Profession];
+    else if (pixmapHash.contains(Profession1())){
+        pixmap = pixmapHash[Profession1()];
     } else { pixmap = NULL; }
 
     if (hasFocus())  { mycolor = colorHash["focus"]; }
     else if (grayed) { mycolor = colorHash["grayed"];}
-    else if (colorHash.contains(Profession)) {
-        mycolor = colorHash[Profession];
+    else if (colorHash.contains(Profession1())) {
+        mycolor = colorHash[Profession1()];
     } else { mycolor = colorHash["other"]; }
 
-    painter->setPen(pen);
 
+    //pen.setWidth(9);
     if (grayed){
         pen.setStyle(Qt::DotLine);
         pen.setColor(Qt::gray);
         painter->setPen(pen);
     }
+    painter->setPen(pen);
 
     QString name = firstName + " "  + lastName;
     QString years = QString::number(birthYear) + "--" + QString::number(deathYear);
