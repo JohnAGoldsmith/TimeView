@@ -76,3 +76,7 @@ void cGroup::mouseMoveEvent(QGraphicsSceneMouseEvent * event)  {
     qDebug() << "group noticed mouse movement.";
 }
 */
+
+void cGroup::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event){
+
+}

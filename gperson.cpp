@@ -25,17 +25,15 @@
 
 // constructor used with Json input //
 gPerson::gPerson(){
- setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
- myFont = new  QFont("Times", 12);
-
- width = 250; // this isn't right, it should be dynamic and based on relevant data; but that's not available till after Paint();
- height = 70;
- margin = 5;
- //visible=true;
- personBoundingRect.setCoords(-1.0 * margin, 0, width + 2*margin, height+2*margin );
- xpos = 0;  // used only in input to program
- selectedLink = NULL;
- grayed = false;
+    setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
+    myFont = new  QFont("Times", 12);
+    width = 250; // this isn't right, it should be dynamic and based on relevant data; but that's not available till after Paint();
+    height = 70;
+    margin = 5;
+    personBoundingRect.setCoords(-1.0 * margin, 0, width + 2*margin, height+2*margin );
+    xpos = 0;  // used only in input to program
+    selectedLink = NULL;
+    grayed = false;
 }
 
 // constructor used with .csv  file and Widget for adding person by hand
@@ -75,7 +73,6 @@ gPerson::gPerson(QStringList  data){
        ypos = Yscale * (topPosition - birthYear);
        qDebug() << "2" << lastName << ypos;
     }
-
 
     if (data[7].length() > 0){
       key = data[7];
@@ -129,10 +126,9 @@ gPerson::gPerson(bool dummy, QStringList  data){
     } else {
         key = data[2];
     }
-    //visible=true;
+
     selectedLink = NULL;
     grayed = false;
-    qDebug() << "person constructor" << LastName() << "birth" << birthYear << "xpos" << xpos << "ypos" << ypos;
 }
 gPerson::~gPerson(){
 
@@ -141,23 +137,23 @@ QPointF gPerson::GetMemoryOfScreenPosition(){
     return QPointF(xpos,ypos);
 }
 QString gPerson::export2CSV(){
-  QStringList temp;
-  temp.append("P");
-  temp.append(firstName);
-  temp.append(lastName);
-  temp.append(QString::number(birthYear));
-  temp.append(QString::number(deathYear));
-  temp.append(QString::number(pos().x()));
-  temp.append(QString::number(pos().y()));
-  if ( key != lastName){
-      temp.append(key);
-  } else {
-      temp.append(lastName);
-  }
-  temp.append(QString::number(height));
-  temp.append(QString::number(width));
-  temp.append(profession1);
-  return temp.join(",");
+    QStringList temp;
+    temp.append("P");
+    temp.append(firstName);
+    temp.append(lastName);
+    temp.append(QString::number(birthYear));
+    temp.append(QString::number(deathYear));
+    temp.append(QString::number(pos().x()));
+    temp.append(QString::number(pos().y()));
+    if ( key != lastName){
+        temp.append(key);
+    } else {
+        temp.append(lastName);
+    }
+    temp.append(QString::number(height));
+    temp.append(QString::number(width));
+    temp.append(profession1);
+    return temp.join(",");
 }
 
 
@@ -216,8 +212,6 @@ QRectF gPerson::boundingRect() const  {
     return personBoundingRect;
 }
 
-
-
 void gPerson::focusInEvent(QFocusEvent * event){
     QGraphicsItem::focusInEvent(event);
 }
@@ -229,7 +223,6 @@ void gPerson::focusOutEvent(QFocusEvent * event){LastName();
 void gPerson::mousePressEvent(QGraphicsSceneMouseEvent * event){
     QGraphicsItem::mousePressEvent(event);
 }
-
 void gPerson::keyPressEvent (QKeyEvent * event){
     qDebug() << "Person key event" << event->text();
    if (event->key() == Qt::Key_L ){
@@ -368,7 +361,6 @@ void gPerson::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
 }
 
 void gPerson::mouseDoubleClickEvent (QGraphicsSceneMouseEvent * event) {
-    //QueryKeyboardModifiers
     QGraphicsItem::mouseDoubleClickEvent(event);
 }
 
@@ -390,7 +382,6 @@ float gPerson::GetNameHeight(QPainter * painter) const {
     QFontMetrics fm=painter->fontMetrics();
     return fm.height();
 }
-
 float gPerson::GetDatesWidth(QPainter * painter) const {
     QString years = QString::number(birthYear) + "--" + QString::number(deathYear);
     QFontMetrics fm=painter->fontMetrics();
@@ -400,64 +391,71 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
     double lineHeight = 25.0;
     QColor mycolor;
-    painter->setFont(*myFont);
+    QBrush brush;
+    QFont localFont = *myFont;
+    localFont.setCapitalization(QFont::SmallCaps);
+    painter->setFont(localFont);
+
 
     cScene * thisScene = dynamic_cast<cScene*>(scene);
     QHash<QString,QPixmap*> * pixmaps = thisScene->Pixmaps();
     QPixmap * pixmap(NULL);
 
+    QHash<QString, QColor> colorHash;
+    QHash<QString, QPixmap*> pixmapHash;
     QColor Orange;
     Orange.setRgb(255,153,51);
 
     QPen pen(Qt::black,1);
     pen.setWidth(9);
+    QString Profession =  Profession1();
+
+    colorHash["linguist"] = Orange;
+    colorHash["sociologist"] = Qt::green;
+    colorHash["philosopher"] = Qt::yellow;
+    colorHash["Phil-psych"] = Qt::yellow;
+    colorHash["psychologist"] = Qt::cyan;
+    colorHash["other"] = Qt::magenta;
+    colorHash["focus"] = Qt::black;
+    colorHash["grayed"] =  QColor(255, 255, 255, 1);
+
+    if (pixmaps->contains("apricot")){
+       pixmapHash["linguist"] = pixmaps->value("apricot");
+    } else pixmapHash["linguist"] = NULL;
+    if (pixmaps->contains("darkredwood")){
+       pixmapHash["sociologist"] = pixmaps->value("darkredwood");
+       pen.setColor(Qt::white);
+    } else pixmapHash["sociologist"] = NULL;
+    if (pixmaps->contains("blue")){
+       pixmapHash["philosopher"] = pixmaps->value("blue");
+    } else pixmapHash["philosopher"] = NULL;
+    if (pixmaps->contains("blue")){
+       pixmapHash["Phil-psych"] = pixmaps->value("blue");
+    } else pixmapHash["Phil-psych"] = NULL;
+    if (pixmaps->contains("lightbrown")){
+       pixmapHash["psychologist"] = pixmaps->value("lightbrown");
+    } else pixmapHash["psychologist"] = NULL;
+    if (pixmaps->contains("yellow")){
+       pixmapHash["other"] = pixmaps->value("yellow");
+    } else pixmapHash["other"] = NULL;
+    if (pixmaps->contains("red")){
+       pixmapHash["focus"] = pixmaps->value("red");
+    } else pixmapHash["focus"] = NULL;
+
+    if (hasFocus()) { pixmap = NULL; }
+    else if (pixmapHash.contains(Profession)){
+        pixmap = pixmapHash[Profession];
+    } else { pixmap = NULL; }
+
+    if (hasFocus())  { mycolor = colorHash["focus"]; }
+    else if (grayed) { mycolor = colorHash["grayed"];}
+    else if (colorHash.contains(Profession)) {
+        mycolor = colorHash[Profession];
+    } else { mycolor = colorHash["other"]; }
+
     painter->setPen(pen);
 
-    QString Profession =  Profession1();
-    if (Profession ==  "linguist"){
-        mycolor = Orange;
-        if (pixmaps->contains("apricot")){
-           pixmap = pixmaps->value("apricot");
-        }
-    }
-    else if (Profession == "sociologist"){
-             mycolor = Qt::green;
-             if (pixmaps->contains("darkredwood")){
-                pixmap = pixmaps->value("darkredwood");
-                pen.setColor(Qt::white);
-                painter->setPen(pen);
-             }
-    }
-    else if (Profession == "philosopher" || Profession == "Phil-psych"){
-            mycolor = Qt::yellow;
-            if (pixmaps->contains("blue")){
-               pixmap = pixmaps->value("blue");
-            }
-     }
-    else if (Profession == "psychologist"){
-           mycolor = Qt::cyan;
-           if (pixmaps->contains("lightbrown")){
-              pixmap = pixmaps->value("lightbrown");
-           }
-     }
-    else{
-        mycolor = Qt::magenta;
-        if (pixmaps->contains("yellow")){
-           pixmap = pixmaps->value("yellow");
-           //pen.setColor(Qt::white);
-           painter->setPen(pen);
-        }    }
-    if (hasFocus()){
-        painter->setPen(Qt::black);
-        mycolor = Qt::red;
-        if (pixmaps->contains("red")){
-           pixmap = pixmaps->value("red");
-        }
-    }
-
     if (grayed){
-        //oldcolor = painter->brush().color();
-        mycolor =  QColor(255, 255, 255, 1);
         pen.setStyle(Qt::DotLine);
         pen.setColor(Qt::gray);
         painter->setPen(pen);
@@ -483,8 +481,6 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     gradient.setColorAt(0.5,Qt::white);
     gradient.setColorAt(1,mycolor);
 
-    QBrush brush;
-
     painter->fillRect(personrect,mycolor);
 
     if(hasFocus()){
@@ -495,10 +491,11 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
     painter->drawRect(personrect);
 
-    if (! grayed){
-       painter->drawPixmap(personrect,*pixmap,QRectF(0,0,50,50));
+    if (pixmap) {
+        if (! grayed ){
+            painter->drawPixmap(personrect,*pixmap,QRectF(0,0,50,50));
+        }
     }
-
     QRectF rect(0,0,namewidth,30);
     QRectF boundingRect1;
     painter->drawText(rect ,Qt::AlignHCenter,  name ,  & boundingRect1);

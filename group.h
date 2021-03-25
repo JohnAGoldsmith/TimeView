@@ -23,6 +23,7 @@ protected:
 
     //void mouseMoveEvent(QGraphicsSceneMouseEvent * event) override;
     //void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event) override;
 
 private:
     QString key;
