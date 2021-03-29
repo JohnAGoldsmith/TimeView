@@ -449,7 +449,7 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     } else pixmapHash["linguist"] = NULL;
     if (pixmaps->contains("darkredwood")){
        pixmapHash["sociologist"] = pixmaps->value("darkredwood");
-       pen.setColor(Qt::white);
+       //pen.setColor(Qt::white);
     } else pixmapHash["sociologist"] = NULL;
     if (pixmaps->contains("blue")){
        pixmapHash["philosopher"] = pixmaps->value("blue");
@@ -471,6 +471,10 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     else if (pixmapHash.contains(Profession1())){
         pixmap = pixmapHash[Profession1()];
     } else { pixmap = NULL; }
+
+    if (pixmap== pixmaps->value("darkredwood")){
+        pen.setColor(Qt::white);
+    }
 
     if (hasFocus())  { mycolor = colorHash["focus"]; }
     else if (grayed) { mycolor = colorHash["grayed"];}

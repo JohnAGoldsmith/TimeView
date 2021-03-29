@@ -163,7 +163,7 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
     }
 
   /*                Load table of persons for user              */
-    /*
+
     if (event->key() == Qt::Key_D && event->modifiers()==Qt::CTRL){
         if (! personTable){
             personTable  = new QTableWidget;
@@ -172,7 +172,7 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
             myLineEdit->setText("Load persons table.");
         }
     }
-    */
+
 
   /*           Load table of links for user                      */
   if (event->key() == Qt::Key_L&& event->modifiers()==Qt::CTRL){
