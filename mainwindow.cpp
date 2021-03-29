@@ -13,6 +13,7 @@
 #include <QSlider>
 
 
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "cscene.h"
@@ -45,6 +46,11 @@ MainWindow::MainWindow(QWidget *parent)
     view->centerOn(-100,1900);
     layout->addWidget(view);
     colScene  = nullptr;
+
+    QSettings settings ("JohnAGoldsmith", "TimeView");
+    //QString colorfolder = settings.value("colorfolder");
+    //QString datafolder = settings.value("datafolder");
+
 
     QWidget *widget = new QWidget;
     widget->setLayout(layout);
@@ -183,6 +189,7 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
        QString LocationOfData = QDir::homePath() + "/Dropbox/TimeView/data";
        QString fileName = QFileDialog::getOpenFileName(this,"Open document",LocationOfData, "*.csv *.json");
        if (!fileName.isEmpty()){
+          setWindowTitle(fileName);
           if (fileName.endsWith(".json")){
               getData()->A_ReadJson(fileName);
               getData()->A_sendPersonsAndLinksToSceneJson(scene);
@@ -222,6 +229,8 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
           linkTable->close();
       if (personTable)
           personTable->close();
+      //settings.setValue("colorfolder", QDir::homePath() + "/Dropbox/TimeView/color";)
+      //settings.setValue("datafolder", QDir::homePath() + "/Dropbox/TimeView/data";)
       qApp->exit( );
   }
 

@@ -28,6 +28,7 @@ public:
     QList<cLink*>*    getLinks(){return &Links;};
     cLink* getLink(QString);
     cLink* CheckAndCreateNewLink(QString);  // only creates a new link if the key is not already in Links;
+    void RemoveLink (cLink* link);
 
     bool validateNewPerson(gPerson*); // checks for not duplicate, and if OK adds to collection.
     bool validateNewLink(cLink*);
@@ -55,7 +56,7 @@ public:
     int TopPosition() {return topPosition;}
 
     gPerson* B_Legacy_CreateGraphicalPerson(QStringList line);
-    void B_AddGPersonPtrsToLinks();
+    void B_AddPtrsToPersonsAndLinks();
 
     void Clear();
     void AttachLinks(gPerson * );
@@ -67,6 +68,7 @@ public:
     void InvisiblePersons2Grayed();
     //void MoveInvisiblePersonsToLimbo();
     //void MoveLimboPersonsToInvisible();
+    void AttachLinkKeysToPersonSides();
 private:
 
     QList<gPerson*> graphicalPersons;

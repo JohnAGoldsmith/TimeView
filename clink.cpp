@@ -17,8 +17,10 @@ cLink::cLink(cData* myData)
     fromPersonKey = "";
     toPersonKey="";
     natureOfLink= "";
-    gPersonFrom  =  NULL;
-    gPersonTo = NULL;
+    //gPersonFrom  =  NULL;
+    //gPersonTo = NULL;
+    fromPerson = NULL;
+    toPerson = NULL;
     bottomOffset = 0.0;
     topOffset = 0.0;
     visible = true;
@@ -44,7 +46,7 @@ cLink::cLink(QStringList & temp, cData * myData){
     startPoint.setY( temp[9].toFloat() );
     endPoint.setX( temp[10].toFloat() );
     endPoint.setY( temp[11].toFloat() );
-    qDebug() << "data length in link"<< temp.length();
+    //qDebug() << "data length in link"<< temp.length();
     if (temp.length() > 12){
         natureOfLink = temp[12];
     } else{
@@ -55,14 +57,17 @@ cLink::cLink(QStringList & temp, cData * myData){
     setAcceptedMouseButtons(0);
     visible = true;
     chosen = false;
-
+    fromPerson = NULL;
+    toPerson = NULL;
     update();
 }
 
 /*  Used when reading legacy csv file */
 cLink::cLink(bool dummy, QStringList & dataList, cData* myData){
-    gPersonFrom = NULL;
-    gPersonTo = NULL;
+    //gPersonFrom = NULL;
+    //gPersonTo = NULL;
+    fromPerson = NULL;
+    toPerson = NULL;
     setAcceptedMouseButtons(0);
     fromPersonKey = dataList[1];
     toPersonKey = dataList[2];
@@ -108,10 +113,11 @@ cLink::cLink(bool dummy, QStringList & dataList, cData* myData){
 cLink::~cLink(){
 }
 void cLink::setPersonFrom(gPerson * person){
-    gPersonFrom = person;
+    //gPersonFrom = person;
+    fromPerson = person;
 }
 void cLink::setPersonTo(gPerson * person){
-    gPersonTo = person;
+    toPerson = person;
 }
 QString cLink::getKey() const {
     return fromPersonKey + ":" + toPersonKey;
@@ -171,13 +177,15 @@ QString cLink::display()const {
   out += visible;
   return out;
 }
+/*
 void cLink::attachPersons(gPerson * person1, gPerson * person2){
- gPersonFrom = person1;
+ //gPersonFrom = person1;
+ fromPerson = person1;
  gPersonTo = person2;
  person1->AppendLinkAndResortEdges(this);
  person2->AppendLinkAndResortEdges(this);
 }
-
+*/
 QRectF cLink::boundingRect() const {
   return QRectF(startPoint, endPoint);
 }

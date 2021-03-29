@@ -2,6 +2,8 @@
 #include <QDebug>
 #include <QPainter>
 #include <QJsonObject>
+#include <QGraphicsItem>
+#include <QGraphicsSceneMouseEvent>
 
 cGroup::cGroup(){
 // used in reading from json file;
@@ -103,4 +105,5 @@ void cGroup::mouseMoveEvent(QGraphicsSceneMouseEvent * event)  {
 
 void cGroup::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event){
   int i  = 1;
+  //QGraphicsItem::mouseDoubleClickEvent(*event);
 }

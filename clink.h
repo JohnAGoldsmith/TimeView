@@ -34,12 +34,10 @@ class cLink: public QGraphicsItem
         QString getKey() const ;
         QString getFromKey(){return fromPersonKey;}
         QString getToKey(){return toPersonKey;}
-        gPerson* GPersonFrom()const {return gPersonFrom;}
-        gPerson* GPersonTo() const {return gPersonTo;}
         void setPersonFrom(gPerson*);
         void setPersonTo(gPerson*);
-
-        void attachPersons(gPerson *, gPerson *);
+        gPerson* FromPerson() const {return fromPerson;}
+        gPerson* ToPerson() const {return toPerson;}
 
         void BottomOffset(float f) ;
         void TopOffset(float f) ;
@@ -66,8 +64,10 @@ class cLink: public QGraphicsItem
         QString fromPersonKey;
         QString toPersonKey;
         QString natureOfLink;
-        gPerson* gPersonFrom; // remove
-        gPerson* gPersonTo; //remove
+        //gPerson* gPersonFrom;
+        //gPerson* gPersonTo; //remove
+        gPerson* fromPerson;
+        gPerson* toPerson;
         QString PositionOnFromPerson;
         QString PositionOnToPerson;
         float bottomOffset;

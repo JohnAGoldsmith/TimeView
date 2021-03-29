@@ -133,6 +133,21 @@ gPerson::gPerson(bool dummy, QStringList  data){
 gPerson::~gPerson(){
 
 }
+void gPerson::SetKey2Link(QString key, cLink *link){
+    myKeys2Links[key] = link;
+}
+void gPerson::AppendTopLinkKey(QString key){
+    topLinkKeys.append(key);
+}
+void gPerson::AppendLeftLinkKey(QString key){
+    leftLinkKeys.append(key);
+}
+void gPerson::AppendBottomLinkKey(QString key){
+    bottomLinkKeys.append(key);
+}
+void gPerson::AppendRightLinkKey(QString key){
+    rightLinkKeys.append(key);
+}
 QPointF gPerson::GetMemoryOfScreenPosition(){
     return QPointF(xpos,ypos);
 }
@@ -158,16 +173,17 @@ QString gPerson::export2CSV(){
 
 
 void gPerson::AppendLinkAndResortEdges(cLink *link) {
-    AppendLink(link);
+    //AppendLinkAndAddLinkKeyToSide(link);
     myLinks.append(link);
-    SortLinksOnEachEdge();
+    AddLinkKeyToSide(link);
+    SortLinksOnEachSide();
 }
-void gPerson::AppendLink(cLink *link) {
+void gPerson::AppendLinkAndAddLinkKeyToSide(cLink *link) {
     myLinks.append(link);
-    if (link->GPersonFrom() == this){
+    if (link->FromPerson() == this){
         if (link->GetPositionOnFromPerson() == "Top"){
             topLinkKeys.append(link->getKey());
-            topLinks.append(link);
+            //topLinks.append(link);
         }
         else if (link->GetPositionOnFromPerson() == "Bottom"){
             bottomLinkKeys.append(link->getKey());
@@ -182,9 +198,9 @@ void gPerson::AppendLink(cLink *link) {
             rightLinks.append(link);
         }
     }
-    if (link->GPersonTo()==this){
+    if (link->ToPerson()==this){
         if (link->GetPositionOnToPerson() == "Top"){
-            topLinks.append(link);
+            //topLinks.append(link);
             topLinkKeys.append(link->getKey());
         }
         else if (link->GetPositionOnToPerson() == "Bottom"){
@@ -201,9 +217,25 @@ void gPerson::AppendLink(cLink *link) {
         }
     }
 }
-void gPerson::AppendTopLink(cLink * link){
-    topLinks.append(link);
+void gPerson::AddLinkKeyToSide(cLink* link){
+    if (link->FromPerson() == this || link->ToPerson() == this){
+        if (link->GetPositionOnFromPerson() == "Top"){
+            topLinkKeys.append(link->getKey());
+        }
+        else if (link->GetPositionOnFromPerson() == "Bottom"){
+            bottomLinkKeys.append(link->getKey());
+        }
+        else if (link->GetPositionOnFromPerson() == "Left"){
+            leftLinkKeys.append(link->getKey());
+        }
+        else if (link->GetPositionOnFromPerson() == "Right"){
+            rightLinkKeys.append(link->getKey());
+        }
+    }
 }
+//void gPerson::AppendTopLink(cLink * link){
+    //topLinks.append(link);
+//}
 void gPerson::AppendBottomLink(cLink * link) {
     bottomLinks.append(link);
 }
@@ -255,12 +287,13 @@ void gPerson::keyPressEvent (QKeyEvent * event){
       if (selectedLink){
           if (myLinks.size() > 1){
               qDebug() << "gperson 170 moving selected link to right ";
-              int index(topLinks.indexOf(selectedLink));
-              if (index >= 0 && index < topLinks.size()-1){
+              //int index(topLinks.indexOf(selectedLink));
+              int index(topLinkKeys.indexOf(selectedLinkKey));
+              if (index >= 0 && index < topLinkKeys.size()-1){
                   qDebug() << 173 << index;
-                  topLinks.swapItemsAt(index,index+1);
+                  topLinkKeys.swapItemsAt(index,index+1);
                   qDebug() << 175;
-                  SortLinksOnEachEdge();
+                  SortLinksOnEachSide();
                   Scene()->update();
               }
           }
@@ -270,12 +303,12 @@ void gPerson::keyPressEvent (QKeyEvent * event){
       if (selectedLink){
           if (myLinks.size() > 1){
               qDebug() << "gperson 185 moving selected link to LEFT ";
-              int index(topLinks.indexOf(selectedLink));
+              int index(topLinkKeys.indexOf(selectedLinkKey));
               if (index > 0){
                   qDebug() << 188 << index;
-                  topLinks.swapItemsAt(index,index-1);
+                  topLinkKeys.swapItemsAt(index,index-1);
                   qDebug() << 190;
-                  SortLinksOnEachEdge();
+                  SortLinksOnEachSide();
                   Scene()->update();
               }
           }
@@ -287,7 +320,7 @@ void gPerson::keyPressEvent (QKeyEvent * event){
           if (myLinks.size() > 1){
               qDebug() << "found leg";
               qDebug() << "Shorten the first leg of this link";
-              int index(topLinks.indexOf(selectedLink));
+              int index(topLinkKeys.indexOf(selectedLinkKey));
               qDebug() << "index: " <<index;
               if (index >= 0){
                   qDebug() << "going to function to shorten";
@@ -300,19 +333,15 @@ void gPerson::keyPressEvent (QKeyEvent * event){
    }
    /*    lengthen the first leg of the link       */
    else if (event->key() == Qt::Key_2){
-      if (selectedLink){
-          if (myLinks.size() > 1){
-              int index(topLinks.indexOf(selectedLink));
-              if (index >= 0){
-                  selectedLink->lengthenProportion1();
-                  qDebug() << selectedLink->GetProportion1();
-                  Scene()->update();
-              }
-          }
+      if (selectedLinkKey.size() > 0){
+          cLink * selectedLink = Key2Link(selectedLinkKey);
+          selectedLink->lengthenProportion1();
+          qDebug() << selectedLink->GetProportion1();
+          Scene()->update();
+           }
       }
 
-   QGraphicsItem::keyPressEvent(event);
-}
+
 /*           Replace person on correct y-coor for their birthyear         */
    else if (event->key() == Qt::Key_B){
        int old_x = x();
@@ -322,6 +351,8 @@ void gPerson::keyPressEvent (QKeyEvent * event){
        Scene()->update();
        QGraphicsItem::keyPressEvent(event);
    }
+   QGraphicsItem::keyPressEvent(event);
+
 }
 void gPerson::mouseMoveEvent(QGraphicsSceneMouseEvent * event){ // this doesn't get called with json, but it does with csv!!
     foreach (cLink* link, * GetLinks()){
@@ -503,13 +534,14 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 }
 
 void gPerson::ShiftLink(){
-    QList<cLink*> * thisList = GetTopLinks();
+    //QList<cLink*> * thisList = GetTopLinks();
+    QStringList * thisList = GetTopLinkKeys();
     if (thisList->size() < 2)
         return;
     if (!selectedLink)
         return;
     int thisindex;
-    thisindex = thisList->indexOf(selectedLink);
+    thisindex = thisList->indexOf(selectedLinkKey);
     if (thisindex < 0)
         return;
     if (thisindex==0){
@@ -519,31 +551,33 @@ void gPerson::ShiftLink(){
     }
 
 }
-void gPerson::SortLinksOnEachEdge(){
+void gPerson::SortLinksOnEachSide(){
     float boxwidth = 100.0; // should be GetNameWidth();
-    float delta = (boxwidth * 0.5) / GetTopLinks()->size();
+    float delta = (boxwidth * 0.5) / GetTopLinkKeys()->size();
 
-    QList<cLink*> * thisList = GetTopLinks();
+    //QList<cLink*> * thisList = GetTopLinks();
+    QStringList  * thisList = GetTopLinkKeys();
     int LS = thisList->size();
     if (LS > 1){
         int i = 0;
         float startingPoint;
         startingPoint =  -1.0 * ( (LS/2.0  ) * delta ) ;
-        foreach (cLink* thislink, * thisList){
+        foreach (QString linkKey, *thisList){
+            cLink* thislink = Key2Link(linkKey) ;
             thislink->TopOffset(startingPoint + i * delta);
             i++;
         }
     }
     delta = (boxwidth * 0.5) / GetBottomLinks()->size();
-    thisList = GetBottomLinks();
+    thisList = GetBottomLinkKeys();
     LS = thisList->size();
     if (LS > 1){
         int i = 0;
         float startingPoint;
         startingPoint =  -1.0 * ( (LS/2.0  ) * delta ) ;
-        //qDebug() << "";
-        foreach (cLink* thislink, * thisList){
-            thislink->BottomOffset(startingPoint + i * delta);
+        foreach (QString linkKey, * thisList){
+            cLink* thisLink = Key2Link(linkKey);
+            thisLink->BottomOffset(startingPoint + i * delta);
             i++;
         }
     }
@@ -564,21 +598,13 @@ void gPerson::write(QJsonObject & json) const {
     json["visible"] = isVisible();
     json["grayed"] = grayed;
 
-
-    QJsonArray linkkeyArray;
-    foreach ( cLink * link, myLinks){
-        QJsonValue linkkeyValue(link->getKey());
-        linkkeyArray.append(linkkeyValue);
-    }
-    json["LinkKeys"] = linkkeyArray;
-
     QJsonArray JsontopLinks;
-    for  (int i =0; i < topLinks.size();  i++){
+    for  (int i =0; i < topLinkKeys.size();  i++){
         QString key = topLinkKeys[i];
         QJsonValue json(key);
         JsontopLinks.append(json);
     }
-    json["topLinks"] = JsontopLinks;
+    json["topLinkKeys"] = JsontopLinks;
 
     QJsonArray JsonbottomLinks;
     for  (int i =0; i < bottomLinks.size();  i++){
@@ -586,7 +612,7 @@ void gPerson::write(QJsonObject & json) const {
         QJsonValue json(key);
         JsonbottomLinks.append(json);
     }
-    json["bottomLinks"] = JsonbottomLinks;
+    json["bottomLinkKeys"] = JsonbottomLinks;
 
     QJsonArray JsonleftLinks;
     for  (int i =0; i < leftLinks.size();  i++){
@@ -594,7 +620,7 @@ void gPerson::write(QJsonObject & json) const {
         QJsonValue json(key);
         JsonbottomLinks.append(json);
     }
-    json["leftLinks"] = JsonleftLinks;
+    json["leftLinkKeys"] = JsonleftLinks;
 
     QJsonArray JsonrightLinks;
     for  (int i =0; i < rightLinks.size();  i++){
@@ -602,7 +628,7 @@ void gPerson::write(QJsonObject & json) const {
         QJsonValue json(key);
         JsonrightLinks.append(json);
     }
-    json["rightLinks"] = JsonrightLinks;
+    json["rightLinkKeys"] = JsonrightLinks;
 
 }
 void gPerson::read(const QJsonObject &json){
@@ -616,20 +642,29 @@ void gPerson::read(const QJsonObject &json){
     deathYear = json["deathYear"].toInt();
     profession1 = json["profession1"].toString();
     grayed = json["grayed"].toBool();
-    //visible = json["visible"].toBool();
 
-    if (json.contains("Links") && json["Links"].isArray() ){
-        QJsonArray linksArray = json["Links"].toArray();
-        for (int index = 0; index < linksArray.size(); ++index){
-            QJsonObject gpObject = linksArray[index].toObject();
-            QString linkKey = gpObject["key"].toString();
+    if (json.contains("topLinkKeys") && json["topLinkKeys"].isArray()){
+        QJsonArray linkKeyArray = json["topLinkKeys"].toArray();
+        for (int j = 0; j < linkKeyArray.size(); j++){
+            AppendTopLinkKey(linkKeyArray[j].toString());
         }
     }
-    if (json.contains("topLinks") && json["Links"].isArray() ){
-        QJsonArray linksArray = json["topLinks"].toArray();
-        for (int index = 0; index < linksArray.size(); ++index){
-            //QJsonObject gpObject = linksArray[index].toObject();
-            QString linkKey = linksArray[index].toString();
+    if (json.contains("rightLinkKeys") && json["rightLinkKeys"].isArray()){
+        QJsonArray linkKeyArray = json["rightLinkKeys"].toArray();
+        for (int j = 0; j < linkKeyArray.size(); j++){
+            AppendRightLinkKey(linkKeyArray[j].toString());
+        }
+    }
+    if (json.contains("bottomLinkKeys") && json["bottomLinkKeys"].isArray()){
+        QJsonArray linkKeyArray = json["bottomLinkKeys"].toArray();
+        for (int j = 0; j < linkKeyArray.size(); j++){
+            AppendBottomLinkKey(linkKeyArray[j].toString());
+        }
+    }
+    if (json.contains("leftLinkKeys") && json["leftLinkKeys"].isArray()){
+        QJsonArray linkKeyArray = json["leftLinkKeys"].toArray();
+        for (int j = 0; j < linkKeyArray.size(); j++){
+            AppendLeftLinkKey(linkKeyArray[j].toString());
         }
     }
 }

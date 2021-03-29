@@ -47,19 +47,30 @@ public:
     float GetTextWidth (QPainter*, QString) const;
 
     void AppendLinkAndResortEdges (cLink * link); // not used with data from Json file, which remembers.
-    void AppendLink (cLink * link);
-    void AppendTopLink (cLink*);
+    void AppendLinkAndAddLinkKeyToSide (cLink * link);
+    //void AppendTopLink (cLink*);
     void AppendBottomLink(cLink*);
     void AppendLinkKey(QString linkKey);
+    void AppendTopLinkKey(QString);
+    void AppendRightLinkKey(QString);
+    void AppendBottomLinkKey(QString);
+    void AppendLeftLinkKey(QString);
+    void AppendLink(cLink* link) {myLinks.append(link);};
 
     QList<cLink*> * GetLinks() {return & myLinks;}
-    QList<cLink*> * GetTopLinks() {return & topLinks;}
-    QList<cLink*> * GetBottomLinks() {return & bottomLinks;}
+    //QList<cLink*> * GetTopLinks() {return & topLinks;} //remove
+    QStringList * GetTopLinkKeys() {return & topLinkKeys;}
+    QStringList * GetRightLinkKeys() {return & rightLinkKeys;}
+    QStringList * GetBottomLinkKeys() {return & bottomLinkKeys;}
+    QStringList * GetLeftLinkKeys() {return & leftLinkKeys;}
+    QList<cLink*> * GetBottomLinks() {return & bottomLinks;} //remove
     void SetSelectedLink(cLink * link) {selectedLink = link;}
     cLink* SelectedLink() {return selectedLink;}
+    void SetKey2Link(QString key, cLink* link);
+    cLink* Key2Link(QString key) {return myKeys2Links[key];}
 
     void UnselectAllLinks();
-    void SortLinksOnEachEdge();
+    void SortLinksOnEachSide();
     void ShiftLink();
 
     QString Key(){return key;}
@@ -79,6 +90,7 @@ public:
 
     QString export2CSV();
 
+    void AddLinkKeyToSide(cLink* link);
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent * event) override;
@@ -110,9 +122,9 @@ private:
     QString profession1;
     QString profession2;
     QRectF personBoundingRect;
-    QList<cLink*> myLinks; // I will remove this and replace it by myKeys2Links, a key2ptr hash;
+    QList<cLink*> myLinks;// keep this up-to-date, matching order of links on the four edges
     QHash<QString, cLink*> myKeys2Links;
-    QList<cLink*> topLinks; //remove
+    //QList<cLink*> topLinks; //remove
     QList<cLink*> bottomLinks;//remove
     QList<cLink*> leftLinks;//remove
     QList<cLink*> rightLinks;//remove

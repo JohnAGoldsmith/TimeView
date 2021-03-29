@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QTableWidget>
 #include <QGraphicsView>
+#include <QSettings>
 #include "cscene.h"
 #include "data.h"
 #include "clineedit.h"
@@ -42,6 +43,7 @@ private:
     cHelpWidget * helpwidget;
     cPersonWidget * newpersonwidget;
     userRequestDialog * userrequestdialog;
+    QSettings settings;
 
 
     void createActions();
