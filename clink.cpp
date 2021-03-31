@@ -34,12 +34,13 @@ cLink::cLink(cData* myData)
 
 /*  Used when reading current csv file */
 cLink::cLink(QStringList & temp, cData * myData){
-    qDebug() << temp.length();
+    //qDebug() << temp.length();
     fromPersonKey = temp[1];
     toPersonKey = temp[2];
     PositionOnFromPerson = temp[3];
     PositionOnToPerson = temp[4];
     bottomOffset = temp[5].toFloat();
+    // ?? ypos = Yscale * (topPosition - birthYear);
     topOffset = temp[6].toFloat();
     proportion1 = temp[7].toFloat();
     startPoint.setX( temp[8].toFloat() );
@@ -220,11 +221,11 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     if (! fromPerson()->Visible()){
         pen.setStyle(Qt::DotLine);
         painter->setPen(pen);
-        qDebug() << "clink 111" << "invisible link...";
+        //qDebug() << "clink 111" << "invisible link...";
     }
     */
     if (chosen){
-        qDebug() << "clink selected line 115"<< display();
+        //() << "clink selected line 115"<< display();
         pen.setColor(Qt::red);
         pen.setWidth(6);
         painter->setPen(pen);

@@ -60,31 +60,47 @@ gPerson::gPerson(QStringList  data){
         deathYear = data[4].toInt();
     } else {
         deathYear = 0;
-        qDebug() << lastName << "Zero death year" ;
+        //qDebug() << lastName << "Zero death year" ;
     }
 
     x_fromspreadsheet = data[5].toFloat();
-    y_fromspreadsheet = data[6].toFloat();
     xpos = Xscale *  x_fromspreadsheet;
-    if (y_fromspreadsheet > 0){
-       ypos = y_fromspreadsheet;
-       qDebug() << 1 << lastName << data[6];
-    } else{
-       ypos = Yscale * (topPosition - birthYear);
-       qDebug() << "2" << lastName << ypos;
+
+    ypos = 0.0;
+    if( data.length() > 6){
+        if (data[6].length() > 0){
+            y_fromspreadsheet = data[6].toFloat();
+            if (y_fromspreadsheet > 0){
+                ypos = y_fromspreadsheet;
+            }
+        }
+    }
+    if (ypos == 0.0){
+        if (birthYear > 0){
+            ypos = Yscale * (topPosition - birthYear);
+       } else{
+            ypos = 0.0;
+        }
     }
 
-    if (data[7].length() > 0){
-      key = data[7];
-    } else {
+    key = "";
+    if (data.length() > 7){
+        if (data[7].length() > 0){
+            key = data[7];
+        }
+    }
+    if (key.length() == 0){
         key = lastName;
     }
-
-    height = data[8].toFloat();
-    width = data[9].toFloat();
-
-    profession1 = data[10];
-
+    if (data.length() > 8){
+        height = data[8].toFloat();
+    }
+    if (data.length() > 9) {
+        width = data[9].toFloat();
+    }
+    if (data.length() > 10){
+        profession1 = data[10];
+    }
     selectedLink = NULL;
     grayed = false;
 }
@@ -108,19 +124,21 @@ gPerson::gPerson(bool dummy, QStringList  data){
     lastName = data[2];
     birthYear = data[3].toInt();
     if (birthYear == 0){
-        qDebug() << lastName << "zero birth year a";
+        //qDebug() << lastName << "zero birth year a";
     }
     if (data[4].length() > 0){
         deathYear = data[4].toInt();
     } else {
         deathYear = 0;
-        qDebug() << lastName << "Zero death year" ;
+        //qDebug() << lastName << "Zero death year" ;
     }
     x_fromspreadsheet = data[5].toFloat() * Xscale;
     xpos =x_fromspreadsheet * Xscale;
     ypos = Yscale * (topPosition - birthYear);
 
-    profession1 = data[6];
+    if (data.size() > 6){
+        profession1 = data[6];
+    }
     if (data.size() >= 8 && data[7].length() > 0){
         key = data[7];
     } else {
@@ -256,7 +274,7 @@ void gPerson::mousePressEvent(QGraphicsSceneMouseEvent * event){
     QGraphicsItem::mousePressEvent(event);
 }
 void gPerson::keyPressEvent (QKeyEvent * event){
-    qDebug() << "Person key event" << event->text();
+    //qDebug() << "Person key event" << event->text();
    if (event->key() == Qt::Key_L ){
       if (!selectedLink){
           if (myLinks.size()){
@@ -269,7 +287,7 @@ void gPerson::keyPressEvent (QKeyEvent * event){
    else if (event->key() == Qt::Key_K){
         if (selectedLink){
           if (myLinks.size() > 1){
-              qDebug() << "gperson k key";
+              //qDebug() << "gperson k key";
               selectedLink->setUnChosen();
               int index = myLinks.indexOf(selectedLink);
               if (index == myLinks.size()-1 ){
@@ -286,7 +304,7 @@ void gPerson::keyPressEvent (QKeyEvent * event){
    else if (event->key() == Qt::Key_0){
       if (selectedLink){
           if (myLinks.size() > 1){
-              qDebug() << "gperson 170 moving selected link to right ";
+              //qDebug() << "gperson 170 moving selected link to right ";
               //int index(topLinks.indexOf(selectedLink));
               int index(topLinkKeys.indexOf(selectedLinkKey));
               if (index >= 0 && index < topLinkKeys.size()-1){
@@ -302,12 +320,12 @@ void gPerson::keyPressEvent (QKeyEvent * event){
    else if (event->key() == Qt::Key_9){
       if (selectedLink){
           if (myLinks.size() > 1){
-              qDebug() << "gperson 185 moving selected link to LEFT ";
+              //qDebug() << "gperson 185 moving selected link to LEFT ";
               int index(topLinkKeys.indexOf(selectedLinkKey));
               if (index > 0){
-                  qDebug() << 188 << index;
+                  //qDebug() << 188 << index;
                   topLinkKeys.swapItemsAt(index,index-1);
-                  qDebug() << 190;
+                  //qDebug() << 190;
                   SortLinksOnEachSide();
                   Scene()->update();
               }
@@ -318,14 +336,14 @@ void gPerson::keyPressEvent (QKeyEvent * event){
    else if (event->key() == Qt::Key_1){
       if (selectedLink){
           if (myLinks.size() > 1){
-              qDebug() << "found leg";
-              qDebug() << "Shorten the first leg of this link";
+              //qDebug() << "found leg";
+              //qDebug() << "Shorten the first leg of this link";
               int index(topLinkKeys.indexOf(selectedLinkKey));
-              qDebug() << "index: " <<index;
+              //qDebug() << "index: " <<index;
               if (index >= 0){
-                  qDebug() << "going to function to shorten";
+                  //qDebug() << "going to function to shorten";
                   selectedLink->shortenProportion1();
-                  qDebug() << "proportion" << selectedLink->GetProportion1();
+                  //qDebug() << "proportion" << selectedLink->GetProportion1();
                   Scene()->update();
               }
           }
@@ -336,7 +354,7 @@ void gPerson::keyPressEvent (QKeyEvent * event){
       if (selectedLinkKey.size() > 0){
           cLink * selectedLink = Key2Link(selectedLinkKey);
           selectedLink->lengthenProportion1();
-          qDebug() << selectedLink->GetProportion1();
+          //qDebug() << selectedLink->GetProportion1();
           Scene()->update();
            }
       }
@@ -362,7 +380,7 @@ void gPerson::mouseMoveEvent(QGraphicsSceneMouseEvent * event){ // this doesn't 
            link->update();
         }
     }
-    qDebug() << "person: mouse move detected";
+    //qDebug() << "person: mouse move detected";
     QGraphicsItem::mouseMoveEvent(event);
 }
 

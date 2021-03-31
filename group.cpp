@@ -33,7 +33,7 @@ cGroup::cGroup (QString k, QString n, float x, float y, float h, float w ){
     myBoundingRect = QRectF(0,0,height,width);
     setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
     setAcceptedMouseButtons(Qt::LeftButton);
-    qDebug() << "created new group" << name;
+    //qDebug() << "created new group" << name;
 }
 
 
@@ -104,6 +104,16 @@ void cGroup::mouseMoveEvent(QGraphicsSceneMouseEvent * event)  {
 */
 
 void cGroup::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event){
-  int i  = 1;
-  //QGraphicsItem::mouseDoubleClickEvent(*event);
+}
+
+void cGroup::changeHeight(int newHeight)
+{
+    height = newHeight;
+    update();
+}
+
+void cGroup::changeWidth(int newWidth)
+{
+    width = newWidth;
+    update();
 }

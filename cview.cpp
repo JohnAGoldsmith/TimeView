@@ -43,7 +43,7 @@ void cView::wheelEvent(QWheelEvent *event)
 /*           Move entire scene
 void cView::mousePressEvent(QMouseEvent* event)
 {
-    qDebug() << "In view mouse press event";
+    //qDebug() << "In view mouse press event";
     if (event->button() == Qt::RightButton)
     {
         // Store original position.
@@ -55,7 +55,7 @@ void cView::mousePressEvent(QMouseEvent* event)
 
 void cView::mouseMoveEvent(QMouseEvent* event)
 {
-    qDebug() << "mainwindow mouse";
+    //qDebug() << "mainwindow mouse";
     setTransformationAnchor(QGraphicsView::NoAnchor);
     if (event->buttons() & Qt::RightButton)
     {

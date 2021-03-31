@@ -52,9 +52,14 @@ cScene::~cScene(){
     delete pixmaps;
 }
 
-void cScene::changeHorizontalScale(int logFactor){
-    float factor = exp (logFactor/100.0);
-    qDebug() << " factor " << factor;
+void cScene::changeHorizontalScale(int value){
+    float factor = 1.0 + value/20.0;
+    //qDebug() << " factor " << factor;
+    foreach(QGraphicsItem* item, items()){
+       item->setPos(item->pos().x() * factor, item->pos().y() * factor);
+       item->update();
+    }
+    update();
 }
 
 float cScene::ConvertYearToYcoor(float year){

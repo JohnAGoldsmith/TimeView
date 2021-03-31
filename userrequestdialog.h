@@ -43,12 +43,15 @@ private:
     QSpinBox * lineWidthSpin;
     QFont * currentFont;
     QFontDialog * fontDialog;
+
     QSpinBox  * groupheightSpin;
     QSpinBox * groupwidthSpin;
     QLineEdit * groupNameLE;
     QPushButton * addGroupbutton;
-
+    QPushButton * modifyGroupbutton;
+    cGroup * latestGroup;
     void addNewGroup();
+    void changeGroupSize();
     void keyPressEvent(QKeyEvent *);
 
 

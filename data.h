@@ -23,7 +23,7 @@ public:
 
     void read(const QJsonObject & json) ;
     void write(QJsonObject &json) const;
-    //void write2csv();
+
 
     QList<cLink*>*    getLinks(){return &Links;};
     cLink* getLink(QString);
@@ -78,6 +78,7 @@ private:
     QHash<QString, gPerson*>key2Person;
     QHash<QString, cLink*>  key2Link;
     QHash<QString, cGroup* >key2Group;
+    QStringList     ErrorLog;
     QStringList     tempLines;
     int             topPosition;
 

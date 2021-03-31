@@ -38,7 +38,6 @@ public:
     void AddGPerson (gPerson *);
     //void AddGroup( cGroup*);
     QHash<QString, QPixmap*> * Pixmaps() {return pixmaps;}
-    void changeHorizontalScale(int);
 
     float ConvertYearToYcoor(float year); // this is used, but it should be eliminated
 protected:
@@ -58,6 +57,10 @@ private:
     QHash<QString, QPixmap*> *  pixmaps;
 signals:
     //void sendToLineEdit(QString message);
+
+public slots:
+    void changeHorizontalScale(int);
+
 
 };
 

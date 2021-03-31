@@ -39,6 +39,10 @@ private:
 
     QRectF  myBoundingRect;
 
+public slots:
+    void changeHeight(int newHeight);
+    void changeWidth( int newWidth);
+
 };
 
 #endif // GROUP_H

@@ -57,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent)
     myLineEdit = new cLineEdit();
     layout->addWidget(myLineEdit);
     QSlider * myHorizontalSlider = new QSlider(Qt::Horizontal, this);
-    myHorizontalSlider->setRange(-100,100);
+    myHorizontalSlider->setRange(-10,10);
     myHorizontalSlider->setValue(0);
     layout->addWidget(myHorizontalSlider);
 
@@ -193,15 +193,18 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
           if (fileName.endsWith(".json")){
               getData()->A_ReadJson(fileName);
               getData()->A_sendPersonsAndLinksToSceneJson(scene);
+              myLineEdit->setText("Open json file.");
           } else if (fileName.endsWith(".csv")){
               if (fileName.endsWith("legacy.csv")){
                   getData()->A_ReadCSV(fileName);
                   getData()->A_analyzeLegacyCSVdata();
                   getData()->A_sendPersonsAndLinksToScene(scene);
+                  myLineEdit->setText("Open legacy csv file.");
               } else{
                   getData()->A_ReadCSV(fileName);
                   getData()->A_analyzeCSVdata();
                   getData()->A_sendPersonsAndLinksToScene(scene);
+                  myLineEdit->setText("Open csv file.");
               }
           }
        }
@@ -254,14 +257,11 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
       if (userrequestdialog){
           delete userrequestdialog;
       }
-      qDebug() << "Mainwindow making new dialg";
+      //qDebug() << "Mainwindow making new dialg";
       userrequestdialog = new userRequestDialog(getData(), Scene(),this);
-      userrequestdialog->exec();
+      userrequestdialog->show();
   }
 
-
-
-  qDebug() << "Main window "<<event->text();
   QMainWindow::keyPressEvent(event);
 
 }

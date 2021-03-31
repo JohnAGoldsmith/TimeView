@@ -115,16 +115,22 @@ userRequestDialog::userRequestDialog(cData * data,  cScene * scene, QWidget *par
     hlayout->addWidget(groupNameLE);
     vlayout1->addLayout(hlayout);
 
+    hlayout = new QHBoxLayout();
+    modifyGroupbutton = new QPushButton("Modify group size");
+    hlayout->addWidget(modifyGroupbutton);
+    vlayout1->addLayout(hlayout);
+
+
     page3->setLayout(vlayout1);
     mytabWidget->addTab(page3,"Groups");
+
+
+
+
     connect(addGroupbutton, &QPushButton::clicked, this,&userRequestDialog::addNewGroup);
-
+    connect(modifyGroupbutton,&QPushButton::clicked,
+            this, &userRequestDialog::changeGroupSize );
     mytabWidget->show();
-
-
-
-
-
 }
 
 void userRequestDialog::addNewGroup(){
@@ -137,20 +143,24 @@ void userRequestDialog::addNewGroup(){
 
     QString name = groupNameLE->text();
     QString key = name;
-    cGroup * group = new cGroup (key, name, x,y,height,width);
-    if (! Data->validateNewGroup(group)){ //validate should include sending to collections
-        delete group;
+    latestGroup = new cGroup (key, name, x,y,height,width);
+    if (! Data->validateNewGroup(latestGroup)){ //validate should include sending to collections
+        delete latestGroup;
         return;
         /* send message of failure.  */
     }
-    group->setY ( Scene->ConvertYearToYcoor( group->Y() ) );
-    Scene->addItem(group);
-    group->setPos(group->X(), group->Y());
-    qDebug() << "data group line 200" << group->X() << group->Y();
+    latestGroup->setY ( Scene->ConvertYearToYcoor( latestGroup->Y() ) );
+    Scene->addItem(latestGroup);
+    latestGroup->setPos(latestGroup->X(), latestGroup->Y());
+    //qDebug() << "data group line 200" << latestGroup->X() << latestGroup->Y();
 
 }
-
-
+void userRequestDialog::changeGroupSize(){
+    if (latestGroup){
+        latestGroup->changeWidth(groupwidthSpin->value());
+        latestGroup->changeHeight(groupheightSpin->value());
+    }
+}
 
 userRequestDialog::~userRequestDialog()
 {

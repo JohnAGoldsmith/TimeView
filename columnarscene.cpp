@@ -22,7 +22,7 @@ bool bornAfter (gPerson * person1, gPerson* person2){
 void columnarScene::sortColumnar(){
    std::sort(columnar.begin(),columnar.end(),bornAfter);
    foreach (gPerson* person, columnar){
-       qDebug() << person->LastName() << person->BirthYear();
+       //qDebug() << person->LastName() << person->BirthYear();
    }
 }
 void columnarScene::displayColumnar(){
