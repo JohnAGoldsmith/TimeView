@@ -16,7 +16,7 @@
 
 cData::cData()
 {
-   topPosition = 1950;
+   //topPosition = 1950;
 }
 void cData::Clear(){
     foreach (gPerson* person, graphicalPersons){
@@ -55,26 +55,21 @@ cLink* cData::CheckAndCreateNewLink(QString key){
     key2Link[key] = link;
     Links.append(link);
     return link;
-
 }
 void cData::A_ReadCSV(QString filename)
 {
-
     QFile file(filename);
-    qDebug() << QDir::currentPath();
+    //qDebug() << QDir::currentPath();
     if (! file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
 
     QTextStream stream(&file);
     QStringList data;
     QString separator(",");
-    int topPosition = 1950;
-    while (stream.atEnd() == false)
-    {
+    while (stream.atEnd() == false) {
         QString line = stream.readLine();
         tempLines << line;
     }
-
     file.close();
     return;
 }
@@ -96,7 +91,7 @@ void cData::A_analyzeLegacyCSVdata(){
             person = B_Legacy_CreateGraphicalPerson(line);
             //person->SortLinksOnEachSide();
           } else if (line[0] == "L"){
-            bool dummy;
+            bool dummy(true);
             link = new cLink(dummy, line, this);
             Links.append(link);
           } else if (line[0] == "G"){              
@@ -154,14 +149,13 @@ void cData::A_analyzeCSVdata(){
 }
 gPerson* cData::B_Legacy_CreateGraphicalPerson(QStringList line){
     QString key;
-    float legacyTimeScale = 20.0;             // remove this from Scene.
     if (line.size() >= 8 && line[7].length() > 0){
         key = line[7];
     } else {
         key = line[2];
     }
     if ( Key2PersonHashContains(key) ) {
-       qDebug() << "cData:  collision of graphicalPerson keys" << key << "No graphical unit created.";
+       ErrorLog.append(  "cData:  collision of graphicalPerson keys " + key +  " No graphical unit created.");
        return NULL;
     };
     bool dummy = false;
@@ -180,12 +174,12 @@ void cData::B_AddPtrsToPersonsAndLinks(){
         fromKey = link->getFromKey();
         toKey = link->getToKey();
         if (! Key2PersonHashContains(fromKey)){
-            qDebug() << "Link containing "<<fromKey << "cannot be made;"<<fromKey << "is missing.";
+            ErrorLog.append("Link containing " + fromKey + "cannot be made;" + fromKey + "is missing.");
             linksToDelete.append(link);
             continue;
         }
         if (! Key2PersonHashContains(toKey)){
-            qDebug() << "Link containing "<<toKey << "cannot be made;"<<toKey << "is missing.";
+            ErrorLog.append("Link containing " + toKey  +  "cannot be made;"  + toKey + "is missing.");
             linksToDelete.append(link);
             continue;
         }
@@ -230,10 +224,10 @@ void cData::AttachLinkKeysToPersonSides(){
 void cData::A_sendPersonsAndLinksToScene(cScene* scene){
     gPerson * fromPerson, * toPerson;
     foreach (cGroup * group, Groups){
-       group->setY ( scene->ConvertYearToYcoor( group->Y() ) );
+       //group->setY ( scene->ConvertYearToYcoor( group->Y() ) );
        scene->addItem(group);
        group->setPos(group->X(), group->Y());
-       qDebug() << "data group line 200" << group->X() << group->Y();
+       //qDebug() << "adding group"<< group->Y() << group->pos().y();
     }
     foreach (gPerson * person, graphicalPersons){
         scene->addItem(person);
@@ -242,20 +236,18 @@ void cData::A_sendPersonsAndLinksToScene(cScene* scene){
     }
     foreach (cLink * link, Links){
         if (! Key2PersonHashContains(link->getFromKey())){
-            qDebug() << "From Key has no person " << link->getFromKey();
+            ErrorLog.append("Sending link to Scene: From Key has no person: " + link->getFromKey());
             continue;
         }
         if (! Key2PersonHashContains(link->getToKey())){
-            qDebug() << "To Key has no person " << link->getToKey();
+            ErrorLog.append("Sending link to Scene: To Key has no person: " + link->getToKey());
             continue;
         }
         fromPerson = Key2Person(link->getFromKey());
         toPerson = Key2Person(link->getToKey());
         scene->addItem(link);
-        qDebug() << "data 210"<< link->getFromKey() << link->getToKey();
         link->setPos(fromPerson->pos());
     }
-
 }
 void cData::sendPersonsToColumnarScene(columnarScene * colscene){
     foreach (gPerson* person, graphicalPersons){
@@ -265,38 +257,33 @@ void cData::sendPersonsToColumnarScene(columnarScene * colscene){
     colscene->displayColumnar();
 }
 void cData::A_sendPersonsAndLinksToSceneJson(cScene* scene){
-    gPerson * gPerson1, * gPerson2;
-
     foreach(cGroup * group, Groups){
         scene->addItem(group);
         group->setPos(group->MemoryOfPos());
     }
-
-    foreach (gPerson * gperson, graphicalPersons){
-        scene->addItem(gperson);
-        gperson->Scene(scene); // why is this necessary? Why can't I get this from the gperson?
-        gperson->setPos( gperson->GetMemoryOfScreenPosition() );
+    foreach (gPerson * person, graphicalPersons){
+        scene->addItem(person);
+        person->Scene(scene); // why is this necessary? Why can't I get this from the gperson?
+        person->setPos( person->GetMemoryOfScreenPosition() );
     }
     foreach (cLink * link, Links){
-        gPerson * fromPerson , * toPerson;
+        gPerson * fromPerson;
         fromPerson=Key2Person(link->getFromKey());
+        gPerson * toPerson;
         if ( ! fromPerson   ){
             qDebug() << " DATA: Cannot send link to Scene   "<<link->getFromKey() << "missing " ;
-            continue;
-        }
+            continue;}
         toPerson = Key2Person(link->getToKey());
         if ( ! toPerson ){
             qDebug() << "Cannot send link to Scene 124 "<<link->getToKey() << "Missing To gperson." ;
-            continue;
-        };
+            continue;};
         scene->addItem(link);
         link->setPos(fromPerson->pos());
     }
 }
-
 bool cData::validateNewPerson(gPerson * person){
     if (key2Person.contains(person->Key())){
-        qDebug() << "data 240" << person->Key();
+        //qDebug() << "data 240" << person->Key();
       /*  send message of collision */
             return false;
     }
@@ -310,11 +297,11 @@ bool cData::validateNewLink(cLink* link){
         return false;
     }
     if (! Key2PersonHashContains(link->getFromKey()) ){
-        qDebug() << "We cannot include this link whose From person is not present"<< link->getFromKey();
+        ErrorLog.append("We cannot include this link whose From person is not present" + link->getFromKey());
         return false;
     }
     if (! Key2PersonHashContains(link->getToKey()) ){
-        qDebug() << "We cannot include this link whose To person is not present"<< link->getToKey();
+        ErrorLog.append("We cannot include this link whose To person is not present" +  link->getToKey());
         return false;
     }
     key2Link[link->getKey()] = link;
@@ -322,12 +309,11 @@ bool cData::validateNewLink(cLink* link){
     return true;
 }
 bool cData::validateNewGroup(cGroup * group){
-    qDebug() << "data 247" << group->Key();
+    //qDebug() << "data 247" << group->Key();
     key2Group[group->Key()] = group;
     Groups.append(group);
     return true;
 }
-
 void cData::write(QJsonObject &json) const{
     QJsonArray groupArray;
     foreach (const cGroup * group, Groups){
@@ -346,9 +332,9 @@ void cData::write(QJsonObject &json) const{
     json["Links"]=linkArray;
 
     QJsonArray gPersonArray;
-    foreach (const gPerson * gp, graphicalPersons){
+    foreach (const gPerson * person, graphicalPersons){
          QJsonObject gPersonObject;
-         gp->write(gPersonObject);
+         person->write(gPersonObject);
          gPersonArray.append(gPersonObject);
     }
     json["GraphicalPersons"]=gPersonArray;
@@ -423,16 +409,10 @@ void cData::A_ReadJson(QString filename) {
             person->AppendLinkAndAddLinkKeyToSide(link);
         }
     }
-
     return;
 }
-
-
 void cData::AttachLinks(gPerson *){
-
-
 }
-
 QStringList cData::exportPersons2csv() const {
     QStringList output;
     foreach (gPerson* person, graphicalPersons){
@@ -511,7 +491,6 @@ void cData::populatePersonTable(QTableWidget * table){
        table->setItem(row,7,item);
        item = new QTableWidgetItem(person->Profession1());
        table->setItem(row,8,item);
-
 
        row++;
    }

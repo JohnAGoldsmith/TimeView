@@ -257,8 +257,9 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
       if (userrequestdialog){
           delete userrequestdialog;
       }
-      //qDebug() << "Mainwindow making new dialg";
+
       userrequestdialog = new userRequestDialog(getData(), Scene(),this);
+      userrequestdialog->readLinks(Data.getLinks());
       userrequestdialog->show();
   }
 

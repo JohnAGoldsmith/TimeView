@@ -9,6 +9,7 @@
 #include <QSpinBox>
 #include <QFont>
 #include <QFontDialog>
+#include <QListWidget>
 #include "data.h"
 
 
@@ -23,6 +24,7 @@ class userRequestDialog : public QDialog
 public:
     explicit userRequestDialog(cData*, cScene*, QWidget *parent = nullptr);
     ~userRequestDialog();
+    void readLinks( QList<cLink*>* );
 
 private:
     cData* Data;
@@ -43,6 +45,9 @@ private:
     QSpinBox * lineWidthSpin;
     QFont * currentFont;
     QFontDialog * fontDialog;
+
+    QListWidget * linkList;
+    QListWidget * colorList;
 
     QSpinBox  * groupheightSpin;
     QSpinBox * groupwidthSpin;

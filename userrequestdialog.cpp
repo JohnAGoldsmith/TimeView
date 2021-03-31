@@ -65,16 +65,28 @@ userRequestDialog::userRequestDialog(cData * data,  cScene * scene, QWidget *par
     vlayout1 = new QVBoxLayout();
 
     hlayout = new QHBoxLayout();
+    linkList = new QListWidget(this);
+    hlayout->addWidget(linkList);
+    vlayout1->addItem(hlayout);
+
+    hlayout = new QHBoxLayout();
     hlayout->addWidget(new QLabel("Line width",page2));
     lineWidthSpin = new QSpinBox(page2);
     hlayout->addWidget(lineWidthSpin);
     vlayout1->addLayout(hlayout);
 
     hlayout = new QHBoxLayout();
+    colorList = new QListWidget(this);
+    foreach (QString colorname, QColor::colorNames()){
+        new QListWidgetItem(colorname,colorList);
+    }
+    hlayout->addWidget(colorList);
     vlayout1->addLayout(hlayout);
+
     page2->setLayout(vlayout1);
     QSpacerItem *  verticalSpacer = new QSpacerItem(20, 40);
     vlayout1->addItem(verticalSpacer);
+
     mytabWidget->addTab(page2, "Lines");
 
 
@@ -176,4 +188,12 @@ void userRequestDialog::keyPressEvent(QKeyEvent * event){
     if (event->key() == Qt::Key_X && event->modifiers()==Qt::CTRL){
           close( );
     }
+}
+void userRequestDialog::readLinks(QList<cLink *> * Links){
+    linkList->setSortingEnabled(true);
+    foreach (cLink* link, *Links ){
+       new QListWidgetItem(link->getKey(),linkList);
+    }
+
+    linkList->update();
 }
