@@ -254,12 +254,11 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
       newpersonwidget->show();
       myLineEdit->setText("Create new person.");
       */
-      if (userrequestdialog){
-          delete userrequestdialog;
-      }
 
-      userrequestdialog = new userRequestDialog(getData(), Scene(),this);
-      userrequestdialog->readLinks(Data.getLinks());
+      if (!userrequestdialog){
+          userrequestdialog = new userRequestDialog(getData(),Scene(),this);
+          userrequestdialog->readLinks(Data.getLinks());
+      }
       userrequestdialog->show();
   }
 

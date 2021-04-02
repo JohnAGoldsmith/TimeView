@@ -113,6 +113,9 @@ cLink::cLink(bool dummy, QStringList & dataList, cData* myData){
 
 cLink::~cLink(){
 }
+void cLink::setColor(QString color){
+    myColor = color;
+}
 void cLink::setPersonFrom(gPerson * person){
     //gPersonFrom = person;
     fromPerson = person;
@@ -213,45 +216,36 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     float y_distance2 = y_distance1 - toPerson->Height();
     float x_distance = fromPerson->scenePos().x() - toPerson->scenePos().x() + (GPersonFromCenterX - GPersonToCenterX);
     QPen pen;
+    pen.setWidth(3);
     QPointF point1, point2;
 
-    if (false)
-        qDebug() << 108 << "just painting" << fromPerson->LastName() << toPerson->LastName();
-    /*
-    if (! fromPerson()->Visible()){
-        pen.setStyle(Qt::DotLine);
-        painter->setPen(pen);
-        //qDebug() << "clink 111" << "invisible link...";
-    }
-    */
+
     if (chosen){
-        //() << "clink selected line 115"<< display();
         pen.setColor(Qt::red);
         pen.setWidth(6);
         painter->setPen(pen);
+    } else if (myColor.length() > 0){
+        pen.setColor(myColor);
+        painter->setPen(pen);
+        qDebug() << "In clink paint, adding new color "<< myColor;
     }
     else if (natureOfLink == "teacher" || natureOfLink == "student"){
         pen.setColor(Qt::blue);
-        pen.setWidth(1);
         painter->setPen(pen);
     }
     else if (natureOfLink == "postDoc" || natureOfLink == "Semi-teacher" || natureOfLink == "influence"){
         pen.setColor(Qt::blue);
-        pen.setWidth(3);
         pen.setStyle(Qt::DashLine);
         painter->setPen(pen);
      }
     else if (natureOfLink == "colleagues") {
                pen.setColor(Qt::green);
-               pen.setWidth(3);
                painter->setPen(pen);
     }
     else {
                pen.setColor(Qt::black);
-               pen.setWidth(3);
                painter->setPen(pen);
     }
-
 
     /* Now we do things in Link's coordinates, which is From */
 
@@ -355,16 +349,9 @@ void cLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
             point2.setY( point1.y() );
         }
     }
-
-    //painter->drawLine(start_point,end_point);
-
-
-
-
     painter->drawLine(startPoint, point1);
     painter->drawLine(point1, point2);
     painter->drawLine(point2, endPoint);
-
 }
 
 void cLink::write(QJsonObject & json) const{

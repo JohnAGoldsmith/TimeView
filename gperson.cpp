@@ -29,7 +29,7 @@ gPerson::gPerson(){
     myFont = new  QFont("Times", 12);
     width = 250; // this isn't right, it should be dynamic and based on relevant data; but that's not available till after Paint();
     height = 70;
-    margin = 5;
+    margin = 15;
     personBoundingRect.setCoords(-1.0 * margin, 0, width + 2*margin, height+2*margin );
     xpos = 0;  // used only in input to program
     selectedLink = NULL;
@@ -49,7 +49,7 @@ gPerson::gPerson(QStringList  data){
     xpos = 0;               // it will be set the first time it is add to scene, using the toppoint on the scene.
     birthYear = 0;
     deathYear = 0;
-    margin = 5;
+    margin = 15;
     personBoundingRect.setCoords(-1.0 * margin, 0, width + 2*margin, height+ 2*margin);
 
     firstName = data[1];
@@ -117,7 +117,7 @@ gPerson::gPerson(bool dummy, QStringList  data){
     xpos = 0;               // it will be set the first time it is add to scene, using the toppoint on the scene.
     birthYear = 0;
     deathYear = 0;
-    margin = 5;
+    margin = 15;
     personBoundingRect.setCoords(-1.0 * margin, 0, width + 2*margin, height+ 2*margin);
 
     firstName = data[1];
@@ -439,30 +439,33 @@ float gPerson::GetDatesWidth(QPainter * painter) const {
 void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
 
     double lineHeight = 25.0;
+    double topmargin = 10.0;
     QColor mycolor;
-    QBrush brush;
     QFont localFont = *myFont;
     localFont.setCapitalization(QFont::SmallCaps);
     painter->setFont(localFont);
-    QPen pen(Qt::black,9);
-
-    cScene * thisScene = dynamic_cast<cScene*>(scene);
-    QHash<QString,QPixmap*> * pixmaps = thisScene->Pixmaps();
-    QPixmap * pixmap(NULL);
-
+    QPen pen(Qt::black,3);
     QHash<QString, QColor> colorHash;
     QHash<QString, QPixmap*> pixmapHash;
 
+    /*  Set up ColorHash             */
     colorHash["linguist"] = QColor(244,153,51);
     colorHash["sociologist"] = Qt::green;
     colorHash["philosopher"] = Qt::yellow;
     colorHash["Phil-psych"] = Qt::yellow;
     colorHash["psychologist"] = Qt::cyan;
     colorHash["other"] = Qt::magenta;
-    colorHash["focus"] = Qt::black;
+    colorHash["focus"] = Qt::red;
     colorHash["grayed"] =  QColor(255, 255, 255, 1);
 
-    if (pixmaps->contains("apricot")){
+    /*     Set up   pixmap                  */
+
+    /*
+    cScene * thisScene = dynamic_cast<cScene*>(scene);
+    QHash<QString,QPixmap*> * pixmaps = thisScene->Pixmaps();
+    QPixmap * pixmap(NULL);
+
+if (pixmaps->contains("apricot")){
        pixmapHash["linguist"] = pixmaps->value("apricot");
     } else pixmapHash["linguist"] = NULL;
     if (pixmaps->contains("darkredwood")){
@@ -490,18 +493,19 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
         pixmap = pixmapHash[Profession1()];
     } else { pixmap = NULL; }
 
+
+    //             Set up pen colors
     if (pixmap== pixmaps->value("darkredwood")){
         pen.setColor(Qt::white);
     }
+    */
 
     if (hasFocus())  { mycolor = colorHash["focus"]; }
-    else if (grayed) { mycolor = colorHash["grayed"];}
     else if (colorHash.contains(Profession1())) {
         mycolor = colorHash[Profession1()];
     } else { mycolor = colorHash["other"]; }
 
 
-    //pen.setWidth(9);
     if (grayed){
         pen.setStyle(Qt::DotLine);
         pen.setColor(Qt::gray);
@@ -513,45 +517,46 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     QString years = QString::number(birthYear) + "--" + QString::number(deathYear);
     float namewidth = GetNameWidth(painter);
     float datewidth = GetDatesWidth(painter);
-
     if (datewidth > namewidth){
         width = datewidth;
-    }else{
+    } else{
         width = namewidth;
     }
-
+    width += 2.0 * margin;
     float interline = 2.0;
-    height = 2.0 * GetTextHeight(painter) + interline  + 2.0 * margin;
-    QRectF personrect(-1.0 * margin,0,width + 2.0 * margin, height);
+    height = 2.0 * GetTextHeight(painter) + interline  + 1.0 * margin;
+    QRectF fullrect(0,0,width, height);
 
+    /*
     QLinearGradient gradient(personrect.topLeft(),personrect.bottomRight());
     gradient.setColorAt(0,mycolor);
     gradient.setColorAt(0.5,Qt::white);
     gradient.setColorAt(1,mycolor);
-
     painter->fillRect(personrect,mycolor);
-
     if(hasFocus()){
         painter->fillRect(personrect, brush);
     } else{
         painter->fillRect(personrect,gradient);
     }
-
-    painter->drawRect(personrect);
-
     if (pixmap) {
         if (! grayed ){
             painter->drawPixmap(personrect,*pixmap,QRectF(0,0,50,50));
         }
     }
-    QRectF rect(0,0,namewidth,30);
+    */
+
+    painter->drawRect(fullrect);
+    painter->fillRect(fullrect, mycolor);
     QRectF boundingRect1;
-    painter->drawText(rect ,Qt::AlignHCenter,  name ,  & boundingRect1);
+    QRectF smallrect(0,0,width, GetTextHeight(painter)+ margin);
+    painter->drawText(smallrect ,Qt::AlignHCenter,  name ,  & boundingRect1);
+
+
 
     QRectF boundingRect2 (boundingRect1);
-    rect.moveTo(0,lineHeight);
-    painter->drawText(rect, Qt::AlignHCenter,years, &boundingRect2);
-    personBoundingRect.setCoords(personrect.left() - 1, personrect.top() -1, personrect.right()+1, personrect.bottom() + 1);
+    smallrect.moveTo(0,lineHeight);
+    painter->drawText(smallrect, Qt::AlignHCenter,years, &boundingRect2);
+    personBoundingRect = fullrect;
     height = personBoundingRect.height();
 }
 

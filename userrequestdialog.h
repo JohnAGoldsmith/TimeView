@@ -48,6 +48,7 @@ private:
 
     QListWidget * linkList;
     QListWidget * colorList;
+    cLink * myLink;
 
     QSpinBox  * groupheightSpin;
     QSpinBox * groupwidthSpin;
@@ -63,6 +64,8 @@ private:
 
 public slots:
     void openFontDialog();
+    void grabLink(QListWidgetItem * listwidgetitem);
+    void setLinkColor(QListWidgetItem * colorItem);
 };
 
 #endif // USERREQUESTDIALOG_H

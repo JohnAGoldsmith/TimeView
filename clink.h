@@ -59,6 +59,8 @@ class cLink: public QGraphicsItem
         void shortenProportion1() {proportion1 *= 0.90;};
         void lengthenProportion1() {proportion1 *= 1.10;};
         float GetProportion1() {return proportion1;}
+
+        void setColor(QString color);
     private:
         cData* data;
         QString fromPersonKey;
@@ -78,7 +80,7 @@ class cLink: public QGraphicsItem
         float proportion1;
         QPointF startPoint;
         QPointF endPoint;
-
+        QString myColor;
 };
 
 #endif // CLINK_H

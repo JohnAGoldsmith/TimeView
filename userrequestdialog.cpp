@@ -142,6 +142,11 @@ userRequestDialog::userRequestDialog(cData * data,  cScene * scene, QWidget *par
     connect(addGroupbutton, &QPushButton::clicked, this,&userRequestDialog::addNewGroup);
     connect(modifyGroupbutton,&QPushButton::clicked,
             this, &userRequestDialog::changeGroupSize );
+    connect(linkList,&QListWidget::itemClicked,
+            this, &userRequestDialog::grabLink);
+    connect(colorList, &QListWidget::itemClicked,
+            this, &userRequestDialog::setLinkColor);
+
     mytabWidget->show();
 }
 
@@ -196,4 +201,17 @@ void userRequestDialog::readLinks(QList<cLink *> * Links){
     }
 
     linkList->update();
+}
+void userRequestDialog::grabLink(QListWidgetItem * listwidgetitem){
+    myLink = Data->getLink(listwidgetitem->text());
+    qDebug() << 1 << listwidgetitem->text();
+    qDebug() << 2 << myLink->getKey();
+}
+void userRequestDialog::setLinkColor(QListWidgetItem * colorItem){
+    if (myLink){
+        myLink->setColor(colorItem->text());
+        myLink->update();
+        qDebug() << myLink->getKey() << colorItem->text();
+    }
+
 }
