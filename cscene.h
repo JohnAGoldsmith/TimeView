@@ -30,14 +30,20 @@ public:
     void setTextColor(const QColor &color);
     void setItemColor(const QColor &color);
     void setFont(const QFont &font);
-    int TimeScale() {return timeScale;}
-    int ScaleFactor() {return scaleFactor;}
+    float TimeScale(){return timeScale;}
+    float ScaleFactor(){return scaleFactor;}
+    int YExpansionFactor() {return y_expansionFactor;}
+    int XExpansionFactor() {return x_expansionFactor;}
     int TopPosition() {return topPosition;}
     QGraphicsItem *  itemAt(const QPointF, const QTransform &);
     //void AddLink(cLink * );
     void AddGPerson (gPerson *);
     //void AddGroup( cGroup*);
     QHash<QString, QPixmap*> * Pixmaps() {return pixmaps;}
+    QColor Palette(int n);
+    QColor getColor(QString key);
+
+    void adjustScenePositions(); // changes the xpos, ypos using its internal x_ and y_expansionfactors
 
     float ConvertYearToYcoor(float year); // this is used, but it should be eliminated
 protected:
@@ -50,11 +56,15 @@ private:
     QColor myTextColor;
     QColor myItemColor;
     QColor myLineColor;
-    int   timeScale;
-    int scaleFactor; // x-axis
+    QList<QColor> myPalette;
+    float   timeScale;
+    float scaleFactor;
+    float x_expansionFactor; // x-axis
+    float y_expansionFactor;
     int topPosition;
     gPerson* selectedPerson;
     QHash<QString, QPixmap*> *  pixmaps;
+
 signals:
     //void sendToLineEdit(QString message);
 

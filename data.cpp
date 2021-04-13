@@ -232,7 +232,8 @@ void cData::A_sendPersonsAndLinksToScene(cScene* scene){
     foreach (gPerson * person, graphicalPersons){
         scene->addItem(person);
         person->Scene(scene); // why is this necessary?
-        person->setPos( person->GetMemoryOfScreenPosition());
+        //person->setPos( person->GetMemoryOfScreenPosition());
+        person->setPos(person->GetXPosYPos());
     }
     foreach (cLink * link, Links){
         if (! Key2PersonHashContains(link->getFromKey())){
@@ -247,6 +248,7 @@ void cData::A_sendPersonsAndLinksToScene(cScene* scene){
         toPerson = Key2Person(link->getToKey());
         scene->addItem(link);
         link->setPos(fromPerson->pos());
+        link->setZValue(-1);
     }
 }
 void cData::sendPersonsToColumnarScene(columnarScene * colscene){
@@ -264,7 +266,7 @@ void cData::A_sendPersonsAndLinksToSceneJson(cScene* scene){
     foreach (gPerson * person, graphicalPersons){
         scene->addItem(person);
         person->Scene(scene); // why is this necessary? Why can't I get this from the gperson?
-        person->setPos( person->GetMemoryOfScreenPosition() );
+        person->setPos( person->GetXPosYPos() );
     }
     foreach (cLink * link, Links){
         gPerson * fromPerson;
@@ -279,7 +281,9 @@ void cData::A_sendPersonsAndLinksToSceneJson(cScene* scene){
             continue;};
         scene->addItem(link);
         link->setPos(fromPerson->pos());
+        link->setZValue(-1);
     }
+    //scene->adjustScenePositions();
 }
 bool cData::validateNewPerson(gPerson * person){
     if (key2Person.contains(person->Key())){
@@ -485,9 +489,9 @@ void cData::populatePersonTable(QTableWidget * table){
        table->setItem(row,4,item);
        item = new QTableWidgetItem(person->Profession1());
        table->setItem(row,5,item);
-       item = new QTableWidgetItem(QString::number(person->GetMemoryOfScreenPosition().x()));
+       item = new QTableWidgetItem(QString::number(person->GetXPosYPos().x()));
        table->setItem(row,6,item);
-       item = new QTableWidgetItem(QString::number(person->GetMemoryOfScreenPosition().y()));
+       item = new QTableWidgetItem(QString::number(person->GetXPosYPos().y()));
        table->setItem(row,7,item);
        item = new QTableWidgetItem(person->Profession1());
        table->setItem(row,8,item);

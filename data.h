@@ -53,6 +53,7 @@ public:
     void save(QString filename) const;
 
 
+
     int TopPosition() {return topPosition;}
 
     gPerson* B_Legacy_CreateGraphicalPerson(QStringList line);

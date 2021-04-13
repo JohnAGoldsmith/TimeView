@@ -30,7 +30,8 @@ public:
     void Scene(cScene * iscene) {scene = iscene;}
 
     void rememberPos(QPointF);
-    QPointF GetMemoryOfScreenPosition();
+    //QPointF GetMemoryOfScreenPosition();
+    QPointF GetXPosYPos();
 
     float BirthYear() {return birthYear;}
     float DeathYear() {return deathYear;}

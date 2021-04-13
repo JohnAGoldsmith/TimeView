@@ -166,7 +166,7 @@ void gPerson::AppendBottomLinkKey(QString key){
 void gPerson::AppendRightLinkKey(QString key){
     rightLinkKeys.append(key);
 }
-QPointF gPerson::GetMemoryOfScreenPosition(){
+QPointF gPerson::GetXPosYPos(){
     return QPointF(xpos,ypos);
 }
 QString gPerson::export2CSV(){
@@ -319,13 +319,10 @@ void gPerson::keyPressEvent (QKeyEvent * event){
    }
    else if (event->key() == Qt::Key_9){
       if (selectedLink){
-          if (myLinks.size() > 1){
-              //qDebug() << "gperson 185 moving selected link to LEFT ";
+          if (myLinks.size() > 1){             
               int index(topLinkKeys.indexOf(selectedLinkKey));
               if (index > 0){
-                  //qDebug() << 188 << index;
                   topLinkKeys.swapItemsAt(index,index-1);
-                  //qDebug() << 190;
                   SortLinksOnEachSide();
                   Scene()->update();
               }
@@ -336,14 +333,9 @@ void gPerson::keyPressEvent (QKeyEvent * event){
    else if (event->key() == Qt::Key_1){
       if (selectedLink){
           if (myLinks.size() > 1){
-              //qDebug() << "found leg";
-              //qDebug() << "Shorten the first leg of this link";
-              int index(topLinkKeys.indexOf(selectedLinkKey));
-              //qDebug() << "index: " <<index;
+              int index(topLinkKeys.indexOf(selectedLinkKey));             
               if (index >= 0){
-                  //qDebug() << "going to function to shorten";
-                  selectedLink->shortenProportion1();
-                  //qDebug() << "proportion" << selectedLink->GetProportion1();
+                  selectedLink->shortenProportion1();           
                   Scene()->update();
               }
           }
@@ -354,7 +346,6 @@ void gPerson::keyPressEvent (QKeyEvent * event){
       if (selectedLinkKey.size() > 0){
           cLink * selectedLink = Key2Link(selectedLinkKey);
           selectedLink->lengthenProportion1();
-          //qDebug() << selectedLink->GetProportion1();
           Scene()->update();
            }
       }
@@ -380,7 +371,6 @@ void gPerson::mouseMoveEvent(QGraphicsSceneMouseEvent * event){ // this doesn't 
            link->update();
         }
     }
-    //qDebug() << "person: mouse move detected";
     QGraphicsItem::mouseMoveEvent(event);
 }
 
@@ -445,74 +435,24 @@ void gPerson::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     localFont.setCapitalization(QFont::SmallCaps);
     painter->setFont(localFont);
     QPen pen(Qt::black,3);
-    QHash<QString, QColor> colorHash;
-    QHash<QString, QPixmap*> pixmapHash;
+    QBrush brush;
 
-    /*  Set up ColorHash             */
-    colorHash["linguist"] = QColor(244,153,51);
-    colorHash["sociologist"] = Qt::green;
-    colorHash["philosopher"] = Qt::yellow;
-    colorHash["Phil-psych"] = Qt::yellow;
-    colorHash["psychologist"] = Qt::cyan;
-    colorHash["other"] = Qt::magenta;
-    colorHash["focus"] = Qt::red;
-    colorHash["grayed"] =  QColor(255, 255, 255, 1);
-
-    /*     Set up   pixmap                  */
-
-    /*
-    cScene * thisScene = dynamic_cast<cScene*>(scene);
-    QHash<QString,QPixmap*> * pixmaps = thisScene->Pixmaps();
-    QPixmap * pixmap(NULL);
-
-if (pixmaps->contains("apricot")){
-       pixmapHash["linguist"] = pixmaps->value("apricot");
-    } else pixmapHash["linguist"] = NULL;
-    if (pixmaps->contains("darkredwood")){
-       pixmapHash["sociologist"] = pixmaps->value("darkredwood");
-       //pen.setColor(Qt::white);
-    } else pixmapHash["sociologist"] = NULL;
-    if (pixmaps->contains("blue")){
-       pixmapHash["philosopher"] = pixmaps->value("blue");
-    } else pixmapHash["philosopher"] = NULL;
-    if (pixmaps->contains("blue")){
-       pixmapHash["Phil-psych"] = pixmaps->value("blue");
-    } else pixmapHash["Phil-psych"] = NULL;
-    if (pixmaps->contains("lightbrown")){
-       pixmapHash["psychologist"] = pixmaps->value("lightbrown");
-    } else pixmapHash["psychologist"] = NULL;
-    if (pixmaps->contains("yellow")){
-       pixmapHash["other"] = pixmaps->value("yellow");
-    } else pixmapHash["other"] = NULL;
-    if (pixmaps->contains("red")){
-       pixmapHash["focus"] = pixmaps->value("red");
-    } else pixmapHash["focus"] = NULL;
-
-    if (hasFocus()) { pixmap = NULL; }
-    else if (pixmapHash.contains(Profession1())){
-        pixmap = pixmapHash[Profession1()];
-    } else { pixmap = NULL; }
-
-
-    //             Set up pen colors
-    if (pixmap== pixmaps->value("darkredwood")){
-        pen.setColor(Qt::white);
+    if (Profession1() == "mathematician" || Profession1() == "logician"){
+       pen.setColor (Qt::white);
     }
-    */
-
-    if (hasFocus())  { mycolor = colorHash["focus"]; }
-    else if (colorHash.contains(Profession1())) {
-        mycolor = colorHash[Profession1()];
-    } else { mycolor = colorHash["other"]; }
-
+    mycolor = Scene()->getColor(Profession1());
+    if (hasFocus()){
+        pen.setColor(Scene()->getColor("focus"));
+    }
 
     if (grayed){
         pen.setStyle(Qt::DotLine);
-        pen.setColor(Qt::gray);
         painter->setPen(pen);
     }
     painter->setPen(pen);
+    painter->setBrush(brush);
 
+    /*        calculate width of box            */
     QString name = firstName + " "  + lastName;
     QString years = QString::number(birthYear) + "--" + QString::number(deathYear);
     float namewidth = GetNameWidth(painter);
@@ -527,31 +467,11 @@ if (pixmaps->contains("apricot")){
     height = 2.0 * GetTextHeight(painter) + interline  + 1.0 * margin;
     QRectF fullrect(0,0,width, height);
 
-    /*
-    QLinearGradient gradient(personrect.topLeft(),personrect.bottomRight());
-    gradient.setColorAt(0,mycolor);
-    gradient.setColorAt(0.5,Qt::white);
-    gradient.setColorAt(1,mycolor);
-    painter->fillRect(personrect,mycolor);
-    if(hasFocus()){
-        painter->fillRect(personrect, brush);
-    } else{
-        painter->fillRect(personrect,gradient);
-    }
-    if (pixmap) {
-        if (! grayed ){
-            painter->drawPixmap(personrect,*pixmap,QRectF(0,0,50,50));
-        }
-    }
-    */
-
     painter->drawRect(fullrect);
     painter->fillRect(fullrect, mycolor);
     QRectF boundingRect1;
     QRectF smallrect(0,0,width, GetTextHeight(painter)+ margin);
     painter->drawText(smallrect ,Qt::AlignHCenter,  name ,  & boundingRect1);
-
-
 
     QRectF boundingRect2 (boundingRect1);
     smallrect.moveTo(0,lineHeight);
