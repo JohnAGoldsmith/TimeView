@@ -85,7 +85,7 @@ void cData::A_analyzeLegacyCSVdata(){
            continue;
           if (line[0][0]== "!") {
             outfileName = line[1];
-          } else if (line[0][0] == "#"){
+          } else if (line[0][0] == "#" or line[0][0] == "#P"){
             continue;
           } else if (line[0] == "P"){
             person = B_Legacy_CreateGraphicalPerson(line);
@@ -121,7 +121,7 @@ void cData::A_analyzeCSVdata(){
         if (line[0][0]== "!") {
             name = line[1];
         } else {
-            if (line[0][0] == "#"){
+            if (line[0][0] == "#" or line[0][0] == "#P"){
                 continue;
             } else if (line[0] == "P"){
                 person = new gPerson(line);

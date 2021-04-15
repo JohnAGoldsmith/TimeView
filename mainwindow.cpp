@@ -56,10 +56,12 @@ MainWindow::MainWindow(QWidget *parent)
     widget->setLayout(layout);
     myLineEdit = new cLineEdit();
     layout->addWidget(myLineEdit);
-    QSlider * myHorizontalSlider = new QSlider(Qt::Horizontal, this);
+    /*
+    myHorizontalSlider = new QSlider(Qt::Horizontal, this);
     myHorizontalSlider->setRange(-10,10);
     myHorizontalSlider->setValue(0);
     layout->addWidget(myHorizontalSlider);
+    */
 
     setCentralWidget(widget);
     setWindowTitle(tr("Genealogy"));
@@ -88,7 +90,6 @@ MainWindow::MainWindow(QWidget *parent)
        }
     }
 
-    connect(myHorizontalSlider, SIGNAL(valueChanged(int)), scene, SLOT(changeHorizontalScale(int)));
 
 }
 void MainWindow::createActions(){
@@ -150,12 +151,33 @@ void MainWindow::keyPressEvent(QKeyEvent * event){
     /*          Make grayed boxes invisible            */
     if (event->key() == Qt::Key_H && event->modifiers()==Qt::CTRL){
          getData()->GrayedPersons2Invisible();
+         return;
     }
 
     /*             Make invisible boxes visible but grayed  */
-    else if (event->key() == Qt::Key_I && event->modifiers()==Qt::CTRL){
+    if (event->key() == Qt::Key_I && event->modifiers()==Qt::CTRL){
          getData()->InvisiblePersons2Grayed();
+         return;
     }
+
+    /*             spread items horizontally, vertically  */
+    if (event->key() == Qt::Key_4){
+        scene->changeHorizontalScale(0.9);
+        return;
+    }
+    if (event->key() == Qt::Key_6){
+        scene->changeHorizontalScale(1.1);
+        return;
+    }
+    if (event->key() == Qt::Key_2){
+        scene->changeVerticalScale(0.9);
+        return;
+    }
+    if (event->key() == Qt::Key_8){
+        scene->changeVerticalScale(1.1);
+        return;
+    }
+
 
     /* Create a columnar scene */
     if (event->key() == Qt::Key_C && event->modifiers()==Qt::CTRL){

@@ -46,6 +46,7 @@ private:
     QSettings settings;
 
 
+
     void createActions();
     void StartAfresh();
     void makeColumnarScene();

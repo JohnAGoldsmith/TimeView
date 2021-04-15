@@ -1,4 +1,4 @@
-#ifndef CSCENE_H
+    #ifndef CSCENE_H
 #define CSCENE_H
 #include <QGraphicsScene>
 #include <QHash>
@@ -46,6 +46,9 @@ public:
     void adjustScenePositions(); // changes the xpos, ypos using its internal x_ and y_expansionfactors
 
     float ConvertYearToYcoor(float year); // this is used, but it should be eliminated
+    void changeHorizontalScale(float value);
+    void changeVerticalScale(float value);
+
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent * event) override;
@@ -68,8 +71,6 @@ private:
 signals:
     //void sendToLineEdit(QString message);
 
-public slots:
-    void changeHorizontalScale(int);
 
 
 };
