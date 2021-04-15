@@ -1,5 +1,6 @@
 #include <QDebug>
 #include <QGraphicsScene>
+#include <QGraphicsView>
 #include <QGraphicsSceneMouseEvent>
 #include <QTransform>
 #include <QPointF>
@@ -121,14 +122,19 @@ void cScene::changeHorizontalScale(float factor){
        item->update();
     }
     update();
+    if (focusItem()){
+        views().constFirst()->centerOn(focusItem());
+    }
 }
 void cScene::changeVerticalScale(float factor){
     foreach(QGraphicsItem* item, items()){
        item->setPos(item->pos().x(), item->pos().y() * factor);
        item->update();
     }
-
     update();
+    if (focusItem()){
+        views().constFirst()->centerOn(focusItem());
+    }
 }
 float cScene::ConvertYearToYcoor(float year){
     return timeScale * (topPosition - year);
@@ -156,6 +162,7 @@ void cScene::focusInEvent(QFocusEvent * event){
 
 }
 
+// deprecated.
 void cScene::adjustScenePositions()  // changes the xpos, ypos using its internal x_ and y_expansionfactors
 {
     foreach (QGraphicsItem* item, items() ){

@@ -43,22 +43,37 @@ cHelpWidget::cHelpWidget(int rows, int cols, QObject * object)
     newItem = new QTableWidgetItem("Clear all data." );
     helptable->setItem(4,1, newItem);
 
-
-    newItem = new QTableWidgetItem("CTRL N" );
+    newItem = new QTableWidgetItem("2 and 8" );
     helptable->setItem(5,0, newItem);
-    newItem = new QTableWidgetItem("Create new person." );
+    newItem = new QTableWidgetItem("Shrink or expand vertically." );
     helptable->setItem(5,1, newItem);
 
-    newItem = new QTableWidgetItem(" " );
+    newItem = new QTableWidgetItem("4 and 6" );
     helptable->setItem(6,0, newItem);
-    newItem = new QTableWidgetItem("Selected person:" );
+    newItem = new QTableWidgetItem("Shrink or expand horizontally." );
     helptable->setItem(6,1, newItem);
 
-    newItem = new QTableWidgetItem("CTRL B" );
+
+
+    newItem = new QTableWidgetItem("CTRL N" );
     helptable->setItem(7,0, newItem);
-    newItem = new QTableWidgetItem("Move selected person to correct height, given birth" );
+    newItem = new QTableWidgetItem("Create new person." );
     helptable->setItem(7,1, newItem);
 
+    newItem = new QTableWidgetItem(" " );
+    helptable->setItem(8,0, newItem);
+    newItem = new QTableWidgetItem("Selected person:" );
+    helptable->setItem(8,1, newItem);
+
+    newItem = new QTableWidgetItem("CTRL B" );
+    helptable->setItem(9,0, newItem);
+    newItem = new QTableWidgetItem("Move selected person to correct height, given birth" );
+    helptable->setItem(9,1, newItem);
+
+    newItem = new QTableWidgetItem(" 4 <-> 8 and 2 <-> 8 " );
+    helptable->setItem(10,0, newItem);
+    newItem = new QTableWidgetItem("Keep selected item centered in view" );
+    helptable->setItem(10,1, newItem);
 
 }
 cHelpWidget::~cHelpWidget(){
